@@ -16,6 +16,7 @@ gulp.task('bundle', () => {
     bundle(srcDir.path('background.js'), destDir.path('background.js')),
     bundle(srcDir.path('app.js'), destDir.path('app.js')),
     bundle(srcDir.path('main.js'), destDir.path('main.js')),
+    bundle(srcDir.path('lobby.js'), destDir.path('lobby.js')),
   ]);
 });
 
