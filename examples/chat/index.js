@@ -31,6 +31,12 @@ function initRoomNS(roomCode){
     var addedUser = false;
     var numUsers = 0;
 
+    // Start listening for mouse move events
+    // when the client emits 'mousemove', this listens and executes
+    socket.on('mousemove', function (data) {
+        socket.broadcast.emit('moving', data);
+    });
+
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
       // we tell the client to execute 'new message'

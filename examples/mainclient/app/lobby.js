@@ -32,6 +32,12 @@ $(function() {
      socket = require('socket.io-client')('http://localhost:3000/'+roomCode);
      console.log('try: %s', 'http://localhost:3000/'+roomCode);
      defineSocket();
+     log(roomCode, {
+       prepend: true
+     });
+     setTimeout(function(){
+         console.log("waiting");
+       }, 2000);
      setUsername();
   }
 
@@ -135,7 +141,9 @@ $(function() {
       $loginPage.fadeOut();
       $chatPage.show();
       $loginPage.off('click');
-      console.log("in set username");
+      setTimeout(function(){
+          console.log("waiting in set username");
+        }, 2000);
       // Tell the server your username
       socket.emit('add user', username);
     }
