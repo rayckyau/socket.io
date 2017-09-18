@@ -21,7 +21,7 @@ gulp.task('bundle', () => {
 });
 
 gulp.task('less', () => {
-  return gulp.src(srcDir.path('stylesheets/main.less'))
+  return gulp.src(srcDir.path('stylesheets/*.less'))
   .pipe(plumber())
   .pipe(less())
   .pipe(gulp.dest(destDir.path('stylesheets')));
