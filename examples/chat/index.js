@@ -5,8 +5,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 3000;
-var roomList = new ArrayList;
-var namespaces = new ArrayList;
+var roomList = new ArrayList();
+var namespaces = new ArrayList();
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
@@ -113,6 +113,6 @@ app.post('/createRoom', function (req, res) {
    res.end( JSON.stringify(roomCode));
    //else give error page
 
-})
+});
 
 // Chatroom
