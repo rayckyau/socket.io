@@ -6,17 +6,24 @@ const plumber = require('gulp-plumber');
 const jetpack = require('fs-jetpack');
 const bundle = require('./bundle');
 const utils = require('./utils');
-
+const babel = require('gulp-babel');
 const projectDir = jetpack;
 const srcDir = jetpack.cwd('./src');
 const destDir = jetpack.cwd('./app');
+
+gulp.task('babel', () =>
+    gulp.src('src/lobby.js')
+        .pipe(babel({
+            presets: ['env', 'react']
+        }))
+        .pipe(gulp.dest(destDir.path('')))
+);
 
 gulp.task('bundle', () => {
   return Promise.all([
     bundle(srcDir.path('background.js'), destDir.path('background.js')),
     bundle(srcDir.path('app.js'), destDir.path('app.js')),
     bundle(srcDir.path('main.js'), destDir.path('main.js')),
-    bundle(srcDir.path('lobby.js'), destDir.path('lobby.js')),
   ]);
 });
 
@@ -50,4 +57,4 @@ gulp.task('watch', () => {
   }));
 });
 
-gulp.task('build', ['bundle', 'less', 'environment']);
+gulp.task('build', ['babel', 'bundle', 'less', 'environment']);

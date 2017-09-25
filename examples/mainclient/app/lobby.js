@@ -1,13 +1,52 @@
-(function () {'use strict';
+'use strict';
 
-$(function() {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Hello = function (_React$Component) {
+  _inherits(Hello, _React$Component);
+
+  function Hello() {
+    _classCallCheck(this, Hello);
+
+    return _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).apply(this, arguments));
+  }
+
+  _createClass(Hello, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'h1',
+        null,
+        'Hello'
+      );
+    }
+  }]);
+
+  return Hello;
+}(_react2.default.Component);
+
+_reactDom2.default.render(_react2.default.createElement(Hello, null), document.getElementById('hello'));
+
+$(function () {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
-  var COLORS = [
-    '#e21400', '#91580f', '#f8a700', '#f78b00',
-    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-  ];
+  var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
 
   // Initialize variables
   var $window = $(window);
@@ -27,22 +66,21 @@ $(function() {
 
   var socket;
 
-
-  function connectToSocket(roomCode){
-     socket = require('socket.io-client')('http://localhost:3000/'+roomCode);
-     console.log('try: %s', 'http://localhost:3000/'+roomCode);
-     defineSocket();
-     log(roomCode, {
-       prepend: true
-     });
-     setTimeout(function(){
-         console.log("waiting");
-       }, 2000);
-     setUsername();
+  function connectToSocket(roomCode) {
+    socket = require('socket.io-client')('http://localhost:3000/' + roomCode);
+    console.log('try: %s', 'http://localhost:3000/' + roomCode);
+    defineSocket();
+    log(roomCode, {
+      prepend: true
+    });
+    setTimeout(function () {
+      console.log("waiting");
+    }, 2000);
+    setUsername();
   }
 
   // Socket events
-  function defineSocket(){
+  function defineSocket() {
     // Whenever the server emits 'login', log the login message
     socket.on('login', function (data) {
       connected = true;
@@ -98,31 +136,28 @@ $(function() {
     });
   }
 
-  function getRoomCode(){
+  function getRoomCode() {
     var rp = require('request-promise');
     var options = {
-        method: 'POST',
-        uri: 'http://localhost:3000/createRoom',
-        body: {
-            some: 'payload'
-        },
-        json: true // Automatically stringifies the body to JSON
+      method: 'POST',
+      uri: 'http://localhost:3000/createRoom',
+      body: {
+        some: 'payload'
+      },
+      json: true // Automatically stringifies the body to JSON
     };
     console.log('getroomcode');
-    rp(options)
-        .then(function (parsedBody) {
-            // POST succeeded...
-            console.log('room code: %s', parsedBody);
-            connectToSocket(parsedBody);
-        })
-        .catch(function (err) {
-            // POST failed...
-            console.log(err);
-        });
-
+    rp(options).then(function (parsedBody) {
+      // POST succeeded...
+      console.log('room code: %s', parsedBody);
+      connectToSocket(parsedBody);
+    }).catch(function (err) {
+      // POST failed...
+      console.log(err);
+    });
   }
 
-  function addParticipantsMessage (data) {
+  function addParticipantsMessage(data) {
     var message = '';
     if (data.numUsers === 1) {
       message += "there's 1 participant";
@@ -133,7 +168,7 @@ $(function() {
   }
 
   // Sets the client's username
-  function setUsername () {
+  function setUsername() {
     username = 'mainclient';
 
     // If the username is valid
@@ -141,22 +176,39 @@ $(function() {
       $loginPage.fadeOut();
       $chatPage.show();
       $loginPage.off('click');
-      setTimeout(function(){
-          console.log("waiting in set username");
-        }, 2000);
+      setTimeout(function () {
+        console.log("waiting in set username");
+      }, 2000);
       // Tell the server your username
       socket.emit('add user', username);
     }
   }
 
   // Sends a chat message
-  function log (message, options) {
+  function sendMessage() {
+    var message = $inputMessage.val();
+    // Prevent markup from being injected into the message
+    message = cleanInput(message);
+    // if there is a non-empty message and a socket connection
+    if (message && connected) {
+      $inputMessage.val('');
+      addChatMessage({
+        username: username,
+        message: message
+      });
+      // tell server to execute 'new message' and send along one parameter
+      socket.emit('new message', message);
+    }
+  }
+
+  // Log a message
+  function log(message, options) {
     var $el = $('<li>').addClass('log').text(message);
     addMessageElement($el, options);
   }
 
   // Adds the visual chat message to the message list
-  function addChatMessage (data, options) {
+  function addChatMessage(data, options) {
     // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
     options = options || {};
@@ -165,30 +217,24 @@ $(function() {
       $typingMessages.remove();
     }
 
-    var $usernameDiv = $('<span class="username"/>')
-      .text(data.username)
-      .css('color', getUsernameColor(data.username));
-    var $messageBodyDiv = $('<span class="messageBody">')
-      .text(data.message);
+    var $usernameDiv = $('<span class="username"/>').text(data.username).css('color', getUsernameColor(data.username));
+    var $messageBodyDiv = $('<span class="messageBody">').text(data.message);
 
     var typingClass = data.typing ? 'typing' : '';
-    var $messageDiv = $('<li class="message"/>')
-      .data('username', data.username)
-      .addClass(typingClass)
-      .append($usernameDiv, $messageBodyDiv);
+    var $messageDiv = $('<li class="message"/>').data('username', data.username).addClass(typingClass).append($usernameDiv, $messageBodyDiv);
 
     addMessageElement($messageDiv, options);
   }
 
   // Adds the visual chat typing message
-  function addChatTyping (data) {
+  function addChatTyping(data) {
     data.typing = true;
     data.message = 'is typing';
     addChatMessage(data);
   }
 
   // Removes the visual chat typing message
-  function removeChatTyping (data) {
+  function removeChatTyping(data) {
     getTypingMessages(data).fadeOut(function () {
       $(this).remove();
     });
@@ -199,7 +245,7 @@ $(function() {
   // options.fade - If the element should fade-in (default = true)
   // options.prepend - If the element should prepend
   //   all other messages (default = false)
-  function addMessageElement (el, options) {
+  function addMessageElement(el, options) {
     var $el = $(el);
 
     // Setup default options
@@ -226,18 +272,43 @@ $(function() {
   }
 
   // Prevents input from having injected markup
-  function getTypingMessages (data) {
+  function cleanInput(input) {
+    return $('<div/>').text(input).text();
+  }
+
+  // Updates the typing event
+  function updateTyping() {
+    if (connected) {
+      if (!typing) {
+        typing = true;
+        socket.emit('typing');
+      }
+      lastTypingTime = new Date().getTime();
+
+      setTimeout(function () {
+        var typingTimer = new Date().getTime();
+        var timeDiff = typingTimer - lastTypingTime;
+        if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
+          socket.emit('stop typing');
+          typing = false;
+        }
+      }, TYPING_TIMER_LENGTH);
+    }
+  }
+
+  // Gets the 'X is typing' messages of a user
+  function getTypingMessages(data) {
     return $('.typing.message').filter(function (i) {
       return $(this).data('username') === data.username;
     });
   }
 
   // Gets the color of a username through our hash function
-  function getUsernameColor (username) {
+  function getUsernameColor(username) {
     // Compute hash code
     var hash = 7;
     for (var i = 0; i < username.length; i++) {
-       hash = username.charCodeAt(i) + (hash << 5) - hash;
+      hash = username.charCodeAt(i) + (hash << 5) - hash;
     }
     // Calculate color
     var index = Math.abs(hash % COLORS.length);
@@ -245,9 +316,4 @@ $(function() {
   }
 
   getRoomCode();
-
-
 });
-
-}());
-//# sourceMappingURL=lobby.js.map
