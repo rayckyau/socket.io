@@ -170,7 +170,7 @@ $(function() {
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
     room = cleanInput($roomInput.val().trim()).toUpperCase();
-    // If the username is valid
+
     if (username) {
       $loginPage.fadeOut();
       $drawPage.show();
@@ -324,7 +324,6 @@ $(function() {
   }
 
   // Keyboard events
-
   $window.keydown(function (event) {
     // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
@@ -344,18 +343,6 @@ $(function() {
 
   $inputMessage.on('input', function() {
     updateTyping();
-  });
-
-  // Click events
-
-  // Focus input when clicking anywhere on login page
-  $loginPage.click(function () {
-    //$currentInput.focus();
-  });
-
-  // Focus input when clicking on the message input's border
-  $inputMessage.click(function () {
-    //$inputMessage.focus();
   });
 
   // Socket events
