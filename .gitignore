@@ -11,3 +11,8 @@ node_modules
 coverage
 .idea
 dist
+.*
+!/.gitignore
+!/examples/chat/public/index.html
+/examples/chat/public/*
+

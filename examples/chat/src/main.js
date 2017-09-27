@@ -168,8 +168,8 @@ $(function() {
 
   // Sets the client's username
   function setUsername () {
-    username = cleanInput($usernameInput.val().trim());
-    room = cleanInput($roomInput.val().trim()).toUpperCase();
+    var username = cleanInput($usernameInput.val().trim());
+    var room = cleanInput($roomInput.val().trim()).toUpperCase();
 
     if (username) {
       $loginPage.fadeOut();
