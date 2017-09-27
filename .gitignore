@@ -13,6 +13,8 @@ coverage
 dist
 .*
 !/.gitignore
+!/.babelrc
+!/.eslintrc
 !/examples/chat/public/index.html
 /examples/chat/public/*
 
