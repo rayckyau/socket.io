@@ -52,6 +52,48 @@ $(function() {
 
   var prev = {};
 
+  // Get the position of the mouse relative to the canvas
+  function getMousePos(canvasDom, mouseEvent) {
+    var rect = canvasDom.getBoundingClientRect();
+    return {
+      x: mouseEvent.clientX - rect.left,
+      y: mouseEvent.clientY - rect.top
+    };
+  }
+
+  // Get the position of a touch relative to the canvas
+  function getTouchPos(canvasDom, touchEvent) {
+    var rect = canvasDom.getBoundingClientRect();
+    return {
+      x: touchEvent.touches[0].clientX - rect.left,
+      y: touchEvent.touches[0].clientY - rect.top
+    };
+  }
+
+  canvas[0].addEventListener("touchstart", function (e) {
+        mousePos = getTouchPos(canvas[0], e);
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousedown", {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+          });
+          canvas[0].dispatchEvent(mouseEvent);
+        }, false);
+
+  canvas[0].addEventListener("touchend", function (e) {
+    var mouseEvent = new MouseEvent("mouseup", {});
+    canvas[0].dispatchEvent(mouseEvent);
+  }, false);
+
+  canvas[0].addEventListener("touchmove", function (e) {
+    var touch = e.touches[0];
+    var mouseEvent = new MouseEvent("mousemove", {
+      clientX: touch.clientX,
+      clientY: touch.clientY
+    });
+    canvas[0].dispatchEvent(mouseEvent);
+  }, false);
+
   canvas.on('mousedown',function(e){
       e.preventDefault();
       drawing = true;
@@ -62,14 +104,13 @@ $(function() {
       instructions.fadeOut();
   });
 
-  doc.bind('mouseup mouseleave',function(){
+  canvas.bind('mouseup mouseleave',function(){
       drawing = false;
   });
 
   var lastEmit = $.now();
 
-  doc.on('mousemove',function(e){
-
+  canvas.on('mousemove',function(e){
       if (socketReady){
         if($.now() - lastEmit > 30){
             socket.emit('mousemove',{
@@ -95,7 +136,7 @@ $(function() {
   // Remove inactive clients after 10 seconds of inactivity
   setInterval(function(){
 
-      for(ident in clients){
+      for(var ident in clients){
           if($.now() - clients[ident].updated > 10000){
 
               // Last update was more than 10 seconds ago.
@@ -128,17 +169,18 @@ $(function() {
   // Sets the client's username
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
-    room = cleanInput($roomInput.val().trim());
+    room = cleanInput($roomInput.val().trim()).toUpperCase();
     // If the username is valid
     if (username) {
       $loginPage.fadeOut();
       $drawPage.show();
       $loginPage.off('click');
       $currentInput = $inputMessage.focus();
-      socket = io('http://localhost:3000/'+room);
+      var url = 'http://'+ window.location.hostname + ':3000/';
+      socket = io(url+room);
       defineSocket();
       socketReady = true;
-      console.log('User try socket: %s', 'http://localhost:3000/'+room);
+      console.log('User try socket: %s', url+room);
       // Tell the server your username
       socket.emit('add user', username);
     }
