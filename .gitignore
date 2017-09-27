@@ -11,10 +11,9 @@ node_modules
 coverage
 .idea
 dist
-.*
+*.map
 !/.gitignore
 !/.babelrc
 !/.eslintrc
 !/examples/chat/public/index.html
 /examples/chat/public/*
-
