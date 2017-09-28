@@ -55,16 +55,7 @@ function startServer() {
 
 
 describe('GeneralServer:', function() {
-  before(function() {
-    console.log('start server');
-    //startServer();
-  });
 
-  after(function() {
-    console.log('kill server');
-    //mockserver.kill();
-    //shell.exec("kill -9 $(ps aux |grep '[n]ode index.js'|awk '{print $2}')");
-  });
   this.timeout(500);
   it('send a POST request to start a new room', function(done) {
     chai.request('localhost:3000')

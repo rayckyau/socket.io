@@ -4,20 +4,46 @@ import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import eslint from 'gulp-eslint';
 import exorcist from 'exorcist';
-import watchify from 'watchify';
 import babelify from 'babelify';
 import uglify from 'gulp-uglify';
 import ifElse from 'gulp-if-else';
 import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
 import less from 'gulp-less';
+import nodemon from 'gulp-nodemon';
+import mocha from 'gulp-mocha';
 
-watchify.args.debug = true;
+//watchify.args.debug = true;
 
 // Input file.
 var bundler = browserify('src/main.js', {
     extensions: ['.js', '.jsx'],
     debug: true
+});
+
+gulp.task('test', ['build'],   function () {
+  var childProc = nodemon({
+    script: 'index.js'
+  , ext: 'js html'
+  , env: { 'NODE_ENV': 'development' }
+  });
+
+  childProc.on('quit', function () {
+    console.log('event emitted, child process is being killed');
+  });
+
+  childProc.on('start', function () {
+      return gulp.src('./test/test.js')
+        .pipe(mocha())
+        .once('end', function () {
+          console.log('mocha stuff ended. time to kill processes');
+          childProc.emit('quit');
+          setTimeout(function () {
+            console.log('kill main process');
+            process.exit();
+          }, 1500);
+        });
+  });
 });
 
 gulp.task('less', () => {
