@@ -16,7 +16,7 @@ import mocha from 'gulp-mocha';
 //watchify.args.debug = true;
 
 // Input file.
-var bundler = browserify('src/main.js', {
+var bundler = browserify(['src/main.js', 'src/navi.js'], {
     extensions: ['.js', '.jsx'],
     debug: true
 });
