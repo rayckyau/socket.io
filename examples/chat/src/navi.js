@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 import React from 'react'
 import ReactDom from 'react-dom'
 import {
@@ -6,70 +8,149 @@ import {
   Link
 } from 'react-router-dom'
 
-const BasicExample = () => (
-  <Router>
-    <div>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/topics">Topics</Link></li>
-      </ul>
+class DrawCanvas extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      width: 268,
+      height: 340,
+      playerid: 'p1'
+    }
+  }
 
-      <hr/>
+  render() {
+    return (
+      <canvas id="paper" width={this.state.width} height={this.state.height}></canvas>
+    );
+  }
+}
 
-      <Route exact path="/" component={Home}/>
-      <Route path="/about" component={About}/>
-      <Route path="/topics" component={Topics}/>
-    </div>
-  </Router>
+function VoteItem(props) {
+    return (
+      <label className="btn btn-outline-primary">
+        <input className="vote" type="radio" value={props.value} onClick={props.onClick}/>
+        {props.value}
+      </label>
+    );
+  }
+
+class Vote extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      items: ['player1', 'player2', 'player3', 'player4', 'player5'],
+      yourPick: ''
+    }
+  }
+
+  handleClick(val) {
+    this.setState({yourPick: val})
+  }
+
+  voteList() {
+    return (
+        <div className="btn-group-vertical">
+          {this.state.items.map((item) =>
+            <VoteItem key={item.toString()}
+                      value={item}
+                      onClick={() => this.handleClick(item.toString())}/>
+          )}
+        </div>
+    );
+  }
+
+  render() {
+    const yourPick = this.state.yourPick;
+    return (
+        <div>
+          <b>{yourPick}</b>
+          {this.voteList()}
+        </div>
+    )
+  }
+
+}
+
+class TopNav extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      message: 'asd'
+    }
+  }
+
+  render(){
+    return (
+      <nav className="navbar navbar-light sticky-top bg-faded">
+        <div>{this.state.message}</div>
+      </nav>
+    )
+
+  }
+}
+
+class BotNav extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      buttonLabel: 'OK',
+      data: 'payload'
+    }
+  }
+
+  render(){
+    return (
+        <nav className="navbar navbar-light sticky-bottom bg-faded ">
+          <button className="btn btn-outline-success" type="button">{this.state.buttonLabel}</button>
+        </nav>
+    )
+
+  }
+}
+
+
+class PlayerPage extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      minigame: '0',
+      page: 'draw'
+    }
+  }
+
+  displayPage(page){
+    if (page == 'vote'){
+      return (
+        <Vote/>
+      )
+    }
+    else if (page == 'draw'){
+      return (
+        <DrawCanvas/>
+      )
+    }
+    else{
+      return (
+        <div>No page state detected!</div>
+      )
+    }
+  }
+
+  render(){
+    return (
+        <div className="container-fluid">
+          <TopNav />
+            <div className="mx-auto d-block">
+              {this.displayPage(this.state.page)}
+            </div>
+          <BotNav />
+        </div>
+    )
+
+  }
+}
+
+ReactDOM.render(
+  <PlayerPage />,
+  document.getElementById('root')
 )
-
-const Home = () => (
-  <div>
-    <h2>Home</h2>
-  </div>
-)
-
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
-)
-
-const Topics = ({ match }) => (
-  <div>
-    <h2>Topics</h2>
-    <ul>
-      <li>
-        <Link to={`${match.url}/rendering`}>
-          Rendering with React
-        </Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/components`}>
-          Components
-        </Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/props-v-state`}>
-          Props v. State
-        </Link>
-      </li>
-    </ul>
-
-    <Route path={`${match.url}/:topicId`} component={Topic}/>
-    <Route exact path={match.url} render={() => (
-      <h3>Please select a topic.</h3>
-    )}/>
-  </div>
-)
-
-const Topic = ({ match }) => (
-  <div>
-    <h3>{match.params.topicId}</h3>
-  </div>
-)
-
-ReactDOM.render((
-    <BasicExample />
-), document.getElementById('root'))
