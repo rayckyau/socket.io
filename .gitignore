@@ -17,3 +17,6 @@ dist
 !/.eslintrc
 !/examples/chat/public/index.html
 /examples/chat/public/*
+/examples/mainclient/app/*
+!/examples/mainclient/app/lobby.html
+

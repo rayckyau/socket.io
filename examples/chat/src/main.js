@@ -99,10 +99,13 @@
 
     drawcanvas.on('mousemove', function(e) {
       if (socketReady) {
+        let offset = drawcanvas[0].getBoundingClientRect();
+        const xcord = e.pageX - offset.left;
+        const ycord = e.pageY- offset.top;
         if ($.now() - lastEmit > 30) {
           socket.emit('mousemove', {
-            'x': e.pageX,
-            'y': e.pageY,
+            'x': xcord,
+            'y': ycord,
             'drawing': drawing,
             'id': id
           });
@@ -111,9 +114,6 @@
         // Draw a line for the current user's movement, as it is
         // not received in the socket.on('moving') event above
         if (drawing) {
-          let offset = drawcanvas[0].getBoundingClientRect();
-          const xcord = e.pageX - offset.left;
-          const ycord = e.pageY- offset.top;
           drawLine(prev.x, prev.y, xcord, ycord);
           prev.x = xcord;
           prev.y = ycord;

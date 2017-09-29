@@ -5,7 +5,39 @@ import ReactDOM from 'react-dom';
 
 class Hello extends React.Component {
   render() {
-    return (<h1>Hello</h1>);
+    return (
+      <div>
+      <div className="row">
+        <div className="col-sm-3">
+          <canvas id="canvas-p1" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p2" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p3" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p4" width="268" height="340"></canvas>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-sm-3">
+          <canvas id="canvas-p5" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p6" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p7" width="268" height="340"></canvas>
+        </div>
+        <div className="col-sm-3">
+          <canvas id="canvas-p8" width="268" height="340"></canvas>
+        </div>
+      </div>
+      </div>
+    );
   }
 }
 
@@ -36,7 +68,19 @@ $(function() {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
+  let clients = {};
+  let cursors = {};
+
   var socket;
+
+  const drawcanvas = $('#canvas-p1');
+  const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+
+  function drawLine(fromx, fromy, tox, toy, context) {
+    context.moveTo(fromx, fromy);
+    context.lineTo(tox, toy);
+    context.stroke();
+  }
 
   function connectToSocket(roomCode){
      socket = require('socket.io-client')('http://localhost:3000/'+roomCode);
@@ -62,6 +106,28 @@ $(function() {
         prepend: true
       });
       addParticipantsMessage(data);
+    });
+
+    socket.on('moving', function(data) {
+
+      if (!(data.id in clients)) {
+        // a new user has come online. create a cursor for them
+        cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
+      }
+      // Move the mouse pointer
+      cursors[data.id].css({
+        'left': data.x,
+        'top': data.y
+      });
+      // Is the user drawing?
+      if (data.drawing && clients[data.id]) {
+        // Draw a line on the canvas. clients[data.id] holds
+        // the previous position of this user's mouse pointer
+        drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, ctxdrawcanvas);
+      }
+      // Saving the current client state
+      clients[data.id] = data;
+      clients[data.id].updated = $.now();
     });
 
     // Whenever the server emits 'new message', update the chat body

@@ -2,30 +2,38 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Electron Boilerplate</title>
+  <title>HappyDraw</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="stylesheets/style.css">
 </head>
 <body>
-
   <ul class="pages">
     <li class="chat page">
       <div class="chatArea">
         <ul class="messages"></ul>
       </div>
+      <div class="container">
+        <div id="hello"></div>
+      </div>
     </li>
     <li class="login page">
-      <div id="hello"></div>
       <div class="form">
         <h3 class="title">What's your nickname?</h3>
-        <input class="usernameInput" type="text" maxlength="14" style="text-transform:uppercase"/>
+        <input class="usernameInput" type="text" maxlength="14" />
       </div>
     </li>
   </ul>
 
-  <script>window.$ = window.jQuery = require('jquery');</script>
-  <script>require('socket.io');</script>
-  <script src="app.js"></script>
-  <script src="lobby.js"></script>
+
+<script>window.$ = window.jQuery = require('jquery');</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react-dom.min.js"></script>
+<script>require('socket.io');</script>
+<script src="app.js"></script>
+<script src="lobby.js"></script>
 </body>
 </html>
