@@ -8,6 +8,7 @@ import {
   Link,
   withRouter
 } from 'react-router-dom'
+import {TestLayout, MiniGameOneLayout} from './minigameone'
 
 class Hello extends React.Component {
 
@@ -75,12 +76,12 @@ class MainFrame extends React.Component {
 
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About</Link></li>
+            <li><Link to="/minigameone">minigameone</Link></li>
             <li><Link to="/topics">Topics</Link></li>
           </ul>
 
             <Route exact path="/" component={Hello}/>
-            <Route path="/about" component={minigameone.MiniGameOneLayout}/>
+            <Route path="/minigameone" component={MiniGameOneLayout}/>
 
           </div>
         </Router>

@@ -1,3 +1,14 @@
+import * as ReactRedux from 'react-redux';
+import * as Redux from 'redux';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  withRouter
+} from 'react-router-dom'
+
 //TIMER OBJ
 // Action Creators
 function startTimer(baseTime) {
@@ -271,9 +282,17 @@ function OverlayWords(props) {
   );
 }
 //END OVERLAY REACT
-
+export class TestLayout extends React.Component {
+  render() {
+    return (
+      <div>
+      testlayout
+      </div>
+    );
+  }
+}
 //MINIGAME LAYOUT
-class MiniGameOneLayout extends React.Component {
+export class MiniGameOneLayout extends React.Component {
   render() {
     return (
       <div className="container-fluid">
@@ -325,11 +344,12 @@ function closeNav() {
     document.getElementById("myNav").style.height = "0%";
 }
 
+/*
 ReactDOM.render(
   <MiniGameOneLayout />,
   document.getElementById('minigameonelayout')
 );
-
+*/
 /*
 openNav();
 setTimeout(function () {
