@@ -2,12 +2,29 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  withRouter
+} from 'react-router-dom'
 
 class Hello extends React.Component {
+
+  //function that is called when admin starts game
+  startGame(){
+    //
+    this.props.history.push('/about');
+  }
+
   render() {
     return (
       <div>
+      <button type="button" onClick={() => this.startGame()}>but</button>
       <div className="row">
+        <div className="col-sm-3">
+          <canvas id="canvas-p0" width="268" height="340"></canvas>
+        </div>
         <div className="col-sm-3">
           <canvas id="canvas-p1" width="268" height="340"></canvas>
         </div>
@@ -17,12 +34,12 @@ class Hello extends React.Component {
         <div className="col-sm-3">
           <canvas id="canvas-p3" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
-          <canvas id="canvas-p4" width="268" height="340"></canvas>
-        </div>
       </div>
 
       <div className="row">
+        <div className="col-sm-3">
+          <canvas id="canvas-p4" width="268" height="340"></canvas>
+        </div>
         <div className="col-sm-3">
           <canvas id="canvas-p5" width="268" height="340"></canvas>
         </div>
@@ -32,16 +49,46 @@ class Hello extends React.Component {
         <div className="col-sm-3">
           <canvas id="canvas-p7" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
-          <canvas id="canvas-p8" width="268" height="340"></canvas>
-        </div>
       </div>
       </div>
     );
   }
 }
 
-ReactDOM.render(<Hello/>, document.getElementById('hello'));
+class About extends React.Component {
+  render() {
+    return (
+      <div>
+      About page
+      </div>
+    );
+  }
+}
+
+class MainFrame extends React.Component {
+
+  render() {
+
+    return (
+      <Router>
+        <div>
+
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/about">About</Link></li>
+            <li><Link to="/topics">Topics</Link></li>
+          </ul>
+
+            <Route exact path="/" component={Hello}/>
+            <Route path="/about" component={minigameone.MiniGameOneLayout}/>
+
+          </div>
+        </Router>
+    );
+  }
+}
+
+ReactDOM.render(<MainFrame />, document.getElementById('mainframe'));
 
 $(function() {
   var FADE_TIME = 150; // ms
@@ -70,16 +117,16 @@ $(function() {
 
   let clients = {};
   let cursors = {};
+  let clientdict = {};
 
   var socket;
 
-  const drawcanvas = $('#canvas-p1');
-  const ctxdrawcanvas = drawcanvas[0].getContext('2d');
-
-  function drawLine(fromx, fromy, tox, toy, context) {
-    context.moveTo(fromx, fromy);
-    context.lineTo(tox, toy);
-    context.stroke();
+  function drawLine(fromx, fromy, tox, toy, playerid) {
+    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+    const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.moveTo(fromx, fromy);
+    ctxdrawcanvas.lineTo(tox, toy);
+    ctxdrawcanvas.stroke();
   }
 
   function connectToSocket(roomCode){
@@ -100,16 +147,9 @@ $(function() {
     // Whenever the server emits 'login', log the login message
     socket.on('login', function (data) {
       connected = true;
-      // Display the welcome message
-      var message = "Welcome to Socket.IO Chat – ";
-      log(message, {
-        prepend: true
-      });
-      addParticipantsMessage(data);
     });
 
     socket.on('moving', function(data) {
-
       if (!(data.id in clients)) {
         // a new user has come online. create a cursor for them
         cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
@@ -123,7 +163,7 @@ $(function() {
       if (data.drawing && clients[data.id]) {
         // Draw a line on the canvas. clients[data.id] holds
         // the previous position of this user's mouse pointer
-        drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, ctxdrawcanvas);
+        drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
       }
       // Saving the current client state
       clients[data.id] = data;
@@ -137,12 +177,23 @@ $(function() {
 
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', function (data) {
+      //TODO: add a player canvas
+      if (data.username != 'mainclient'){
+        let canvasnum = Object.keys(clientdict).length;
+        const playerobj = {};
+        playerobj["username"] = data.username;
+        playerobj["isadmin"] = false;
+        playerobj["canvasid"] = 'canvas-p'+canvasnum;
+        playerobj["socketid"] = data.id;
+        clientdict[data.id] = playerobj;
+      }
       log(data.username + ' joined');
       addParticipantsMessage(data);
     });
 
     // Whenever the server emits 'user left', log it in the chat body
     socket.on('user left', function (data) {
+      //TODO: remove player from dict
       log(data.username + ' left');
       addParticipantsMessage(data);
       removeChatTyping(data);

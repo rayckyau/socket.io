@@ -12,9 +12,10 @@ const srcDir = jetpack.cwd('./src');
 const destDir = jetpack.cwd('./app');
 
 gulp.task('babel', () =>
-    gulp.src('src/lobby.js')
+    gulp.src(['src/lobby.js', 'src/minigameone.js'])
         .pipe(babel({
-            presets: ['env', 'react']
+            presets: ['env', 'react'],
+            plugins: ['transform-object-rest-spread','transform-object-spread-inline']
         }))
         .pipe(gulp.dest(destDir.path('')))
 );

@@ -10,6 +10,8 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _reactRouterDom = require('react-router-dom');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17,6 +19,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*jshint esversion: 6 */
+
+var minigameone = require('minigameone');
 
 var Hello = function (_React$Component) {
   _inherits(Hello, _React$Component);
@@ -28,12 +32,77 @@ var Hello = function (_React$Component) {
   }
 
   _createClass(Hello, [{
+    key: 'startGame',
+
+
+    //function that is called when admin starts game
+    value: function startGame() {
+      //
+      this.props.history.push('/about');
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
-        'h1',
+        'div',
         null,
-        'Hello'
+        _react2.default.createElement(
+          'button',
+          { type: 'button', onClick: function onClick() {
+              return _this2.startGame();
+            } },
+          'but'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-3' },
+            _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' })
+          )
+        )
       );
     }
   }]);
@@ -41,7 +110,90 @@ var Hello = function (_React$Component) {
   return Hello;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(Hello, null), document.getElementById('hello'));
+var About = function (_React$Component2) {
+  _inherits(About, _React$Component2);
+
+  function About() {
+    _classCallCheck(this, About);
+
+    return _possibleConstructorReturn(this, (About.__proto__ || Object.getPrototypeOf(About)).apply(this, arguments));
+  }
+
+  _createClass(About, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        'About page'
+      );
+    }
+  }]);
+
+  return About;
+}(_react2.default.Component);
+
+var MainFrame = function (_React$Component3) {
+  _inherits(MainFrame, _React$Component3);
+
+  function MainFrame() {
+    _classCallCheck(this, MainFrame);
+
+    return _possibleConstructorReturn(this, (MainFrame.__proto__ || Object.getPrototypeOf(MainFrame)).apply(this, arguments));
+  }
+
+  _createClass(MainFrame, [{
+    key: 'render',
+    value: function render() {
+
+      return _react2.default.createElement(
+        _reactRouterDom.BrowserRouter,
+        null,
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'ul',
+            null,
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: '/' },
+                'Home'
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: '/about' },
+                'About'
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: '/topics' },
+                'Topics'
+              )
+            )
+          ),
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: Hello }),
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/about', component: minigameone.MiniGameOneLayout })
+        )
+      );
+    }
+  }]);
+
+  return MainFrame;
+}(_react2.default.Component);
+
+_reactDom2.default.render(_react2.default.createElement(MainFrame, null), document.getElementById('mainframe'));
 
 $(function () {
   var FADE_TIME = 150; // ms
@@ -64,7 +216,19 @@ $(function () {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
+  var clients = {};
+  var cursors = {};
+  var clientdict = {};
+
   var socket;
+
+  function drawLine(fromx, fromy, tox, toy, playerid) {
+    var drawcanvas = $('#' + clientdict[playerid].canvasid);
+    var ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.moveTo(fromx, fromy);
+    ctxdrawcanvas.lineTo(tox, toy);
+    ctxdrawcanvas.stroke();
+  }
 
   function connectToSocket(roomCode) {
     socket = require('socket.io-client')('http://localhost:3000/' + roomCode);
@@ -84,12 +248,27 @@ $(function () {
     // Whenever the server emits 'login', log the login message
     socket.on('login', function (data) {
       connected = true;
-      // Display the welcome message
-      var message = "Welcome to Socket.IO Chat – ";
-      log(message, {
-        prepend: true
+    });
+
+    socket.on('moving', function (data) {
+      if (!(data.id in clients)) {
+        // a new user has come online. create a cursor for them
+        cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
+      }
+      // Move the mouse pointer
+      cursors[data.id].css({
+        'left': data.x,
+        'top': data.y
       });
-      addParticipantsMessage(data);
+      // Is the user drawing?
+      if (data.drawing && clients[data.id]) {
+        // Draw a line on the canvas. clients[data.id] holds
+        // the previous position of this user's mouse pointer
+        drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+      }
+      // Saving the current client state
+      clients[data.id] = data;
+      clients[data.id].updated = $.now();
     });
 
     // Whenever the server emits 'new message', update the chat body
@@ -99,12 +278,23 @@ $(function () {
 
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', function (data) {
+      //TODO: add a player canvas
+      if (data.username != 'mainclient') {
+        var canvasnum = Object.keys(clientdict).length;
+        var playerobj = {};
+        playerobj["username"] = data.username;
+        playerobj["isadmin"] = false;
+        playerobj["canvasid"] = 'canvas-p' + canvasnum;
+        playerobj["socketid"] = data.id;
+        clientdict[data.id] = playerobj;
+      }
       log(data.username + ' joined');
       addParticipantsMessage(data);
     });
 
     // Whenever the server emits 'user left', log it in the chat body
     socket.on('user left', function (data) {
+      //TODO: remove player from dict
       log(data.username + ' left');
       addParticipantsMessage(data);
       removeChatTyping(data);

@@ -1,4 +1,5 @@
 /*jshint esversion: 6 */
+import io from 'socket.io-client';
 
   $(function () {
     const FADE_TIME = 150; // ms
@@ -19,13 +20,16 @@
 
     // Prompt for setting a username
     var username;
+    var room;
     let connected = false;
     let typing = false;
     var $currentInput = $usernameInput.focus();
     let socketReady = false;
 
-    var socket;
+    let socket;
     var drawObj;
+
+    let mainclientid;
 
     // This demo depends on the canvas element
     if (!('getContext' in document.createElement('canvas'))) {
@@ -103,11 +107,14 @@
         const xcord = e.pageX - offset.left;
         const ycord = e.pageY- offset.top;
         if ($.now() - lastEmit > 30) {
+          let socketid = socket.id;
+          console.log(mainclientid);
+
           socket.emit('mousemove', {
             'x': xcord,
             'y': ycord,
             'drawing': drawing,
-            'id': id
+            'id': socketid
           });
           lastEmit = $.now();
         }
@@ -148,8 +155,8 @@
     // Sets the client's username
     function setUsername() {
       var username = cleanInput($usernameInput.val().trim());
-      var room = cleanInput($roomInput.val().trim()).toUpperCase();
-
+      let roomcodeclean = cleanInput($roomInput.val().trim()).toUpperCase();
+      room = roomcodeclean;
       if (username) {
         $loginPage.fadeOut();
         $drawPage.show();
@@ -204,6 +211,9 @@
       // Whenever the server emits 'login', log the login message
       socket.on('login', function(data) {
         connected = true;
+        console.log(data);
+        //store mainclient id
+        mainclientid = data.mainclient;
       });
 
       socket.on('moving', function(data) {

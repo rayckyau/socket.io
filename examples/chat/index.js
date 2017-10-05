@@ -8,6 +8,9 @@ var port = process.env.PORT || 3000;
 var roomList = new ArrayList();
 var namespaces = new ArrayList();
 
+let roommainclientdict = {};
+let mainclientid;
+
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
@@ -50,18 +53,26 @@ function initRoomNS(roomCode){
     socket.on('add user', function (username) {
       console.log('User connect: %s', username);
       if (addedUser) return;
-
+      if (username == 'mainclient'){
+        console.log('mainclient joined with id: '+ socket.id);
+        mainclientid = socket.id;
+      }
       // we store the username in the socket session for this client
       socket.username = username;
       ++numUsers;
       addedUser = true;
+      let socketid = socket.id;
       socket.emit('login', {
-        numUsers: numUsers
+        numUsers: numUsers,
+        id: socketid,
+        mainclient: mainclientid
       });
       // echo globally (all clients) that a person has connected
       socket.broadcast.emit('user joined', {
         username: socket.username,
-        numUsers: numUsers
+        numUsers: numUsers,
+        id: socket.id,
+        mainclient: mainclientid
       });
     });
 
