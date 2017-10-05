@@ -169,8 +169,8 @@ var MainFrame = function (_React$Component3) {
               null,
               _react2.default.createElement(
                 _reactRouterDom.Link,
-                { to: '/about' },
-                'About'
+                { to: '/minigameone' },
+                'minigameone'
               )
             ),
             _react2.default.createElement(
@@ -184,7 +184,7 @@ var MainFrame = function (_React$Component3) {
             )
           ),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: Hello }),
-          _react2.default.createElement(_reactRouterDom.Route, { path: '/about', component: _minigameone.MiniGameOneLayout })
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
         )
       );
     }

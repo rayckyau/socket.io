@@ -98,10 +98,18 @@ class BotNav extends React.Component {
     }
   }
 
+  clickButton(){
+    //send ok to socket
+    socket.emit('sendbutton', {
+      'player': mainclientid,
+      'data': this.state.data
+    });
+  }
+
   render(){
     return (
         <nav className="navbar navbar-light sticky-bottom bg-faded ">
-          <button className="btn btn-outline-success" type="button">{this.state.buttonLabel}</button>
+          <button className="btn btn-outline-success" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
         </nav>
     )
 

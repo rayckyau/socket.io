@@ -6,7 +6,7 @@ var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 3000;
 var roomList = new ArrayList();
-var namespaces = new ArrayList();
+var namespaces = {};
 
 let roommainclientdict = {};
 let mainclientid;
@@ -35,9 +35,15 @@ function initRoomNS(roomCode){
     var numUsers = 0;
 
     // Start listening for mouse move events
+    socket.on('sendbutton', function (data) {
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('sendbutton', data);
+    });
+
     // when the client emits 'mousemove', this listens and executes
     socket.on('mousemove', function (data) {
-        socket.broadcast.emit('moving', data);
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('moving', data);
     });
 
     // when the client emits 'new message', this listens and executes
@@ -55,7 +61,8 @@ function initRoomNS(roomCode){
       if (addedUser) return;
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
-        mainclientid = socket.id;
+        namespaces[roomCode] = socket.id;
+        //register roomcode with socketid, tuple pair for redis/db
       }
       // we store the username in the socket session for this client
       socket.username = username;
@@ -72,7 +79,6 @@ function initRoomNS(roomCode){
         username: socket.username,
         numUsers: numUsers,
         id: socket.id,
-        mainclient: mainclientid
       });
     });
 
