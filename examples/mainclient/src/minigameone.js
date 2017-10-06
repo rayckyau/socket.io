@@ -94,11 +94,11 @@ class Timer extends React.Component {
       //alert(mystate.loopcounter);
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(startTimer(5));
+          storeTimer.dispatch(startTimer(60));
           storeGame.dispatch(startDiscuss());
       }
       else if (mystate.gamestate ==  "DISCUSS"){
-          storeTimer.dispatch(startTimer(5));
+          storeTimer.dispatch(startTimer(60));
           if (mystate.loopcounter == 2){
             storeGame.dispatch(startVote());
           }
@@ -132,9 +132,9 @@ class Timer extends React.Component {
       <div>
         <div>Time: {this.checkStop(Math.round(elapsed))}</div>
         <div>
-          <button onClick={() => storeTimer.dispatch(startTimer(5))}>start</button>
+          <button onClick={() => storeTimer.dispatch(startTimer(60))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
-          <button onClick={() => storeTimer.dispatch(resetTimer(5))}>res</button>
+          <button onClick={() => storeTimer.dispatch(resetTimer(60))}>res</button>
         </div>
       </div>
     );
@@ -372,3 +372,7 @@ setTimeout(function () {
   storeTimer.dispatch(startTimer(5));
 }, 2000);
 */
+setTimeout(function () {
+  storeGame.dispatch(startDraw());
+  storeTimer.dispatch(startTimer(60));
+}, 2000);

@@ -7,6 +7,8 @@ import {
   Route,
   Link
 } from 'react-router-dom'
+import * as ReactRedux from 'react-redux';
+import * as Redux from 'redux';
 
 class DrawCanvas extends React.Component {
   constructor(props) {
@@ -105,6 +107,8 @@ class BotNav extends React.Component {
 
   clickButton(){
     submitSend();
+    //change state to msg mode
+    storePlayer.dispatch(changeModeMsg('my message'));
   }
 
   render(){
@@ -127,20 +131,20 @@ class PlayerPage extends React.Component {
     }
   }
 
-  displayPage(page){
-    if (page == 'vote'){
+  displayPage(props){
+    if (props.mode == 'vote'){
       return (
         <Vote/>
       )
     }
-    else if (page == 'draw'){
+    else if (props.mode == 'draw'){
       return (
         <DrawCanvas/>
       )
     }
     else{
       return (
-        <div>No page state detected!</div>
+        <div>{props.message}</div>
       )
     }
   }
@@ -150,7 +154,7 @@ class PlayerPage extends React.Component {
         <div className="container-fluid">
           <TopNav />
             <div className="mx-auto d-block">
-              {this.displayPage(this.state.page)}
+              {this.displayPage(this.props)}
             </div>
           <BotNav />
         </div>
@@ -159,7 +163,85 @@ class PlayerPage extends React.Component {
   }
 }
 
+const initialPlayerState = {
+  mode: "draw",
+  admin: false,
+  message: "hello world"
+};
+
+//action creator
+function changeModeDraw(msg) {
+  return {
+    type: "DRAW",
+    mode: 'draw',
+    message: msg
+  };
+}
+function changeModeVote(msg) {
+  return {
+    type: "VOTE",
+    mode: 'vote',
+    message: msg
+  };
+}
+function changeModeMsg(msg) {
+  return {
+    type: "MESSAGE",
+    mode: 'msg',
+    message: msg
+  };
+}
+
+//reducer
+function playerpagereducer(state = initialPlayerState, action) {
+  switch (action.type) {
+    case "DRAW":
+      return {
+        ...state,
+        //set new state
+        mode: action.mode,
+        admin: state.admin,
+        message: action.message
+      };
+    case "VOTE":
+      return {
+        ...state,
+        //set new state
+        mode: action.mode,
+        admin: state.admin,
+        message: action.message
+      };
+      case "MESSAGE":
+        return {
+          ...state,
+          //set new state
+          mode: action.mode,
+          admin: state.admin,
+          message: action.message
+        };
+    default:
+      return state;
+  }
+}
+
+function mapStateToPropsPlayerPage(state) {
+  return { mode: state.mode,
+           admin: state.admin,
+           message: state.message
+         };
+}
+//END MINIGAME REDUX
+
+//bind state to props
+PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw })(PlayerPage);
+
+//add reducers to store
+//const rootReducer = combineReducers({timerreducer, minigameonereducer});
+const storePlayer = Redux.createStore(playerpagereducer);
+
 ReactDOM.render(
-  <PlayerPage />,
+  <ReactRedux.Provider store={storePlayer}>
+    <PlayerPage />
+  </ReactRedux.Provider>  ,
   document.getElementById('root')
 )

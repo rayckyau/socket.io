@@ -108,7 +108,6 @@ import io from 'socket.io-client';
         const ycord = e.pageY- offset.top;
         if ($.now() - lastEmit > 30) {
           let socketid = drawsocket.id;
-          console.log(mainclientid);
 
           drawsocket.emit('mousemove', {
             'x': xcord,
