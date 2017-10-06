@@ -66,6 +66,7 @@ var LobbyScreen = function (_React$Component) {
       //
       if (this.props.game == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
+          $.callstatechangeall('draw');
           this.props.history.push('/minigameone');
         }
       } else {
@@ -294,6 +295,15 @@ $(function () {
   var clientdict = {};
 
   var socket;
+
+  //helper socket functions
+  $.callstatechangeall = function (mode) {
+    console.log("try to emit changestateall");
+    socket.emit('changestateall', {
+      state: mode,
+      message: 'draw stff'
+    });
+  };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
     var drawcanvas = $('#' + clientdict[playerid].canvasid);

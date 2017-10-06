@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 import io from 'socket.io-client';
+import * as navi from './navi';
 
   $(function () {
     const FADE_TIME = 150; // ms
@@ -37,11 +38,9 @@ import io from 'socket.io-client';
       return false;
     }
 
-    const doc = $(document),
-      win = $(window),
+    let doc = $(document),
       drawcanvas = $('#paper'),
-      ctx = drawcanvas[0].getContext('2d'),
-      instructions = $('#instructions');
+      ctx = drawcanvas[0].getContext('2d')
 
     // Generate an unique ID
     let id = Math.round($.now() * Math.random());
@@ -54,6 +53,78 @@ import io from 'socket.io-client';
 
     let prev = {};
 
+    //init canvas bindings
+    //TODO: investigate mem leak on killing canvases??
+    setupDrawCanvasListeners();
+
+    function setupDrawCanvasListeners(){
+      drawcanvas[0].addEventListener("touchstart", function(e) {
+        mousePos = getTouchPos(drawcanvas[0], e);
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousedown", {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        drawcanvas[0].dispatchEvent(mouseEvent);
+      }, false);
+
+      drawcanvas[0].addEventListener("touchend", function(e) {
+        var mouseEvent = new MouseEvent("mouseup", {});
+        drawcanvas[0].dispatchEvent(mouseEvent);
+      }, false);
+
+      drawcanvas[0].addEventListener("touchmove", function(e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent("mousemove", {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        drawcanvas[0].dispatchEvent(mouseEvent);
+      }, false);
+
+      drawcanvas.on('mousedown', function(e) {
+        e.preventDefault();
+        ctx = $('#paper')[0].getContext('2d');
+        console.log('draw true'+ctx);
+        drawing = true;
+        let offset = drawcanvas[0].getBoundingClientRect();
+        prev.x = e.pageX - offset.left;
+        prev.y = e.pageY - offset.top;
+      });
+
+      drawcanvas.bind('mouseup mouseleave', function() {
+        drawing = false;
+      });
+
+      var lastEmit = $.now();
+
+      drawcanvas.on('mousemove', function(e) {
+        if (socketReady) {
+          let offset = drawcanvas[0].getBoundingClientRect();
+          const xcord = e.pageX - offset.left;
+          const ycord = e.pageY- offset.top;
+          if ($.now() - lastEmit > 30) {
+            let socketid = drawsocket.id;
+
+            drawsocket.emit('mousemove', {
+              'x': xcord,
+              'y': ycord,
+              'drawing': drawing,
+              'id': socketid
+            });
+            lastEmit = $.now();
+          }
+          // Draw a line for the current user's movement, as it is
+          // not received in the socket.on('moving') event above
+          if (drawing) {
+            drawLine(prev.x, prev.y, xcord, ycord);
+            prev.x = xcord;
+            prev.y = ycord;
+
+          }
+        }
+      });
+    }
     // Get the position of a touch relative to the canvas
     function getTouchPos(canvasDom, touchEvent) {
       let offset = drawcanvas[0].getBoundingClientRect();
@@ -63,70 +134,7 @@ import io from 'socket.io-client';
       };
     }
 
-    drawcanvas[0].addEventListener("touchstart", function(e) {
-      mousePos = getTouchPos(drawcanvas[0], e);
-      var touch = e.touches[0];
-      var mouseEvent = new MouseEvent("mousedown", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-      });
-      drawcanvas[0].dispatchEvent(mouseEvent);
-    }, false);
 
-    drawcanvas[0].addEventListener("touchend", function(e) {
-      var mouseEvent = new MouseEvent("mouseup", {});
-      drawcanvas[0].dispatchEvent(mouseEvent);
-    }, false);
-
-    drawcanvas[0].addEventListener("touchmove", function(e) {
-      var touch = e.touches[0];
-      var mouseEvent = new MouseEvent("mousemove", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-      });
-      drawcanvas[0].dispatchEvent(mouseEvent);
-    }, false);
-
-    drawcanvas.on('mousedown', function(e) {
-      e.preventDefault();
-      drawing = true;
-      let offset = drawcanvas[0].getBoundingClientRect();
-      prev.x = e.pageX - offset.left;
-      prev.y = e.pageY - offset.top;
-    });
-
-    drawcanvas.bind('mouseup mouseleave', function() {
-      drawing = false;
-    });
-
-    var lastEmit = $.now();
-
-    drawcanvas.on('mousemove', function(e) {
-      if (socketReady) {
-        let offset = drawcanvas[0].getBoundingClientRect();
-        const xcord = e.pageX - offset.left;
-        const ycord = e.pageY- offset.top;
-        if ($.now() - lastEmit > 30) {
-          let socketid = drawsocket.id;
-
-          drawsocket.emit('mousemove', {
-            'x': xcord,
-            'y': ycord,
-            'drawing': drawing,
-            'id': socketid
-          });
-          lastEmit = $.now();
-        }
-        // Draw a line for the current user's movement, as it is
-        // not received in the socket.on('moving') event above
-        if (drawing) {
-          drawLine(prev.x, prev.y, xcord, ycord);
-          prev.x = xcord;
-          prev.y = ycord;
-
-        }
-      }
-    });
 
     // Remove inactive clients after 10 seconds of inactivity
     setInterval(function() {
@@ -150,6 +158,12 @@ import io from 'socket.io-client';
       ctx.lineTo(tox, toy);
       ctx.stroke();
     }
+
+    $.mountCanvas = function(){
+      drawcanvas = $('#paper');
+      setupDrawCanvasListeners();
+      console.log("in mount canvas: "+drawcanvas);
+    };
 
     $.subSend = function(){
       drawsocket.emit('sendbutton', {
@@ -242,6 +256,12 @@ import io from 'socket.io-client';
         // Saving the current client state
         clients[data.id] = data;
         clients[data.id].updated = $.now();
+      });
+
+      drawsocket.on('changestateall', function(data) {
+        console.log(data.username + ' joined');
+        navi.changePlayerState(data.state, data.message);
+
       });
 
       // Whenever the server emits 'user joined', log it in the chat body

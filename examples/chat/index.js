@@ -35,7 +35,10 @@ function initRoomNS(roomCode){
     var addedUser = false;
     var numUsers = 0;
 
-    // Start listening for mouse move events
+    socket.on('changestateall', function (data) {
+        socket.broadcast.emit('changestateall', data);
+    });
+
     socket.on('sendbutton', function (data) {
         console.log('received: sendbutton');
         let mainclient = namespaces[roomCode];

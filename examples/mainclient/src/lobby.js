@@ -13,7 +13,6 @@ import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 
 
-
 class LobbyScreen extends React.Component {
   constructor(props){
     super(props);
@@ -31,6 +30,7 @@ class LobbyScreen extends React.Component {
     //
     if (this.props.game == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
+        $.callstatechangeall('draw');
         this.props.history.push('/minigameone');
       }
 
@@ -194,6 +194,15 @@ $(function() {
   let clientdict = {};
 
   var socket;
+
+  //helper socket functions
+  $.callstatechangeall = function(mode){
+    console.log("try to emit changestateall");
+    socket.emit('changestateall',{
+      state: mode,
+      message: 'draw stff'
+    })
+  }
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);

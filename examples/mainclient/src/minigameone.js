@@ -92,7 +92,7 @@ class Timer extends React.Component {
     if (timeleft <= 0){
       var mystate = storeGame.getState();
       //alert(mystate.loopcounter);
-      if (mystate.gamestate ==  "DRAW"){
+      if (mystate.gamestate ==  "DRAW"){          
           storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(startTimer(60));
           storeGame.dispatch(startDiscuss());

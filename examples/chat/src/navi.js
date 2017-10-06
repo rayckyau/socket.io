@@ -20,6 +20,14 @@ class DrawCanvas extends React.Component {
     }
   }
 
+  componentDidMount() {
+    console.log("render canvas mounted");
+  }
+
+  componentWillUnmount() {
+    //cleanup garbage canvas
+  }
+
   render() {
     return (
       <canvas id="paper" width={this.state.width} height={this.state.height}></canvas>
@@ -94,6 +102,11 @@ class TopNav extends React.Component {
 //TODO: super janky function to access socket. needs refactoring
 function submitSend(){
   $.subSend();
+}
+
+function mountCanvas(){
+  console.log("mount canvas");
+  $.mountCanvas();
 }
 
 class BotNav extends React.Component {
@@ -238,6 +251,25 @@ PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, chan
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
 const storePlayer = Redux.createStore(playerpagereducer);
+
+//getter for playerstore
+export function changePlayerState(mystate, msg){
+  //change player state
+  if (mystate == 'draw'){
+    storePlayer.dispatch(changeModeDraw(msg));
+    //update context canvas in main
+    mountCanvas();
+  }
+  else if (mystate == 'vote'){
+    storePlayer.dispatch(changeModeVote(msg));
+  }
+  else if (mystate == 'msg'){
+    storePlayer.dispatch(changeModeMsg(msg));
+  }
+  else {
+    storePlayer.dispatch(changeModeMsg("no state found in data"));
+  }
+}
 
 ReactDOM.render(
   <ReactRedux.Provider store={storePlayer}>
