@@ -161,6 +161,7 @@ import * as navi from './navi';
 
     $.mountCanvas = function(){
       drawcanvas = $('#paper');
+      drawcanvas.width = drawcanvas.width;
       setupDrawCanvasListeners();
       console.log("in mount canvas: "+drawcanvas);
     };
@@ -261,6 +262,13 @@ import * as navi from './navi';
       drawsocket.on('changestateall', function(data) {
         console.log(data.username + ' joined');
         navi.changePlayerState(data.state, data.message);
+
+      });
+
+      drawsocket.on('forcebuttonsubmit', function(data) {
+        console.log(data.username + ' joined');
+        $.subSend();
+        navi.changePlayerState('msg', 'game moving on');
 
       });
 

@@ -121,7 +121,7 @@ class BotNav extends React.Component {
   clickButton(){
     submitSend();
     //change state to msg mode
-    storePlayer.dispatch(changeModeMsg('my message'));
+    storePlayer.dispatch(changeModeMsg('submitted'));
   }
 
   render(){

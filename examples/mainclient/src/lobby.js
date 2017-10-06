@@ -258,6 +258,11 @@ $(function() {
       //trigger startgame
       console.log('get sendbutton');
       storeMainGame.dispatch(startGame('gameone'));
+      //socket emit to force button submit screen to other players
+      socket.emit('changestateall',{
+        state: 'msg',
+        message: 'waiting on game'
+      })
     });
 
     // Whenever the server emits 'new message', update the chat body
