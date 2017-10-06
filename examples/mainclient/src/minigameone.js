@@ -92,22 +92,27 @@ class Timer extends React.Component {
     if (timeleft <= 0){
       var mystate = storeGame.getState();
       //alert(mystate.loopcounter);
-      if (mystate.gamestate ==  "DRAW"){          
+      if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(startTimer(60));
           storeGame.dispatch(startDiscuss());
+          $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "DISCUSS"){
-          storeTimer.dispatch(startTimer(60));
+          storeTimer.dispatch(resetTimer(30));
+          storeTimer.dispatch(startTimer(30));
           if (mystate.loopcounter == 2){
             storeGame.dispatch(startVote());
+            $.callstatechangeall('vote');
           }
           else{
             storeGame.dispatch(startDraw());
+            $.callstatechangeall('draw');
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
           storeGame.dispatch(startEnd());
+          $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "IDLE"){
           //do nothing
