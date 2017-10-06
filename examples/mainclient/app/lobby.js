@@ -305,6 +305,12 @@ $(function () {
     });
   };
 
+  $.clearAllCanvas = function () {
+    $.each($('canvas'), function (index, canvas) {
+      canvas.width = canvas.width;
+    });
+  };
+
   function drawLine(fromx, fromy, tox, toy, playerid) {
     var drawcanvas = $('#' + clientdict[playerid].canvasid);
     var ctxdrawcanvas = drawcanvas[0].getContext('2d');

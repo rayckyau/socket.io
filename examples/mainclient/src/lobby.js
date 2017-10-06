@@ -202,7 +202,13 @@ $(function() {
       state: mode,
       message: 'draw stff'
     })
-  }
+  };
+
+  $.clearAllCanvas = function() {
+    $.each( $('canvas'), function(index, canvas){
+      canvas.width = canvas.width;
+    })
+  };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);

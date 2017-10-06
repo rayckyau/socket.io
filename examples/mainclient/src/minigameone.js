@@ -107,6 +107,7 @@ class Timer extends React.Component {
           }
           else{
             storeGame.dispatch(startDraw());
+            $.clearAllCanvas();
             $.callstatechangeall('draw');
           }
       }
