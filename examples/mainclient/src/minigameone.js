@@ -309,22 +309,36 @@ export class MiniGameOneLayout extends React.Component {
             <WordList words={words} />
           </div>
          </div>
+         <div>
          <div className="row">
-            <div className="col">
-              <div className="rect"></div>
-            </div>
-            <div className="col">
-              <div className="rect"></div>
-            </div>
-            <div className="col">
-              <div className="rect"></div>
-            </div>
-            <div className="col">
-              <div className="rect"></div>
-            </div>
-            <div className="col">
-              <div className="rect"></div>
-            </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p0" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p1" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p2" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p3" width="268" height="340"></canvas>
+           </div>
+         </div>
+
+         <div className="row">
+           <div className="col-sm-3">
+             <canvas id="canvas-p4" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p5" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p6" width="268" height="340"></canvas>
+           </div>
+           <div className="col-sm-3">
+             <canvas id="canvas-p7" width="268" height="340"></canvas>
+           </div>
+         </div>
          </div>
       </div>
     );

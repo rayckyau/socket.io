@@ -26,7 +26,7 @@ import io from 'socket.io-client';
     var $currentInput = $usernameInput.focus();
     let socketReady = false;
 
-    let socket;
+    var drawsocket;
     var drawObj;
 
     let mainclientid;
@@ -107,10 +107,10 @@ import io from 'socket.io-client';
         const xcord = e.pageX - offset.left;
         const ycord = e.pageY- offset.top;
         if ($.now() - lastEmit > 30) {
-          let socketid = socket.id;
+          let socketid = drawsocket.id;
           console.log(mainclientid);
 
-          socket.emit('mousemove', {
+          drawsocket.emit('mousemove', {
             'x': xcord,
             'y': ycord,
             'drawing': drawing,
@@ -152,6 +152,13 @@ import io from 'socket.io-client';
       ctx.stroke();
     }
 
+    $.subSend = function(){
+      drawsocket.emit('sendbutton', {
+        'data': 'payload',
+        'id': 'testid'
+      });
+    };
+
     // Sets the client's username
     function setUsername() {
       var username = cleanInput($usernameInput.val().trim());
@@ -162,12 +169,12 @@ import io from 'socket.io-client';
         $drawPage.show();
         $loginPage.off('click');
         var url = 'http://' + window.location.hostname + ':3000/';
-        socket = io(url + room);
+        drawsocket = io(url + room);
         defineSocket();
         socketReady = true;
         console.log('User try socket: %s', url + room);
         // Tell the server your username
-        socket.emit('add user', username);
+        drawsocket.emit('add user', username);
       }
     }
 
@@ -198,7 +205,7 @@ import io from 'socket.io-client';
       if (event.which === 13) {
         if (username) {
           sendMessage();
-          socket.emit('stop typing');
+          drawsocket.emit('stop typing');
           typing = false;
         } else {
           setUsername();
@@ -209,14 +216,14 @@ import io from 'socket.io-client';
     // Socket events
     function defineSocket() {
       // Whenever the server emits 'login', log the login message
-      socket.on('login', function(data) {
+      drawsocket.on('login', function(data) {
         connected = true;
         console.log(data);
         //store mainclient id
         mainclientid = data.mainclient;
       });
 
-      socket.on('moving', function(data) {
+      drawsocket.on('moving', function(data) {
 
         if (!(data.id in clients)) {
           // a new user has come online. create a cursor for them
@@ -239,27 +246,27 @@ import io from 'socket.io-client';
       });
 
       // Whenever the server emits 'user joined', log it in the chat body
-      socket.on('user joined', function(data) {
+      drawsocket.on('user joined', function(data) {
         console.log(data.username + ' joined');
       });
 
       // Whenever the server emits 'user left', log it in the chat body
-      socket.on('user left', function(data) {
+      drawsocket.on('user left', function(data) {
         console.log(data.username + ' left');
       });
 
-      socket.on('disconnect', function() {
+      drawsocket.on('disconnect', function() {
         console.log('you have been disconnected');
       });
 
-      socket.on('reconnect', function() {
+      drawsocket.on('reconnect', function() {
         console.log('you have been reconnected');
         if (username) {
-          socket.emit('add user', username);
+          drawsocket.emit('add user', username);
         }
       });
 
-      socket.on('reconnect_error', function() {
+      drawsocket.on('reconnect_error', function() {
         console.log('attempt to reconnect has failed');
       });
     }

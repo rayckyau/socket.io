@@ -89,6 +89,11 @@ class TopNav extends React.Component {
   }
 }
 
+//TODO: super janky function to access socket. needs refactoring
+function submitSend(){
+  $.subSend();
+}
+
 class BotNav extends React.Component {
   constructor(props) {
     super(props)
@@ -99,11 +104,7 @@ class BotNav extends React.Component {
   }
 
   clickButton(){
-    //send ok to socket
-    socket.emit('sendbutton', {
-      'player': mainclientid,
-      'data': this.state.data
-    });
+    submitSend();
   }
 
   render(){

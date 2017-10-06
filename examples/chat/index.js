@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 // Setup basic express server
 var ArrayList = require('arraylist');
 var express = require('express');
@@ -36,6 +37,7 @@ function initRoomNS(roomCode){
 
     // Start listening for mouse move events
     socket.on('sendbutton', function (data) {
+        console.log('received: sendbutton');
         let mainclient = namespaces[roomCode];
         socket.to(mainclient).emit('sendbutton', data);
     });

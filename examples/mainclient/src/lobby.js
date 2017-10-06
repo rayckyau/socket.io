@@ -9,19 +9,41 @@ import {
   withRouter
 } from 'react-router-dom'
 import {TestLayout, MiniGameOneLayout} from './minigameone'
+import * as ReactRedux from 'react-redux';
+import * as Redux from 'redux';
 
-class Hello extends React.Component {
+
+
+class LobbyScreen extends React.Component {
+  constructor(props){
+    super(props);
+  }
+  componentDidMount() {
+    this.interval = setInterval(() => this.startGame(), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 
   //function that is called when admin starts game
   startGame(){
     //
-    this.props.history.push('/about');
+    if (this.props.game == 'gameone'){
+      if (this.props.history.location.pathname != '/minigameone'){
+        this.props.history.push('/minigameone');
+      }
+
+    }
+    else{
+      //do nothing
+    }
+
   }
 
   render() {
     return (
       <div>
-      <button type="button" onClick={() => this.startGame()}>but</button>
       <div className="row">
         <div className="col-sm-3">
           <canvas id="canvas-p0" width="268" height="340"></canvas>
@@ -66,9 +88,49 @@ class About extends React.Component {
   }
 }
 
+const initialMainGameState = {
+  gamestate: "LOBBY"
+};
+//action creators
+// Action Creators
+function startGame(gamename) {
+  return {
+    type: "MINIGAMEONE",
+    gamestate: gamename
+  };
+}
+//reducer
+function maingamereducer(state = initialMainGameState, action) {
+  switch (action.type) {
+    case "LOBBY":
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate
+      };
+    case "MINIGAMEONE":
+      //alert("discuss state");
+      return {
+        ...state,
+        //set new state
+        gamestate: 'gameone'
+      };
+    default:
+      return state;
+  }
+}
+
 class MainFrame extends React.Component {
+  componentDidMount() {
+    this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 
   render() {
+    const gamestatelabel = this.props.gamestate;
 
     return (
       <Router>
@@ -77,10 +139,11 @@ class MainFrame extends React.Component {
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/minigameone">minigameone</Link></li>
-            <li><Link to="/topics">Topics</Link></li>
           </ul>
 
-            <Route exact path="/" component={Hello}/>
+            <Route exact path="/" render ={(props) => (
+                <LobbyScreen {...props} game={this.props.gamestate}/>
+            )}/>
             <Route path="/minigameone" component={MiniGameOneLayout}/>
 
           </div>
@@ -89,7 +152,17 @@ class MainFrame extends React.Component {
   }
 }
 
-ReactDOM.render(<MainFrame />, document.getElementById('mainframe'));
+function mapStateToPropsMainFrame(state) {
+  return { gamestate: state.gamestate
+         };
+}
+MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame })(MainFrame);
+const storeMainGame = Redux.createStore(maingamereducer);
+
+ReactDOM.render(
+    <ReactRedux.Provider store={storeMainGame}>
+      <MainFrame />
+    </ReactRedux.Provider>,  document.getElementById('mainframe'));
 
 $(function() {
   var FADE_TIME = 150; // ms
@@ -169,6 +242,13 @@ $(function() {
       // Saving the current client state
       clients[data.id] = data;
       clients[data.id].updated = $.now();
+    });
+
+    // Whenever the server emits 'sendbutton'
+    socket.on('sendbutton', function (data) {
+      //trigger startgame
+      console.log('get sendbutton');
+      storeMainGame.dispatch(startGame('gameone'));
     });
 
     // Whenever the server emits 'new message', update the chat body

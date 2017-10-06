@@ -1,5 +1,7 @@
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -14,6 +16,16 @@ var _reactRouterDom = require('react-router-dom');
 
 var _minigameone = require('./minigameone');
 
+var _reactRedux = require('react-redux');
+
+var ReactRedux = _interopRequireWildcard(_reactRedux);
+
+var _redux = require('redux');
+
+var Redux = _interopRequireWildcard(_redux);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22,39 +34,50 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*jshint esversion: 6 */
 
-var Hello = function (_React$Component) {
-  _inherits(Hello, _React$Component);
+var LobbyScreen = function (_React$Component) {
+  _inherits(LobbyScreen, _React$Component);
 
-  function Hello() {
-    _classCallCheck(this, Hello);
+  function LobbyScreen(props) {
+    _classCallCheck(this, LobbyScreen);
 
-    return _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).call(this, props));
   }
 
-  _createClass(Hello, [{
-    key: 'startGame',
+  _createClass(LobbyScreen, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
 
+      this.interval = setInterval(function () {
+        return _this2.startGame();
+      }, 1000);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      clearInterval(this.interval);
+    }
 
     //function that is called when admin starts game
+
+  }, {
+    key: 'startGame',
     value: function startGame() {
       //
-      this.props.history.push('/about');
+      if (this.props.game == 'gameone') {
+        if (this.props.history.location.pathname != '/minigameone') {
+          this.props.history.push('/minigameone');
+        }
+      } else {
+        //do nothing
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'button',
-          { type: 'button', onClick: function onClick() {
-              return _this2.startGame();
-            } },
-          'but'
-        ),
         _react2.default.createElement(
           'div',
           { className: 'row' },
@@ -107,7 +130,7 @@ var Hello = function (_React$Component) {
     }
   }]);
 
-  return Hello;
+  return LobbyScreen;
 }(_react2.default.Component);
 
 var About = function (_React$Component2) {
@@ -133,6 +156,39 @@ var About = function (_React$Component2) {
   return About;
 }(_react2.default.Component);
 
+var initialMainGameState = {
+  gamestate: "LOBBY"
+};
+//action creators
+// Action Creators
+function startGame(gamename) {
+  return {
+    type: "MINIGAMEONE",
+    gamestate: gamename
+  };
+}
+//reducer
+function maingamereducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialMainGameState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case "LOBBY":
+      return _extends({}, state, {
+        //set new state
+        gamestate: action.gamestate
+      });
+    case "MINIGAMEONE":
+      //alert("discuss state");
+      return _extends({}, state, {
+        //set new state
+        gamestate: 'gameone'
+      });
+    default:
+      return state;
+  }
+}
+
 var MainFrame = function (_React$Component3) {
   _inherits(MainFrame, _React$Component3);
 
@@ -143,8 +199,21 @@ var MainFrame = function (_React$Component3) {
   }
 
   _createClass(MainFrame, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      clearInterval(this.interval);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this5 = this;
+
+      var gamestatelabel = this.props.gamestate;
 
       return _react2.default.createElement(
         _reactRouterDom.BrowserRouter,
@@ -172,18 +241,11 @@ var MainFrame = function (_React$Component3) {
                 { to: '/minigameone' },
                 'minigameone'
               )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/topics' },
-                'Topics'
-              )
             )
           ),
-          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: Hello }),
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', render: function render(props) {
+              return _react2.default.createElement(LobbyScreen, _extends({}, props, { game: _this5.props.gamestate }));
+            } }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
         )
       );
@@ -193,7 +255,18 @@ var MainFrame = function (_React$Component3) {
   return MainFrame;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(MainFrame, null), document.getElementById('mainframe'));
+function mapStateToPropsMainFrame(state) {
+  return { gamestate: state.gamestate
+  };
+}
+MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame: startGame })(MainFrame);
+var storeMainGame = Redux.createStore(maingamereducer);
+
+_reactDom2.default.render(_react2.default.createElement(
+  ReactRedux.Provider,
+  { store: storeMainGame },
+  _react2.default.createElement(MainFrame, null)
+), document.getElementById('mainframe'));
 
 $(function () {
   var FADE_TIME = 150; // ms
@@ -269,6 +342,13 @@ $(function () {
       // Saving the current client state
       clients[data.id] = data;
       clients[data.id].updated = $.now();
+    });
+
+    // Whenever the server emits 'sendbutton'
+    socket.on('sendbutton', function (data) {
+      //trigger startgame
+      console.log('get sendbutton');
+      storeMainGame.dispatch(startGame('gameone'));
     });
 
     // Whenever the server emits 'new message', update the chat body
