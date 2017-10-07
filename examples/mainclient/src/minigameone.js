@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import React from 'react';
@@ -8,6 +10,71 @@ import {
   Link,
   withRouter
 } from 'react-router-dom'
+
+const placebuckets = [];
+placebuckets[0] = ["paris",
+"New york city",
+"canada",
+"london",
+"rome",
+"barcelona",
+"amsterdam",
+"tokyo",
+"shanghai",
+"afghanistan",
+"egypt",
+"malaysia",
+"australia",
+"california"];
+
+placebuckets[1] = [
+"outerspace",
+"machu pichu",
+"mount everest",
+"mount fuji",
+"coffee shop",
+"Stonehenge",
+"Las Vegas",
+"ancient China"
+]
+
+placebuckets[2] = [
+"medieval castle",
+"middle earth",
+"museum",
+"beach",
+"aquarium",
+"deserted island",
+"art gallery"
+]
+
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function populatewordarray(){
+  let retarraycount = 0;
+  let retarray = [];
+  for (let j=0;j<3;j++){
+    for (let i=0;i<4;i++){
+      let randword = placebuckets[j][Math.floor(Math.random() * placebuckets[j].length)];
+
+      while (contains(retarray, randword)){
+        randword = placebuckets[j][Math.floor(Math.random() * placebuckets[j].length)];
+      }
+      retarray[retarraycount] = randword;
+      retarraycount = retarraycount+1;
+
+    }
+  }
+  //returns array of words
+  return retarray;
+}
 
 //TIMER OBJ
 // Action Creators
@@ -357,7 +424,8 @@ export class MiniGameOneLayout extends React.Component {
 }
 
 
-const words = ["word1", "word2","word3","word4","word5","word6","word7","word8","word9","word10","word11","word12"];
+//const words = ["word1", "word2","word3","word4","word5","word6","word7","word8","word9","word10","word11","word12"];
+const words = populatewordarray();
 
 /* Open when someone clicks on the span element */
 function openNav() {
