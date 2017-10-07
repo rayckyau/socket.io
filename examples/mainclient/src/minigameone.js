@@ -368,18 +368,3 @@ function openNav() {
 function closeNav() {
     document.getElementById("myNav").style.height = "0%";
 }
-
-/*
-ReactDOM.render(
-  <MiniGameOneLayout />,
-  document.getElementById('minigameonelayout')
-);
-*/
-/*
-openNav();
-setTimeout(function () {
-  closeNav();
-  storeGame.dispatch(startDraw());
-  storeTimer.dispatch(startTimer(5));
-}, 2000);
-*/

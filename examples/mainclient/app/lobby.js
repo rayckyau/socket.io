@@ -68,7 +68,7 @@ var LobbyScreen = function (_React$Component) {
       //
       if (this.props.game == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
-          $.callstatechangeall('draw');
+          $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
           minigameone.storeTimer.dispatch(minigameone.startTimer(10));
         }
@@ -301,10 +301,12 @@ $(function () {
 
   //helper socket functions
   $.callstatechangeall = function (mode) {
+    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
     console.log("try to emit changestateall");
     socket.emit('changestateall', {
       state: mode,
-      message: 'draw stff'
+      message: msg
     });
   };
 
