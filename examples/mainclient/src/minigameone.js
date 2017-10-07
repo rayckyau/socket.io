@@ -11,7 +11,7 @@ import {
 
 //TIMER OBJ
 // Action Creators
-function startTimer(baseTime) {
+export function startTimer(baseTime) {
   return {
     type: "START_TIMER",
     baseTime: baseTime,
@@ -36,9 +36,9 @@ function resetTimer(restime) {
 
 // TIMER Reducer / Store
 const initialTimerState = {
-  startedAt: undefined,
-  stoppedAt: undefined,
-  baseTime: undefined
+  startedAt: new Date().getTime(),
+  stoppedAt: new Date().getTime(),
+  baseTime: 10
 };
 
 function timerreducer(state = initialTimerState, action) {
@@ -94,20 +94,22 @@ class Timer extends React.Component {
       //alert(mystate.loopcounter);
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(startTimer(60));
+          storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startDiscuss());
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "DISCUSS"){
-          storeTimer.dispatch(resetTimer(30));
-          storeTimer.dispatch(startTimer(30));
           if (mystate.loopcounter == 2){
+            storeTimer.dispatch(resetTimer(15));
+            storeTimer.dispatch(startTimer(15));
             storeGame.dispatch(startVote());
             $.callstatechangeall('vote');
           }
           else{
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
+            storeTimer.dispatch(resetTimer(30));
+            storeTimer.dispatch(startTimer(30));
             $.callstatechangeall('draw');
           }
       }
@@ -116,7 +118,10 @@ class Timer extends React.Component {
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "IDLE"){
-          //do nothing
+          storeGame.dispatch(startDraw());
+          storeTimer.dispatch(resetTimer(30));
+          storeTimer.dispatch(startTimer(30));
+          $.callstatechangeall('draw');
       }
       else{
         //error state
@@ -262,8 +267,8 @@ MiniGameOne = ReactRedux.connect(mapStateToPropsGameOne, { startDraw, startDiscu
 
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
-const storeTimer = Redux.createStore(timerreducer);
-const storeGame = Redux.createStore(minigameonereducer);
+export const storeTimer = Redux.createStore(timerreducer);
+export const storeGame = Redux.createStore(minigameonereducer);
 
 //WORDLIST REACT
 function WordList(props) {
@@ -378,7 +383,3 @@ setTimeout(function () {
   storeTimer.dispatch(startTimer(5));
 }, 2000);
 */
-setTimeout(function () {
-  storeGame.dispatch(startDraw());
-  storeTimer.dispatch(startTimer(60));
-}, 2000);

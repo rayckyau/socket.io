@@ -58,8 +58,17 @@ import * as navi from './navi';
     setupDrawCanvasListeners();
 
     function setupDrawCanvasListeners(){
+      // Get the position of a touch relative to the canvas
+      function getTouchPos(canvasDom, touchEvent) {
+        let offset = drawcanvas[0].getBoundingClientRect();
+        return {
+          x: touchEvent.touches[0].clientX - offset.left,
+          y: touchEvent.touches[0].clientY - offset.top
+        };
+      }
+
       drawcanvas[0].addEventListener("touchstart", function(e) {
-        mousePos = getTouchPos(drawcanvas[0], e);
+        //let mousePos = getTouchPos(drawcanvas[0], e);
         var touch = e.touches[0];
         var mouseEvent = new MouseEvent("mousedown", {
           clientX: touch.clientX,
@@ -90,13 +99,20 @@ import * as navi from './navi';
         let offset = drawcanvas[0].getBoundingClientRect();
         prev.x = e.pageX - offset.left;
         prev.y = e.pageY - offset.top;
+        let socketid = drawsocket.id;
+        drawsocket.emit('mousemove', {
+          'x': prev.x,
+          'y': prev.y,
+          'drawing': false,
+          'id': socketid
+        });
       });
 
-      drawcanvas.bind('mouseup mouseleave', function() {
+      drawcanvas.bind('mouseup mouseleave', function(e) {
         drawing = false;
       });
 
-      var lastEmit = $.now();
+      let lastEmit = $.now();
 
       drawcanvas.on('mousemove', function(e) {
         if (socketReady) {
@@ -125,14 +141,7 @@ import * as navi from './navi';
         }
       });
     }
-    // Get the position of a touch relative to the canvas
-    function getTouchPos(canvasDom, touchEvent) {
-      let offset = drawcanvas[0].getBoundingClientRect();
-      return {
-        x: touchEvent.touches[0].clientX - offset.left,
-        y: touchEvent.touches[0].clientY - offset.top
-      };
-    }
+
 
 
 

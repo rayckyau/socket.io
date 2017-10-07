@@ -11,7 +11,7 @@ import {
 import {TestLayout, MiniGameOneLayout} from './minigameone'
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
-
+import * as minigameone from './minigameone'
 
 class LobbyScreen extends React.Component {
   constructor(props){
@@ -32,6 +32,7 @@ class LobbyScreen extends React.Component {
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('draw');
         this.props.history.push('/minigameone');
+        minigameone.storeTimer.dispatch(minigameone.startTimer(10));
       }
 
     }

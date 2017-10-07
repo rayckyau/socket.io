@@ -16,6 +16,8 @@ var _reactRouterDom = require('react-router-dom');
 
 var _minigameone = require('./minigameone');
 
+var minigameone = _interopRequireWildcard(_minigameone);
+
 var _reactRedux = require('react-redux');
 
 var ReactRedux = _interopRequireWildcard(_reactRedux);
@@ -68,6 +70,7 @@ var LobbyScreen = function (_React$Component) {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('draw');
           this.props.history.push('/minigameone');
+          minigameone.storeTimer.dispatch(minigameone.startTimer(10));
         }
       } else {
         //do nothing
