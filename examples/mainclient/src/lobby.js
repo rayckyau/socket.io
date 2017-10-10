@@ -32,6 +32,7 @@ class LobbyScreen extends React.Component {
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
+
         minigameone.storeTimer.dispatch(minigameone.startTimer(10));
       }
 
@@ -193,6 +194,7 @@ $(function() {
   let clients = {};
   let cursors = {};
   let clientdict = {};
+  let votes = {};
 
   var socket;
 
@@ -205,10 +207,24 @@ $(function() {
     })
   };
 
+  $.callstatechangeprivate = function(mode, msg = "", clientid){
+    console.log("try to emit changestateprivate");
+    socket.emit('changestateprivate',{
+      state: mode,
+      message: msg,
+      client: clientid
+    })
+  };
+
   $.clearAllCanvas = function() {
     $.each( $('canvas'), function(index, canvas){
       canvas.width = canvas.width;
     })
+  };
+
+  //return all players
+  $.returnAllPlayers = function() {
+    return clientdict;
   };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
@@ -286,6 +302,7 @@ $(function() {
         playerobj["username"] = data.username;
         playerobj["isadmin"] = false;
         playerobj["canvasid"] = 'canvas-p'+canvasnum;
+        playerobj["playernum"] = canvasnum;
         playerobj["socketid"] = data.id;
         clientdict[data.id] = playerobj;
       }

@@ -185,9 +185,15 @@ class Timer extends React.Component {
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "IDLE"){
-          storeGame.dispatch(startDraw());
+          //startGame();
+          storeGame.dispatch(startBegin());
+      }
+      else if (mystate.gamestate ==  "BEGIN"){
+          console.log("end begin state");
+          setupGame();
           storeTimer.dispatch(resetTimer(30));
           storeTimer.dispatch(startTimer(30));
+          storeGame.dispatch(startDraw());
           $.callstatechangeall('draw');
       }
       else{
@@ -232,6 +238,12 @@ const initialGameState = {
 };
 
 //action creators
+function startBegin() {
+  return {
+    type: "BEGIN",
+    gamestate: "BEGIN"
+  };
+}
 function startDraw() {
   return {
     type: "DRAW",
@@ -295,6 +307,13 @@ function minigameonereducer(state = initialGameState, action) {
         gamestate: action.gamestate,
         loopcounter: 0
         //set new state
+      }
+    case "BEGIN":
+        //rules stuff
+      return {
+        ...state,
+        gamestate: action.gamestate,
+        loopcounter: 0
       }
     case "IDLE":
         //wait
@@ -435,4 +454,30 @@ function openNav() {
 /* Close when someone clicks on the "x" symbol inside the overlay */
 function closeNav() {
     document.getElementById("myNav").style.height = "0%";
+}
+
+function setupGame(){
+  console.log("setup the game");
+  let clientsobj = $.returnAllPlayers();
+  let numplayers = Object.keys(clientsobj).length;
+  //pick rand number, that num is liar
+  let liarnum = Math.floor(Math.random()*numplayers);
+  let index = 0;
+  //FOR LOOP
+  for (let key in clientsobj){
+    if (clientsobj.hasOwnProperty(key)){
+      let playerobj = clientsobj[key];
+
+      if (index == liarnum){
+        //set liar stuff
+        console.log("send msg to liar");
+        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid);
+      }
+      else{
+        console.log("send msg to else");
+        $.callstatechangeprivate('msg', 'secret place', playerobj.socketid);
+      }
+      index++;
+    }
+  }
 }

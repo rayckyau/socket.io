@@ -70,6 +70,7 @@ var LobbyScreen = function (_React$Component) {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
+
           minigameone.storeTimer.dispatch(minigameone.startTimer(10));
         }
       } else {
@@ -296,6 +297,7 @@ $(function () {
   var clients = {};
   var cursors = {};
   var clientdict = {};
+  var votes = {};
 
   var socket;
 
@@ -310,10 +312,27 @@ $(function () {
     });
   };
 
+  $.callstatechangeprivate = function (mode) {
+    var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+    var clientid = arguments[2];
+
+    console.log("try to emit changestateprivate");
+    socket.emit('changestateprivate', {
+      state: mode,
+      message: msg,
+      client: clientid
+    });
+  };
+
   $.clearAllCanvas = function () {
     $.each($('canvas'), function (index, canvas) {
       canvas.width = canvas.width;
     });
+  };
+
+  //return all players
+  $.returnAllPlayers = function () {
+    return clientdict;
   };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
@@ -391,6 +410,7 @@ $(function () {
         playerobj["username"] = data.username;
         playerobj["isadmin"] = false;
         playerobj["canvasid"] = 'canvas-p' + canvasnum;
+        playerobj["playernum"] = canvasnum;
         playerobj["socketid"] = data.id;
         clientdict[data.id] = playerobj;
       }

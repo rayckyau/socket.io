@@ -269,9 +269,8 @@ import * as navi from './navi';
       });
 
       drawsocket.on('changestateall', function(data) {
-        console.log(data.username + ' joined');
+        console.log(data.state + ' dsa ' + data.message);
         navi.changePlayerState(data.state, data.message);
-
       });
 
       drawsocket.on('forcebuttonsubmit', function(data) {

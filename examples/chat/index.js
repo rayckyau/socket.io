@@ -39,6 +39,12 @@ function initRoomNS(roomCode){
         socket.broadcast.emit('changestateall', data);
     });
 
+    socket.on('changestateprivate', function (data) {
+        let client = data.client;
+        console.log('changestate private : '+client);
+        socket.to(client).emit('changestateall', data);
+    });
+
     socket.on('sendbutton', function (data) {
         console.log('received: sendbutton');
         let mainclient = namespaces[roomCode];
