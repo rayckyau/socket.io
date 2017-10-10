@@ -70,7 +70,6 @@ var LobbyScreen = function (_React$Component) {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
-
           minigameone.storeTimer.dispatch(minigameone.startTimer(10));
         }
       } else {
@@ -89,12 +88,14 @@ var LobbyScreen = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3' },
-            _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
+            'p1'
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3' },
-            _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
+            'p2'
           ),
           _react2.default.createElement(
             'div',

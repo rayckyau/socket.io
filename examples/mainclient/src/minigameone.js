@@ -166,6 +166,7 @@ class Timer extends React.Component {
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "DISCUSS"){
+          storeTimer.dispatch(stopTimer());
           if (mystate.loopcounter == 2){
             storeTimer.dispatch(resetTimer(15));
             storeTimer.dispatch(startTimer(15));
@@ -185,12 +186,14 @@ class Timer extends React.Component {
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "IDLE"){
-          //startGame();
+          setupGame();
+          storeTimer.dispatch(stopTimer());
+          storeTimer.dispatch(resetTimer(10));
+          storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startBegin());
       }
       else if (mystate.gamestate ==  "BEGIN"){
-          console.log("end begin state");
-          setupGame();
+          storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(resetTimer(30));
           storeTimer.dispatch(startTimer(30));
           storeGame.dispatch(startDraw());
@@ -409,10 +412,10 @@ export class MiniGameOneLayout extends React.Component {
          <div>
          <div className="row">
            <div className="col-sm-3">
-             <canvas id="canvas-p0" width="268" height="340"></canvas>
+             <canvas id="canvas-p0" width="268" height="340"></canvas>p1
            </div>
            <div className="col-sm-3">
-             <canvas id="canvas-p1" width="268" height="340"></canvas>
+             <canvas id="canvas-p1" width="268" height="340"></canvas>p2
            </div>
            <div className="col-sm-3">
              <canvas id="canvas-p2" width="268" height="340"></canvas>

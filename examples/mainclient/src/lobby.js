@@ -31,8 +31,7 @@ class LobbyScreen extends React.Component {
     if (this.props.game == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
-        this.props.history.push('/minigameone');
-
+        this.props.history.push('/minigameone')
         minigameone.storeTimer.dispatch(minigameone.startTimer(10));
       }
 
@@ -40,7 +39,6 @@ class LobbyScreen extends React.Component {
     else{
       //do nothing
     }
-
   }
 
   render() {
@@ -48,10 +46,10 @@ class LobbyScreen extends React.Component {
       <div>
       <div className="row">
         <div className="col-sm-3">
-          <canvas id="canvas-p0" width="268" height="340"></canvas>
+          <canvas id="canvas-p0" width="268" height="340"></canvas>p1
         </div>
         <div className="col-sm-3">
-          <canvas id="canvas-p1" width="268" height="340"></canvas>
+          <canvas id="canvas-p1" width="268" height="340"></canvas>p2
         </div>
         <div className="col-sm-3">
           <canvas id="canvas-p2" width="268" height="340"></canvas>
