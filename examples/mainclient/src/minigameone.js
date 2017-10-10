@@ -396,50 +396,58 @@ export class MiniGameOneLayout extends React.Component {
   render() {
     return (
       <div className="container-fluid">
-         <div className="row justify-content-md-cente">
-          <div className="col-sm-4">
+         <div className="row justify-content-md-center">
+          <div className="col-sm-2">
              <ReactRedux.Provider store={storeGame}>
               <MiniGameOne />
              </ReactRedux.Provider>
              <ReactRedux.Provider store={storeTimer}>
               <Timer updateInterval={1000} />
              </ReactRedux.Provider>
+             <div className="col">
+               <WordList words={words} />
+             </div>
           </div>
-          <div className="col-sm-8">
-            <WordList words={words} />
+          <div className="col-sm-10">
+            <div>
+            <div className="row">
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p0" width="268" height="340"></canvas>
+                <br/>
+                player1
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p1" width="268" height="340"></canvas>
+                <br/>
+                player2
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p2" width="268" height="340"></canvas>
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p3" width="268" height="340"></canvas>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p4" width="268" height="340"></canvas>
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p5" width="268" height="340"></canvas>
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p6" width="268" height="340"></canvas>
+              </div>
+              <div className="col-sm-3 text-center" align="center">
+                <canvas id="canvas-p7" width="268" height="340"></canvas>
+              </div>
+            </div>
+            </div>
           </div>
-         </div>
-         <div>
-         <div className="row">
-           <div className="col-sm-3">
-             <canvas id="canvas-p0" width="268" height="340"></canvas>p1
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p1" width="268" height="340"></canvas>p2
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p2" width="268" height="340"></canvas>
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p3" width="268" height="340"></canvas>
-           </div>
+
          </div>
 
-         <div className="row">
-           <div className="col-sm-3">
-             <canvas id="canvas-p4" width="268" height="340"></canvas>
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p5" width="268" height="340"></canvas>
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p6" width="268" height="340"></canvas>
-           </div>
-           <div className="col-sm-3">
-             <canvas id="canvas-p7" width="268" height="340"></canvas>
-           </div>
-         </div>
-         </div>
       </div>
     );
   }

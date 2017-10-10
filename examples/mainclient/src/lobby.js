@@ -45,31 +45,31 @@ class LobbyScreen extends React.Component {
     return (
       <div>
       <div className="row">
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p0" width="268" height="340"></canvas>p1
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p1" width="268" height="340"></canvas>p2
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p2" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p3" width="268" height="340"></canvas>
         </div>
       </div>
 
       <div className="row">
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p4" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p5" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p6" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3">
+        <div className="col-sm-3 text-center" align="center">
           <canvas id="canvas-p7" width="268" height="340"></canvas>
         </div>
       </div>

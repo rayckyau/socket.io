@@ -87,24 +87,24 @@ var LobbyScreen = function (_React$Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
             'p1'
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
             'p2'
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' })
           )
         ),
@@ -113,22 +113,22 @@ var LobbyScreen = function (_React$Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3' },
+            { className: 'col-sm-3 text-center', align: 'center' },
             _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' })
           )
         )
