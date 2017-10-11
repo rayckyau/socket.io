@@ -306,22 +306,26 @@ $(function () {
   //helper socket functions
   $.callstatechangeall = function (mode) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+    var payload = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
 
     console.log("try to emit changestateall");
     socket.emit('changestateall', {
       state: mode,
-      message: msg
+      message: msg,
+      payload: payload
     });
   };
 
   $.callstatechangeprivate = function (mode) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
     var clientid = arguments[2];
+    var payload = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "";
 
     console.log("try to emit changestateprivate");
     socket.emit('changestateprivate', {
       state: mode,
       message: msg,
+      payload: payload,
       client: clientid
     });
   };
@@ -486,6 +490,7 @@ $(function () {
 
   function updateVote(data) {
     console.log(data);
+    //TODO: init array properly
     if (votes[data.voteplayer]) {
       votes[data.voteplayer] = votes[data.voteplayer] + 1;
     } else {

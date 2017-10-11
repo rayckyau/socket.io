@@ -277,7 +277,7 @@ import * as navi from './navi';
 
       drawsocket.on('changestateall', function(data) {
         console.log(data.state + ' dsa ' + data.message);
-        navi.changePlayerState(data.state, data.message);
+        navi.changePlayerState(data.state, data.message, data.payload);
       });
 
       drawsocket.on('forcebuttonsubmit', function(data) {

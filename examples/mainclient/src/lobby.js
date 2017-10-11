@@ -198,19 +198,21 @@ $(function() {
   var socket;
 
   //helper socket functions
-  $.callstatechangeall = function(mode, msg = ""){
+  $.callstatechangeall = function(mode, msg = "", payload = ""){
     console.log("try to emit changestateall");
     socket.emit('changestateall',{
       state: mode,
-      message: msg
+      message: msg,
+      payload: payload
     })
   };
 
-  $.callstatechangeprivate = function(mode, msg = "", clientid){
+  $.callstatechangeprivate = function(mode, msg = "", clientid, payload = ""){
     console.log("try to emit changestateprivate");
     socket.emit('changestateprivate',{
       state: mode,
       message: msg,
+      payload: payload,
       client: clientid
     })
   };
@@ -378,6 +380,7 @@ $(function() {
 
   function updateVote(data){
     console.log(data);
+    //TODO: init array properly
     if (votes[data.voteplayer]){
       votes[data.voteplayer]=votes[data.voteplayer]+1;
     }

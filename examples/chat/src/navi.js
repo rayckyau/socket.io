@@ -48,7 +48,7 @@ class Vote extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      items: ['player1', 'player2', 'player3', 'player4', 'player5'],
+      items: voteOptions,
       yourPick: ''
     }
   }
@@ -276,9 +276,9 @@ PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, chan
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
 const storePlayer = Redux.createStore(playerpagereducer);
-
+var voteOptions = [];
 //getter for playerstore
-export function changePlayerState(mystate, msg){
+export function changePlayerState(mystate, msg, payload = ""){
   //change player state
   if (mystate == 'draw'){
     storePlayer.dispatch(changeModeDraw(msg));
@@ -286,6 +286,11 @@ export function changePlayerState(mystate, msg){
     mountCanvas();
   }
   else if (mystate == 'vote'){
+    //take payload and add to votes array
+    let players = payload.split(" ");
+    for (let i=0;i<players.length;i++){
+      voteOptions[i] = players[i];
+    }
     storePlayer.dispatch(changeModeVote(msg));
   }
   else if (mystate == 'msg'){

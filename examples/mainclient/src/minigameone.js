@@ -171,7 +171,7 @@ class Timer extends React.Component {
             storeTimer.dispatch(resetTimer(15));
             storeTimer.dispatch(startTimer(15));
             storeGame.dispatch(startVote());
-            $.callstatechangeall('vote');
+            $.callstatechangeall('vote', "vote for liar", "player1 player2");
           }
           else{
             storeGame.dispatch(startDraw());
@@ -182,6 +182,23 @@ class Timer extends React.Component {
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
+          //call returnMajorityVote function to get result
+          //reveal winner
+          //if spy is chosen move into new mode only for spy
+          //$.callstatechangeprivate(mode, msg = "", clientid)
+          storeTimer.dispatch(stopTimer());
+          storeTimer.dispatch(resetTimer(10));
+          storeTimer.dispatch(startTimer(10));
+          storeGame.dispatch(startEnd());
+          $.callstatechangeall('msg');
+      }
+      else if (mystate.gamestate ==  "VOTESPY"){
+          //call returnDataVote function to get result
+          //if data is the same as target location spy wins, else spy loses
+          //display winner
+          storeTimer.dispatch(stopTimer());
+          storeTimer.dispatch(resetTimer(10));
+          storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startEnd());
           $.callstatechangeall('msg');
       }
@@ -263,6 +280,12 @@ function startVote() {
   return {
     type: "VOTE",
     gamestate: "VOTE"
+  };
+}
+function startVoteSpy() {
+  return {
+    type: "VOTESPY",
+    gamestate: "VOTESPY"
   };
 }
 function startEnd() {
