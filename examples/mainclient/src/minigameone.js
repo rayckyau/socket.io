@@ -171,7 +171,7 @@ class Timer extends React.Component {
             storeTimer.dispatch(resetTimer(15));
             storeTimer.dispatch(startTimer(15));
             storeGame.dispatch(startVote());
-            $.callstatechangeall('vote', "vote for liar", "player1 player2");
+            $.callstatechangeall('vote', "vote for liar", playernames.join());
           }
           else{
             storeGame.dispatch(startDraw());
@@ -479,7 +479,7 @@ export class MiniGameOneLayout extends React.Component {
 
 //const words = ["word1", "word2","word3","word4","word5","word6","word7","word8","word9","word10","word11","word12"];
 const words = populatewordarray();
-
+let playernames = [];
 /* Open when someone clicks on the span element */
 function openNav() {
     document.getElementById("myNav").style.height = "100%";
@@ -501,6 +501,8 @@ function setupGame(){
   for (let key in clientsobj){
     if (clientsobj.hasOwnProperty(key)){
       let playerobj = clientsobj[key];
+      //add player names into an array
+      playernames[playerobj.playernum] = playerobj.username;
 
       if (index == liarnum){
         //set liar stuff
