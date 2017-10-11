@@ -298,7 +298,8 @@ $(function () {
   var clients = {};
   var cursors = {};
   var clientdict = {};
-  var votes = {};
+  var votes = [];
+  var playernumToId = {};
 
   var socket;
 
@@ -397,6 +398,13 @@ $(function () {
       });
     });
 
+    socket.on('sendvote', function (data) {
+      //trigger startgame
+      console.log('get sendvote');
+      //update vote
+      updateVote(data);
+    });
+
     // Whenever the server emits 'new message', update the chat body
     socket.on('new message', function (data) {
       addChatMessage(data);
@@ -414,6 +422,8 @@ $(function () {
         playerobj["playernum"] = canvasnum;
         playerobj["socketid"] = data.id;
         clientdict[data.id] = playerobj;
+        //update playernum to id map
+        playernumToId[canvasnum] = data.username;
       }
       log(data.username + ' joined');
       addParticipantsMessage(data);
@@ -472,6 +482,39 @@ $(function () {
       // POST failed...
       console.log(err);
     });
+  }
+
+  function updateVote(data) {
+    console.log(data);
+    if (votes[data.voteplayer]) {
+      votes[data.voteplayer] = votes[data.voteplayer] + 1;
+    } else {
+      votes[data.voteplayer] = 0;
+    }
+    console.log(votes);
+  }
+
+  //returns null if there is no majority
+  //returns player num of majority vote
+  function returnMajorityVote(data) {
+    //loop through
+    var majority = 0;
+    var tie = false;
+    var ret = {};
+    for (var i = 0; i < votes.length; i++) {
+      if (votes[i] > majority) {
+        majority = votes[i];
+        tie = false;
+      } else if (votes[i] == majority) {
+        tie = true;
+      }
+    }
+
+    if (tie) {
+      return false;
+    } else {
+      return majority;
+    }
   }
 
   function addParticipantsMessage(data) {

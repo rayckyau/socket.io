@@ -55,6 +55,7 @@ class Vote extends React.Component {
 
   handleClick(val) {
     this.setState({yourPick: val})
+    storePlayer.dispatch(setVote(val));
   }
 
   voteList() {
@@ -100,8 +101,11 @@ class TopNav extends React.Component {
 }
 
 //TODO: super janky function to access socket. needs refactoring
-function submitSend(){
-  $.subSend();
+function submitSend(payload){
+  $.subSend(payload);
+}
+function submitVote(payload){
+  $.voteSend(payload);
 }
 
 function mountCanvas(){
@@ -119,7 +123,13 @@ class BotNav extends React.Component {
   }
 
   clickButton(){
-    submitSend();
+    let mystate = storePlayer.getState();
+    if (mystate.mode == "vote"){
+      submitVote(mystate.vote);
+    }
+    else{
+      submitSend('testpayload');
+    }
     //change state to msg mode
     storePlayer.dispatch(changeModeMsg('submitted'));
   }
@@ -179,6 +189,7 @@ class PlayerPage extends React.Component {
 const initialPlayerState = {
   mode: "draw",
   admin: false,
+  vote: "",
   message: "hello world"
 };
 
@@ -194,6 +205,7 @@ function changeModeVote(msg) {
   return {
     type: "VOTE",
     mode: 'vote',
+    vote: '',
     message: msg
   };
 }
@@ -202,6 +214,15 @@ function changeModeMsg(msg) {
     type: "MESSAGE",
     mode: 'msg',
     message: msg
+  };
+}
+function setVote(vote) {
+  console.log(vote);
+  return {
+    type: "VOTE",
+    mode: 'vote',
+    vote: vote,
+    message: ''
   };
 }
 
@@ -214,6 +235,7 @@ function playerpagereducer(state = initialPlayerState, action) {
         //set new state
         mode: action.mode,
         admin: state.admin,
+        vote: state.vote,
         message: action.message
       };
     case "VOTE":
@@ -222,6 +244,7 @@ function playerpagereducer(state = initialPlayerState, action) {
         //set new state
         mode: action.mode,
         admin: state.admin,
+        vote: action.vote,
         message: action.message
       };
       case "MESSAGE":
@@ -230,6 +253,7 @@ function playerpagereducer(state = initialPlayerState, action) {
           //set new state
           mode: action.mode,
           admin: state.admin,
+          vote: state.vote,
           message: action.message
         };
     default:
@@ -240,13 +264,14 @@ function playerpagereducer(state = initialPlayerState, action) {
 function mapStateToPropsPlayerPage(state) {
   return { mode: state.mode,
            admin: state.admin,
+           vote: state.vote,
            message: state.message
          };
 }
 //END MINIGAME REDUX
 
 //bind state to props
-PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw })(PlayerPage);
+PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw, setVote })(PlayerPage);
 
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});

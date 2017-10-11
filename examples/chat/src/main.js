@@ -175,9 +175,16 @@ import * as navi from './navi';
       console.log("in mount canvas: "+drawcanvas);
     };
 
-    $.subSend = function(){
+    $.subSend = function(payload){
       drawsocket.emit('sendbutton', {
-        'data': 'payload',
+        'data': payload,
+        'id': 'testid'
+      });
+    };
+
+    $.voteSend = function(payload){
+      drawsocket.emit('sendvote', {
+        'data': payload,
         'id': 'testid'
       });
     };
@@ -275,9 +282,8 @@ import * as navi from './navi';
 
       drawsocket.on('forcebuttonsubmit', function(data) {
         console.log(data.username + ' joined');
-        $.subSend();
+        $.subSend(data.username);
         navi.changePlayerState('msg', 'game moving on');
-
       });
 
       // Whenever the server emits 'user joined', log it in the chat body

@@ -51,6 +51,12 @@ function initRoomNS(roomCode){
         socket.to(mainclient).emit('sendbutton', data);
     });
 
+    socket.on('sendvote', function (data) {
+        console.log('received: sendvote');
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('sendvote', data);
+    });
+
     // when the client emits 'mousemove', this listens and executes
     socket.on('mousemove', function (data) {
         let mainclient = namespaces[roomCode];
