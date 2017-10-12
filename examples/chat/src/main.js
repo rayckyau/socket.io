@@ -98,6 +98,10 @@ var HOSTNAME = process.env.HOSTNAME || 'localhost';
         e.preventDefault();
         ctx = $('#paper')[0].getContext('2d');
         console.log('draw true'+ctx);
+        //define drawing settings
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
         drawing = true;
         let offset = drawcanvas[0].getBoundingClientRect();
         prev.x = e.pageX - offset.left;
