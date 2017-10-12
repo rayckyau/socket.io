@@ -192,9 +192,11 @@ $(function() {
   let clients = {};
   let cursors = {};
   let clientdict = {};
-  let votes = [];
+  let votes = [0,0,0,0,0,0,0,0,0,0,0,0];
   let playernumToId = {};
+  let playerIdToNum = {};
 
+  let lastVoteData;
   var socket;
 
   //helper socket functions
@@ -226,6 +228,15 @@ $(function() {
   //return all players
   $.returnAllPlayers = function() {
     return clientdict;
+  };
+
+  //return majority vote
+  $.retMajorityVote = function() {
+    return returnMajorityVote();
+  };
+
+  $.retDataVote = function() {
+    return lastVoteData;
   };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
@@ -315,6 +326,7 @@ $(function() {
         clientdict[data.id] = playerobj;
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
+        playerIdToNum[data.username] = canvasnum;
       }
       log(data.username + ' joined');
       addParticipantsMessage(data);
@@ -380,26 +392,28 @@ $(function() {
 
   function updateVote(data){
     console.log(data);
-    //TODO: init array properly
-    if (votes[data.voteplayer]){
-      votes[data.voteplayer]=votes[data.voteplayer]+1;
-    }
-    else {
-      votes[data.voteplayer]=0;
-    }
+    console.log(playerIdToNum);
+    //save last vote data
+    lastVoteData = data.data;
+    //get playerid to num
+    let num = playerIdToNum[data.data];
+    votes[num]++;
     console.log(votes);
-
   }
 
   //returns null if there is no majority
   //returns player num of majority vote
-  function returnMajorityVote(data){
+  //TODO: bad return inconsistent type
+  function returnMajorityVote(){
+    console.log(votes);
     //loop through
     let majority = 0;
+    let playernum = 0;
     let tie = false;
     let ret = {};
     for (let i=0;i<votes.length;i++){
       if (votes[i] > majority){
+        playernum = i;
         majority = votes[i];
         tie = false;
       }
@@ -409,10 +423,10 @@ $(function() {
     }
 
     if (tie){
-      return false;
+      return -1;
     }
     else {
-      return majority;
+      return playernum;
     }
   }
 

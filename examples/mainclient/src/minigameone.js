@@ -161,46 +161,64 @@ class Timer extends React.Component {
       //alert(mystate.loopcounter);
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(startTimer(10));
+          storeTimer.dispatch(startTimer(5));
           storeGame.dispatch(startDiscuss());
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
           if (mystate.loopcounter == 2){
-            storeTimer.dispatch(resetTimer(15));
-            storeTimer.dispatch(startTimer(15));
+            storeTimer.dispatch(resetTimer(10));
+            storeTimer.dispatch(startTimer(10));
             storeGame.dispatch(startVote());
             $.callstatechangeall('vote', "vote for liar", playernames.join());
           }
           else{
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
-            storeTimer.dispatch(resetTimer(30));
-            storeTimer.dispatch(startTimer(30));
+            storeTimer.dispatch(resetTimer(5));
+            storeTimer.dispatch(startTimer(5));
             $.callstatechangeall('draw');
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
-          //call returnMajorityVote function to get result
-          //reveal winner
-          //if spy is chosen move into new mode only for spy
-          //$.callstatechangeprivate(mode, msg = "", clientid)
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(10));
-          storeTimer.dispatch(startTimer(10));
-          storeGame.dispatch(startEnd());
-          $.callstatechangeall('msg');
+          //call returnMajorityVote function to get result
+          let majvote = $.retMajorityVote();
+          console.log("majvote: " + majvote);
+          //reveal winner
+          if (majvote == -1){
+            //make winner the spy
+            storeGame.dispatch(startEnd("liar"));
+            $.callstatechangeall('msg');
+          }else{
+            console.log("spy redeem chance");
+            //if spy is chosen move into new mode only for spy
+            $.callstatechangeprivate("vote", "choose the location", socketLiar , words.join())
+            storeGame.dispatch(startVoteSpy());
+          }
+          storeTimer.dispatch(resetTimer(15));
+          storeTimer.dispatch(startTimer(15));
       }
       else if (mystate.gamestate ==  "VOTESPY"){
           //call returnDataVote function to get result
+          let votedLoc = $.retDataVote();
+          let winner = "";
+          console.log("voted: " + votedLoc + "secret: "+words[secretPlace])
           //if data is the same as target location spy wins, else spy loses
-          //display winner
+          if (votedLoc == words[secretPlace]){
+            //spy wins
+            winner = "liar";
+            storeGame.dispatch(startEnd(winner));
+          }
+          else{
+            winner = "everyone else";
+            storeGame.dispatch(startEnd(winner));
+          }
           storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(resetTimer(10));
           storeTimer.dispatch(startTimer(10));
-          storeGame.dispatch(startEnd());
-          $.callstatechangeall('msg');
+          $.callstatechangeall('winner is '+ winner);
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
@@ -211,8 +229,8 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "BEGIN"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(30));
-          storeTimer.dispatch(startTimer(30));
+          storeTimer.dispatch(resetTimer(10));
+          storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startDraw());
           $.callstatechangeall('draw');
       }
@@ -254,7 +272,8 @@ function mapStateToPropsTimer(state) {
 //MINIGAME REDUX
 const initialGameState = {
   gamestate: "IDLE",
-  loopcounter: 0
+  loopcounter: 0,
+  winner: ""
 };
 
 //action creators
@@ -288,10 +307,11 @@ function startVoteSpy() {
     gamestate: "VOTESPY"
   };
 }
-function startEnd() {
+function startEnd(winner) {
   return {
     type: "END",
-    gamestate: "END"
+    gamestate: "END",
+    winner: winner
   };
 }
 
@@ -307,7 +327,8 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter
+        loopcounter: state.loopcounter,
+        winner: state.winner
       };
     case "DISCUSS":
       //alert("discuss state");
@@ -315,7 +336,8 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter+1
+        loopcounter: state.loopcounter+1,
+        winner: state.winner
       };
     case "VOTE":
       //send VOTE state to client
@@ -323,15 +345,27 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter
+        loopcounter: state.loopcounter,
+        winner: state.winner
         //set to END state
       }
+      case "VOTESPY":
+        //send VOTE state to client
+        return {
+          ...state,
+          //set new state
+          gamestate: action.gamestate,
+          loopcounter: state.loopcounter,
+          winner: state.winner
+          //set to END state
+        }
     case "END":
         //animate winner or loser
       return {
         ...state,
         gamestate: action.gamestate,
-        loopcounter: 0
+        loopcounter: 0,
+        winner: action.winner
         //set new state
       }
     case "BEGIN":
@@ -339,14 +373,16 @@ function minigameonereducer(state = initialGameState, action) {
       return {
         ...state,
         gamestate: action.gamestate,
-        loopcounter: 0
+        loopcounter: 0,
+        winner: state.winner
       }
     case "IDLE":
         //wait
       return {
         ...state,
         gamestate: action.gamestate,
-        loopcounter: 0
+        loopcounter: 0,
+        winner: state.winner
         //set new state
     }
     default:
@@ -360,7 +396,7 @@ class MiniGameOne extends React.Component {
     const loop = this.props.loopcounter;
     return (
       <div>
-        <div>{gamestatelabel} Round: {this.props.loopcounter}</div>
+        <div>{gamestatelabel} Round: {this.props.loopcounter} , Winner: {this.props.winner}</div>
       </div>
     );
   }
@@ -368,7 +404,8 @@ class MiniGameOne extends React.Component {
 
 function mapStateToPropsGameOne(state) {
   return { gamestate: state.gamestate,
-           loopcounter: state.loopcounter
+           loopcounter: state.loopcounter,
+           winner: state.winner
          };
 }
 //END MINIGAME REDUX
@@ -480,6 +517,8 @@ export class MiniGameOneLayout extends React.Component {
 //const words = ["word1", "word2","word3","word4","word5","word6","word7","word8","word9","word10","word11","word12"];
 const words = populatewordarray();
 let playernames = [];
+let secretPlace;
+let socketLiar;
 /* Open when someone clicks on the span element */
 function openNav() {
     document.getElementById("myNav").style.height = "100%";
@@ -505,13 +544,17 @@ function setupGame(){
       playernames[playerobj.playernum] = playerobj.username;
 
       if (index == liarnum){
+        //save liar
+        socketLiar = playerobj.socketid;
         //set liar stuff
         console.log("send msg to liar");
         $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid);
       }
       else{
         console.log("send msg to else");
-        $.callstatechangeprivate('msg', 'secret place', playerobj.socketid);
+        //assign secret place
+        secretPlace = Math.floor(Math.random()*words.length);
+        $.callstatechangeprivate('msg', words[secretPlace], playerobj.socketid);
       }
       index++;
     }
