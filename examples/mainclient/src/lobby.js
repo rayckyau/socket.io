@@ -372,10 +372,10 @@ $(function() {
 
   function getRoomCode(){
     var rp = require('request-promise');
-    console.log('request to : '+'http://' + HOSTNAME + '/createRoom')
+    console.log('request to : '+'http://' + HOSTNAME + ':'+ PORT +'/createRoom')
     var options = {
         method: 'POST',
-        uri: 'http://' + HOSTNAME + '/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
+        uri: 'http://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
         body: {
             some: 'payload'
         },
