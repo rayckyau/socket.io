@@ -176,7 +176,7 @@ class PlayerPage extends React.Component {
     return (
         <div className="container-fluid">
           <TopNav />
-            <div className="mx-auto d-block">
+            <div className="mx-auto d-block" id="pageBG">
               {this.displayPage(this.props)}
             </div>
           <BotNav />

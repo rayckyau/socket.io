@@ -228,6 +228,16 @@ var HOSTNAME = process.env.HOSTNAME || 'localhost';
       return COLORS[index];
     }
 
+    $('#enterroom').click(function(){
+      if (username) {
+        sendMessage();
+        drawsocket.emit('stop typing');
+        typing = false;
+      } else {
+        setUsername();
+      }
+    });
+
     // Keyboard events
     $window.keydown(function(event) {
       // Auto-focus the current input when a key is typed
