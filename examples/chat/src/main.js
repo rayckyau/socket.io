@@ -2,6 +2,9 @@
 import io from 'socket.io-client';
 import * as navi from './navi';
 
+var PORT = process.env.PORT || 3000;
+var HOSTNAME = process.env.HOSTNAME || 'localhost';
+
   $(function () {
     const FADE_TIME = 150; // ms
     const TYPING_TIMER_LENGTH = 400; // ms
@@ -198,7 +201,7 @@ import * as navi from './navi';
         $loginPage.fadeOut();
         $drawPage.show();
         $loginPage.off('click');
-        var url = 'http://' + window.location.hostname + ':3000/';
+        var url = 'http://' + HOSTNAME + ':' + PORT +'/';
         drawsocket = io(url + room);
         defineSocket();
         socketReady = true;
