@@ -1,6 +1,6 @@
 {
-  "name": "production",
+  "name": "test",
   "description": "Add here any environment specific stuff you like.",
-  "serverendpoint": "localhost",
+  "serverendpoint": "ec2-13-59-140-62.us-east-2.compute.amazonaws.com",
   "serverport": "80"
 }

@@ -12,6 +12,10 @@ import {TestLayout, MiniGameOneLayout} from './minigameone'
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as minigameone from './minigameone'
+import env from './env';
+
+let HOSTNAME = env.serverendpoint;
+let PORT = env.serverport;
 
 class LobbyScreen extends React.Component {
   constructor(props){
@@ -248,8 +252,8 @@ $(function() {
   }
 
   function connectToSocket(roomCode){
-     socket = require('socket.io-client')('http://localhost:3000/'+roomCode);
-     console.log('try: %s', 'http://localhost:3000/'+roomCode);
+     socket = require('socket.io-client')('http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
+     console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      defineSocket();
      log(roomCode, {
        prepend: true
@@ -368,9 +372,10 @@ $(function() {
 
   function getRoomCode(){
     var rp = require('request-promise');
+    console.log('request to : '+'http://' + HOSTNAME + '/createRoom')
     var options = {
         method: 'POST',
-        uri: 'http://localhost:3000/createRoom',
+        uri: 'http://' + HOSTNAME + '/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
         body: {
             some: 'payload'
         },

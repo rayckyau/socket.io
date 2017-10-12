@@ -20,6 +20,7 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "build": "gulp build",
+    "testrelease": "gulp start --env=testserver",
     "prerelease": "gulp build --env=production",
     "release": "build",
     "start": "gulp start",
