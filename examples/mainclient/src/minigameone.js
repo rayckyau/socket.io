@@ -11,6 +11,15 @@ import {
   withRouter
 } from 'react-router-dom'
 
+const TIMELIMIT_DRAW = 45;
+const TIMELIMIT_VOTE = 15;
+const TIMELIMIT_DISCUSS = 10;
+const TIMELIMIT_BEGIN = 10;
+const TIMELIMIT_END = 10;
+
+const PLACEBUCKETNUM = 3;
+const PLACEPERBUCKET = 4;
+
 const placebuckets = [];
 placebuckets[0] = ["paris",
 "New york city",
@@ -60,8 +69,8 @@ function contains(a, obj) {
 function populatewordarray(){
   let retarraycount = 0;
   let retarray = [];
-  for (let j=0;j<3;j++){
-    for (let i=0;i<4;i++){
+  for (let j=0;j<PLACEBUCKETNUM;j++){
+    for (let i=0;i<PLACEPERBUCKET;i++){
       let randword = placebuckets[j][Math.floor(Math.random() * placebuckets[j].length)];
 
       while (contains(retarray, randword)){
@@ -161,23 +170,24 @@ class Timer extends React.Component {
       //alert(mystate.loopcounter);
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(startTimer(5));
+          storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
+          storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
           $.callstatechangeall('msg');
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
           if (mystate.loopcounter == 2){
-            storeTimer.dispatch(resetTimer(10));
-            storeTimer.dispatch(startTimer(10));
+            storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
+            storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
             storeGame.dispatch(startVote());
             $.callstatechangeall('vote', "vote for liar", playernames.join());
           }
           else{
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
-            storeTimer.dispatch(resetTimer(5));
-            storeTimer.dispatch(startTimer(5));
+            storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
+            storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
             $.callstatechangeall('draw');
           }
       }
@@ -197,8 +207,8 @@ class Timer extends React.Component {
             $.callstatechangeprivate("vote", "choose the location", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
-          storeTimer.dispatch(resetTimer(15));
-          storeTimer.dispatch(startTimer(15));
+          storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
+          storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
       }
       else if (mystate.gamestate ==  "VOTESPY"){
           //call returnDataVote function to get result
@@ -216,21 +226,21 @@ class Timer extends React.Component {
             storeGame.dispatch(startEnd(winner));
           }
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(10));
-          storeTimer.dispatch(startTimer(10));
+          storeTimer.dispatch(resetTimer(TIMELIMIT_END));
+          storeTimer.dispatch(startTimer(TIMELIMIT_END));
           $.callstatechangeall('winner is '+ winner);
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(10));
-          storeTimer.dispatch(startTimer(10));
+          storeTimer.dispatch(resetTimer(TIMELIMIT_BEGIN));
+          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
           storeGame.dispatch(startBegin());
       }
       else if (mystate.gamestate ==  "BEGIN"){
           storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(10));
-          storeTimer.dispatch(startTimer(10));
+          storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
+          storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
           storeGame.dispatch(startDraw());
           $.callstatechangeall('draw');
       }
