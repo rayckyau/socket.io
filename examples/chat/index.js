@@ -6,7 +6,6 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 3000;
-var hostname = process.env.HOSTNAME || 'localhost';
 var roomList = new ArrayList();
 var namespaces = {};
 
