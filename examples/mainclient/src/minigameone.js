@@ -244,6 +244,10 @@ class Timer extends React.Component {
           storeGame.dispatch(startDraw());
           $.callstatechangeall('draw');
       }
+      else if (mystate.gamestate ==  "END"){
+          storeGame.dispatch(startIdle());
+          $.callstatechangeall('msg');
+      }
       else{
         //error state
       }
@@ -264,9 +268,9 @@ class Timer extends React.Component {
       <div>
         <div>Time: {this.checkStop(Math.round(elapsed))}</div>
         <div>
-          <button onClick={() => storeTimer.dispatch(startTimer(60))}>start</button>
+          <button onClick={() => storeTimer.dispatch(startTimer(5))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
-          <button onClick={() => storeTimer.dispatch(resetTimer(60))}>res</button>
+          <button onClick={() => storeTimer.dispatch(resetTimer(5))}>res</button>
         </div>
       </div>
     );
@@ -287,10 +291,18 @@ const initialGameState = {
 };
 
 //action creators
+function startIdle() {
+  return {
+    type: "IDLE",
+    gamestate: "IDLE",
+    winner: ""
+  };
+}
 function startBegin() {
   return {
     type: "BEGIN",
-    gamestate: "BEGIN"
+    gamestate: "BEGIN",
+    winner: ""
   };
 }
 function startDraw() {
@@ -328,11 +340,15 @@ function startEnd(winner) {
 //reducer
 function minigameonereducer(state = initialGameState, action) {
   switch (action.type) {
+    case "IDLE":
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate,
+        loopcounter: state.loopcounter,
+        winner: state.winner
+      };
     case "DRAW":
-      //send DRAW state to client
-      //alert("draw state");
-      //change timer to 60 sec
-      //storeTimer.dispatch(stopTimer());
       return {
         ...state,
         //set new state
@@ -563,7 +579,7 @@ function setupGame(){
       }
       else{
         console.log("send msg to else");
-        //assign secret place        
+        //assign secret place
         $.callstatechangeprivate('msg', words[secretPlace], playerobj.socketid);
       }
       index++;

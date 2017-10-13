@@ -363,6 +363,7 @@ $(function () {
   function drawLine(fromx, fromy, tox, toy, playerid) {
     var drawcanvas = $('#' + clientdict[playerid].canvasid);
     var ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.beginPath();
     ctxdrawcanvas.moveTo(fromx, fromy);
     ctxdrawcanvas.lineTo(tox, toy);
     ctxdrawcanvas.stroke();
