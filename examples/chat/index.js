@@ -45,6 +45,12 @@ function initRoomNS(roomCode){
         socket.to(client).emit('changestateall', data);
     });
 
+    socket.on('makeadmin', function (data) {
+        let client = data.client;
+        console.log('make admin : '+ client);
+        socket.to(client).emit('makeadmin', data);
+    });
+
     socket.on('sendbutton', function (data) {
         console.log('received: sendbutton');
         let mainclient = namespaces[roomCode];

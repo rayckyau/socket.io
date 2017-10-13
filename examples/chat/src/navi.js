@@ -128,7 +128,13 @@ class BotNav extends React.Component {
       submitVote(mystate.vote);
     }
     else{
-      submitSend('testpayload');
+      if (mystate.admin == "true"){
+        submitSend('admin');
+      }
+      else {
+        submitSend('testpayload');
+      }
+
     }
     //change state to msg mode
     storePlayer.dispatch(changeModeMsg('submitted'));
@@ -188,7 +194,7 @@ class PlayerPage extends React.Component {
 
 const initialPlayerState = {
   mode: "draw",
-  admin: false,
+  admin: "false",
   vote: "",
   message: "hello world"
 };
@@ -225,6 +231,12 @@ function setVote(vote) {
     message: ''
   };
 }
+function changeToAdmin() {
+  return {
+    type: "ADMIN",
+    admin: "true"
+  };
+}
 
 //reducer
 function playerpagereducer(state = initialPlayerState, action) {
@@ -247,15 +259,24 @@ function playerpagereducer(state = initialPlayerState, action) {
         vote: action.vote,
         message: action.message
       };
-      case "MESSAGE":
-        return {
-          ...state,
-          //set new state
-          mode: action.mode,
-          admin: state.admin,
-          vote: state.vote,
-          message: action.message
-        };
+    case "MESSAGE":
+      return {
+        ...state,
+        //set new state
+        mode: action.mode,
+        admin: state.admin,
+        vote: state.vote,
+        message: action.message
+      };
+    case "ADMIN":
+      return {
+        ...state,
+        //set new state
+        mode: state.mode,
+        admin: action.admin,
+        vote: state.vote,
+        message: state.message
+      };
     default:
       return state;
   }
@@ -277,7 +298,11 @@ PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, chan
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
 const storePlayer = Redux.createStore(playerpagereducer);
 var voteOptions = [];
-//getter for playerstore
+
+export function setAdmin(){
+  storePlayer.dispatch(changeToAdmin());
+}
+
 export function changePlayerState(mystate, msg, payload = ""){
   //change player state
   if (mystate == 'draw'){

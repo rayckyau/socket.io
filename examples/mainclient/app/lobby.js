@@ -413,12 +413,10 @@ $(function () {
     socket.on('sendbutton', function (data) {
       //trigger startgame
       console.log('get sendbutton');
-      storeMainGame.dispatch(startGame('gameone'));
-      //socket emit to force button submit screen to other players
-      socket.emit('changestateall', {
-        state: 'msg',
-        message: 'waiting on game'
-      });
+      //only if admin then start the game.
+      if (data.data == "admin") {
+        storeMainGame.dispatch(startGame('gameone'));
+      }
     });
 
     socket.on('sendvote', function (data) {
@@ -448,6 +446,14 @@ $(function () {
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
         playerIdToNum[data.username] = canvasnum;
+
+        if (canvasnum == 0) {
+          //make admin
+          socket.emit('makeadmin', {
+            message: 'you are admin',
+            client: data.id
+          });
+        }
       }
       log(data.username + ' joined');
       addParticipantsMessage(data);
