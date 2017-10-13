@@ -341,7 +341,8 @@ $(function () {
 
   $.clearAllCanvas = function () {
     $.each($('canvas'), function (index, canvas) {
-      canvas.width = canvas.width;
+      var context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
     });
   };
 

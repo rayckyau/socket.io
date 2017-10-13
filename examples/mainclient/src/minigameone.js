@@ -546,6 +546,7 @@ function setupGame(){
   //pick rand number, that num is liar
   let liarnum = Math.floor(Math.random()*numplayers);
   let index = 0;
+  secretPlace = Math.floor(Math.random()*words.length);
   //FOR LOOP
   for (let key in clientsobj){
     if (clientsobj.hasOwnProperty(key)){
@@ -562,8 +563,7 @@ function setupGame(){
       }
       else{
         console.log("send msg to else");
-        //assign secret place
-        secretPlace = Math.floor(Math.random()*words.length);
+        //assign secret place        
         $.callstatechangeprivate('msg', words[secretPlace], playerobj.socketid);
       }
       index++;
