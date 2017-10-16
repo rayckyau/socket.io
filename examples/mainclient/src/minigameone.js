@@ -15,47 +15,97 @@ const TIMELIMIT_DRAW = 45;
 const TIMELIMIT_VOTE = 15;
 const TIMELIMIT_DISCUSS = 10;
 const TIMELIMIT_BEGIN = 10;
-const TIMELIMIT_END = 10;
+const TIMELIMIT_END = 5;
+const TIMELIMIT_CONT = 3;
 
-const PLACEBUCKETNUM = 3;
-const PLACEPERBUCKET = 4;
+const PLACEBUCKETNUM = 2;
+const PLACEPERBUCKET = 3;
+const BUCKETS = 5;
 
 const placebuckets = [];
-placebuckets[0] = ["paris",
-"New york city",
-"canada",
-"london",
-"rome",
-"barcelona",
-"amsterdam",
-"tokyo",
-"shanghai",
-"afghanistan",
-"egypt",
-"malaysia",
-"australia",
-"california"];
+const helperbuckets = [];
+const whichbuckets = [];
 
+//modern city
+placebuckets[0] = [
+"Paris",
+"New York City",
+"Toronto",
+"London",
+"California"];
+
+helperbuckets[0] = [
+"modern city",
+"roads",
+"subway"
+];
+
+//exotic place
 placebuckets[1] = [
-"outerspace",
-"machu pichu",
-"mount everest",
-"mount fuji",
-"coffee shop",
+"Japan",
+"Shanghai",
+"Afghanistan",
+"Egypt",
+"Australia"];
+
+helperbuckets[1] = [
+"exotic place"
+];
+
+//mountainous
+placebuckets[2] = [
+"Machu Pichu",
+"Mount Everest",
+"Middle Earth",
 "Stonehenge",
 "Las Vegas",
-"ancient China"
+"Hawaii"
 ]
 
-placebuckets[2] = [
-"medieval castle",
-"middle earth",
-"museum",
-"beach",
-"aquarium",
-"deserted island",
-"art gallery"
+helperbuckets[2] = [
+"mountain",
+"rocks"
+];
+
+//water based
+placebuckets[3] = [
+"Beach",
+"Aquarium",
+"Deserted Island",
+"Atlantis"
 ]
+
+helperbuckets[3] = [
+"water",
+"rubber ducky"
+];
+
+//sitting places
+placebuckets[4] = [
+"The Mall",
+"Conference Room",
+"Soccer Stadium",
+"Coffee Shop"
+]
+
+helperbuckets[1] = [
+"a person sitting",
+"a conversation"
+];
+
+//standing
+placebuckets[5] = [
+"Art Gallery",
+"Museum",
+"Medieval Castle",
+"Ancient China",
+"Rome"
+]
+
+helperbuckets[5] = [
+"a person standing",
+"picture frame"
+];
 
 function contains(a, obj) {
     for (var i = 0; i < a.length; i++) {
@@ -67,19 +117,31 @@ function contains(a, obj) {
 }
 
 function populatewordarray(){
+
   let retarraycount = 0;
+  let bucketcount = 0;
   let retarray = [];
-  for (let j=0;j<PLACEBUCKETNUM;j++){
-    for (let i=0;i<PLACEPERBUCKET;i++){
-      let randword = placebuckets[j][Math.floor(Math.random() * placebuckets[j].length)];
+  //choose a randombucket not in whichbuckets
+  let counter = 0;
+  let randobucket = 0;
 
-      while (contains(retarray, randword)){
-        randword = placebuckets[j][Math.floor(Math.random() * placebuckets[j].length)];
+  while (whichbuckets.length != PLACEBUCKETNUM){
+    console.log(whichbuckets.length);
+    randobucket = Math.floor(Math.random() * BUCKETS);
+    while (!contains(whichbuckets, randobucket)){
+      for (let i=0;i<PLACEPERBUCKET;i++){
+        let randword = placebuckets[randobucket][Math.floor(Math.random() * placebuckets[randobucket].length)];
+        while (contains(retarray, randword)){
+          randword = placebuckets[randobucket][Math.floor(Math.random() * placebuckets[randobucket].length)];
+        }
+        retarray[retarraycount] = randword;
+        retarraycount = retarraycount+1;
+
       }
-      retarray[retarraycount] = randword;
-      retarraycount = retarraycount+1;
-
+      whichbuckets[bucketcount] = randobucket;
+      bucketcount++;
     }
+
   }
   //returns array of words
   return retarray;
@@ -245,6 +307,10 @@ class Timer extends React.Component {
           $.callstatechangeall('draw');
       }
       else if (mystate.gamestate ==  "END"){
+          $.clearAllCanvas();
+          storeTimer.dispatch(stopTimer());
+          storeTimer.dispatch(resetTimer(TIMELIMIT_CONT));
+          storeTimer.dispatch(startTimer(TIMELIMIT_CONT));
           storeGame.dispatch(startIdle());
           $.callstatechangeall('msg');
       }
@@ -540,8 +606,7 @@ export class MiniGameOneLayout extends React.Component {
 }
 
 
-//const words = ["word1", "word2","word3","word4","word5","word6","word7","word8","word9","word10","word11","word12"];
-const words = populatewordarray();
+let words = [];
 let playernames = [];
 let secretPlace;
 let socketLiar;
@@ -557,6 +622,7 @@ function closeNav() {
 
 function setupGame(){
   console.log("setup the game");
+  words = populatewordarray();
   let clientsobj = $.returnAllPlayers();
   let numplayers = Object.keys(clientsobj).length;
   //pick rand number, that num is liar
