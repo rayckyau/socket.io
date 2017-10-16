@@ -124,6 +124,7 @@ function populatewordarray(){
   //choose a randombucket not in whichbuckets
   let counter = 0;
   let randobucket = 0;
+  whichbuckets.length = 0;
 
   while (whichbuckets.length != PLACEBUCKETNUM){
     console.log(whichbuckets.length);
@@ -353,7 +354,8 @@ function mapStateToPropsTimer(state) {
 const initialGameState = {
   gamestate: "IDLE",
   loopcounter: 0,
-  winner: ""
+  winner: "",
+  words: []
 };
 
 //action creators
@@ -368,7 +370,8 @@ function startBegin() {
   return {
     type: "BEGIN",
     gamestate: "BEGIN",
-    winner: ""
+    winner: "",
+    words: words
   };
 }
 function startDraw() {
@@ -412,7 +415,8 @@ function minigameonereducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter,
-        winner: state.winner
+        winner: action.winner,
+        words: state.words
       };
     case "DRAW":
       return {
@@ -420,7 +424,8 @@ function minigameonereducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter,
-        winner: state.winner
+        winner: state.winner,
+        words: state.words
       };
     case "DISCUSS":
       //alert("discuss state");
@@ -429,7 +434,8 @@ function minigameonereducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter+1,
-        winner: state.winner
+        winner: state.winner,
+        words: state.words
       };
     case "VOTE":
       //send VOTE state to client
@@ -438,7 +444,8 @@ function minigameonereducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter,
-        winner: state.winner
+        winner: state.winner,
+        words: state.words
         //set to END state
       }
       case "VOTESPY":
@@ -448,7 +455,8 @@ function minigameonereducer(state = initialGameState, action) {
           //set new state
           gamestate: action.gamestate,
           loopcounter: state.loopcounter,
-          winner: state.winner
+          winner: state.winner,
+          words: state.words
           //set to END state
         }
     case "END":
@@ -457,7 +465,8 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: action.winner
+        winner: action.winner,
+        words: state.words
         //set new state
       }
     case "BEGIN":
@@ -466,7 +475,8 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: state.winner
+        winner: state.winner,
+        words: action.words
       }
     case "IDLE":
         //wait
@@ -474,7 +484,8 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: state.winner
+        winner: action.winner,
+        words: state.words
         //set new state
     }
     default:
@@ -483,12 +494,21 @@ function minigameonereducer(state = initialGameState, action) {
 }
 
 class MiniGameOne extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
+
   render() {
     const gamestatelabel = this.props.gamestate;
     const loop = this.props.loopcounter;
+    const words = this.props.words;
     return (
       <div>
         <div>{gamestatelabel} Round: {this.props.loopcounter} , Winner: {this.props.winner}</div>
+        <div className="col">
+          <WordList words={this.props.words} />
+        </div>
       </div>
     );
   }
@@ -497,7 +517,8 @@ class MiniGameOne extends React.Component {
 function mapStateToPropsGameOne(state) {
   return { gamestate: state.gamestate,
            loopcounter: state.loopcounter,
-           winner: state.winner
+           winner: state.winner,
+           words: state.words
          };
 }
 //END MINIGAME REDUX
@@ -514,6 +535,7 @@ export const storeGame = Redux.createStore(minigameonereducer);
 //WORDLIST REACT
 function WordList(props) {
   let wordsInWordList = props.words;
+  console.log("wordsinwordlist: "+wordsInWordList);
   const listItems = wordsInWordList.map((word) =>
     <button type="button" className="btn btn-secondary btn-lg" disabled>{word}</button>
   );
@@ -538,9 +560,6 @@ export class MiniGameOneLayout extends React.Component {
              <ReactRedux.Provider store={storeTimer}>
               <Timer updateInterval={1000} />
              </ReactRedux.Provider>
-             <div className="col">
-               <WordList words={words} />
-             </div>
           </div>
           <div className="col-sm-10">
             <div>
