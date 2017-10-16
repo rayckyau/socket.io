@@ -113,6 +113,11 @@ function mountCanvas(){
   $.mountCanvas();
 }
 
+function clearMouseEvent(){
+  console.log("clear mouse event");
+  $.clearMouseEvent();
+}
+
 class BotNav extends React.Component {
   constructor(props) {
     super(props)
@@ -304,6 +309,7 @@ export function setAdmin(){
 }
 
 export function changePlayerState(mystate, msg, payload = ""){
+  clearMouseEvent();
   //change player state
   if (mystate == 'draw'){
     storePlayer.dispatch(changeModeDraw(msg));

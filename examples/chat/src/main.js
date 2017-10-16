@@ -182,6 +182,11 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       console.log("in mount canvas: "+drawcanvas);
     };
 
+    $.clearMouseEvent = function(){
+      var mouseEvent = new MouseEvent("mouseup", {});
+      drawcanvas[0].dispatchEvent(mouseEvent);
+    }
+
     $.subSend = function(payload){
       drawsocket.emit('sendbutton', {
         'data': payload,
