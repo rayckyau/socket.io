@@ -334,9 +334,9 @@ class Timer extends React.Component {
       <div>
         <div>Time: {this.checkStop(Math.round(elapsed))}</div>
         <div>
-          <button onClick={() => storeTimer.dispatch(startTimer(5))}>start</button>
+          <button onClick={() => storeTimer.dispatch(startTimer(3))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
-          <button onClick={() => storeTimer.dispatch(resetTimer(5))}>res</button>
+          <button onClick={() => storeTimer.dispatch(resetTimer(3))}>res</button>
         </div>
       </div>
     );
@@ -513,8 +513,8 @@ export const storeGame = Redux.createStore(minigameonereducer);
 
 //WORDLIST REACT
 function WordList(props) {
-  const words = props.words;
-  const listItems = words.map((word) =>
+  let wordsInWordList = props.words;
+  const listItems = wordsInWordList.map((word) =>
     <button type="button" className="btn btn-secondary btn-lg" disabled>{word}</button>
   );
   return (
@@ -523,28 +523,10 @@ function WordList(props) {
 }
 //END WORDLIST REACT
 
-//OVERLAY REACT
-function OverlayWords(props) {
-  const words = props.words;
-  const listItems = words.map((word) =>
-    <button type="button" className="btn btn-secondary btn-lg" disabled>{word}</button>
-  );
-  return (
-      <div>{listItems}</div>
-  );
-}
-//END OVERLAY REACT
-export class TestLayout extends React.Component {
-  render() {
-    return (
-      <div>
-      testlayout
-      </div>
-    );
-  }
-}
+
 //MINIGAME LAYOUT
 export class MiniGameOneLayout extends React.Component {
+
   render() {
     return (
       <div className="container-fluid">

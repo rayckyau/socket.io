@@ -8,7 +8,7 @@ import {
   Link,
   withRouter
 } from 'react-router-dom'
-import {TestLayout, MiniGameOneLayout} from './minigameone'
+import {MiniGameOneLayout} from './minigameone'
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as minigameone from './minigameone'
