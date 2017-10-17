@@ -236,7 +236,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg', 'thnk now', "main msg: think");
+          $.callstatechangeall('msg', null, "main msg: think");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
@@ -251,7 +251,7 @@ class Timer extends React.Component {
             $.clearAllCanvas();
             storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
             storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
-            $.callstatechangeall('draw');
+            $.callstatechangeall('draw', null);
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
@@ -305,7 +305,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
           storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
           storeGame.dispatch(startDraw());
-          $.callstatechangeall('draw');
+          $.callstatechangeall('draw', null);
       }
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
@@ -313,7 +313,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_CONT));
           storeTimer.dispatch(startTimer(TIMELIMIT_CONT));
           storeGame.dispatch(startIdle());
-          $.callstatechangeall('msg');
+          $.callstatechangeall('msg', null);
       }
       else{
         //error state

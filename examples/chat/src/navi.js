@@ -221,6 +221,7 @@ function changeModeVote(msg) {
     message: msg
   };
 }
+//if msg is null then do not change state
 function changeModeMsg(msg, mainmsg="") {
   return {
     type: "MESSAGE",
@@ -249,6 +250,9 @@ function changeToAdmin() {
 function playerpagereducer(state = initialPlayerState, action) {
   switch (action.type) {
     case "DRAW":
+      if (action.message == null){
+        action.message = state.message;
+      }
       return {
         ...state,
         //set new state
@@ -259,6 +263,9 @@ function playerpagereducer(state = initialPlayerState, action) {
         mainmsg: state.mainmsg
       };
     case "VOTE":
+      if (action.message == null){
+        action.message = state.message;
+      }
       return {
         ...state,
         //set new state
@@ -269,6 +276,9 @@ function playerpagereducer(state = initialPlayerState, action) {
         mainmsg: state.mainmsg
       };
     case "MESSAGE":
+      if (action.message == null){
+        action.message = state.message;
+      }
       return {
         ...state,
         //set new state
@@ -279,6 +289,9 @@ function playerpagereducer(state = initialPlayerState, action) {
         mainmsg: action.mainmsg
       };
     case "ADMIN":
+      if (action.message == null){
+        action.message = state.message;
+      }
       return {
         ...state,
         //set new state
