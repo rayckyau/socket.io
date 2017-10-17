@@ -261,7 +261,6 @@ $(function() {
     for (let i=0;i<votes.length;i++){
       sum += votes[i];
     }
-    console.log("sum: " + sum +" " +Object.keys(clientdict).length);
     if (sum == Object.keys(clientdict).length){
       return true;
     }

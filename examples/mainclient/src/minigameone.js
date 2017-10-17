@@ -235,6 +235,7 @@ class Timer extends React.Component {
     if (mystate.gamestate == "VOTESPY"){
       let votedLoc = $.retDataVote();
       if (votedLoc != null){
+        $.callstatechangeall('msg', null, "All votes are in");
         timeleft = 0;
       }
     }
@@ -242,6 +243,7 @@ class Timer extends React.Component {
       //if the number of votes is equal to numb of players
       //we can skip to next state
       if ($.isAllVoted()){
+        $.callstatechangeall('msg', null, "All votes are in");
         timeleft = 0;
       }
 

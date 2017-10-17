@@ -337,6 +337,8 @@ export function changePlayerState(mystate, msg, payload = ""){
     mountCanvas();
   }
   else if (mystate == 'vote'){
+    //reset voteOptions
+    voteOptions.length = 0;
     //take payload and add to votes array
     let players = payload.split(",");
     for (let i=0;i<players.length;i++){
