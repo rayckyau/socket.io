@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {
   BrowserRouter,
+  HashRouter,
   Route,
   Link,
   Switch,
@@ -22,8 +23,6 @@ class LobbyScreen extends React.Component {
 
   componentDidMount() {
     this.interval = setInterval(() => this.startGame(), 1000);
-    console.log("LobbyScreen this.props.gamestate " + this.props.gamestate);
-
   }
 
   componentWillUnmount() {
@@ -32,7 +31,6 @@ class LobbyScreen extends React.Component {
 
   //function that is called when admin starts game
   startGame(){
-    //console.log("this.props.game " + this.props.game);
     if (this.props.gamestate == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
@@ -131,7 +129,6 @@ function maingamereducer(state = initialMainGameState, action) {
 class MainFrame extends React.Component {
   componentDidMount() {
     //this.interval = setInterval(this.forceUpdate.bind(this), 1000);
-    console.log("MainFrame this.props.game " + this.props.gamestate);
   }
 
   componentWillUnmount() {
@@ -140,19 +137,19 @@ class MainFrame extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
       <div>
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/minigameone">minigameone</Link></li>
           </ul>
 
-          <Switch>
-            <Route exact path="/" component={LobbyScreen}/>
-            <Route path="/minigameone" component={MiniGameOneLayout}/>
-          </Switch>
+
+          <Route exact path="/" component={LobbyScreen}/>
+          <Route path="/minigameone" component={MiniGameOneLayout}/>
+
       </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }

@@ -60,7 +60,6 @@ var LobbyScreen = function (_React$Component) {
       this.interval = setInterval(function () {
         return _this2.startGame();
       }, 1000);
-      console.log("LobbyScreen this.props.gamestate " + this.props.gamestate);
     }
   }, {
     key: 'componentWillUnmount',
@@ -73,7 +72,6 @@ var LobbyScreen = function (_React$Component) {
   }, {
     key: 'startGame',
     value: function startGame() {
-      //console.log("this.props.game " + this.props.game);
       if (this.props.gamestate == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
@@ -203,7 +201,6 @@ var MainFrame = function (_React$Component2) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       //this.interval = setInterval(this.forceUpdate.bind(this), 1000);
-      console.log("MainFrame this.props.game " + this.props.gamestate);
     }
   }, {
     key: 'componentWillUnmount',
@@ -214,7 +211,7 @@ var MainFrame = function (_React$Component2) {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        _reactRouterDom.BrowserRouter,
+        _reactRouterDom.HashRouter,
         null,
         _react2.default.createElement(
           'div',
@@ -241,12 +238,8 @@ var MainFrame = function (_React$Component2) {
               )
             )
           ),
-          _react2.default.createElement(
-            _reactRouterDom.Switch,
-            null,
-            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: LobbyScreen }),
-            _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
-          )
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: LobbyScreen }),
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
         )
       );
     }
