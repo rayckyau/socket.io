@@ -72,12 +72,16 @@ var LobbyScreen = function (_React$Component) {
   }, {
     key: 'startGame',
     value: function startGame() {
-      //
+      //console.log("this.props.game " + this.props.game);
       if (this.props.game == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
           minigameone.storeTimer.dispatch(minigameone.startTimer(10));
+        }
+      } else if (this.props.game == 'lobby') {
+        if (this.props.history.location.pathname != '/') {
+          this.props.history.push('/');
         }
       } else {
         //do nothing
@@ -94,24 +98,24 @@ var LobbyScreen = function (_React$Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
             'p1'
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
             'p2'
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' })
           )
         ),
@@ -120,22 +124,22 @@ var LobbyScreen = function (_React$Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' })
           ),
           _react2.default.createElement(
             'div',
-            { className: 'col-sm-3 text-center', align: 'center' },
+            { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' })
           )
         )
@@ -170,7 +174,7 @@ var About = function (_React$Component2) {
 }(_react2.default.Component);
 
 var initialMainGameState = {
-  gamestate: "LOBBY"
+  gamestate: "lobby"
 };
 //action creators
 // Action Creators
@@ -178,6 +182,12 @@ function startGame(gamename) {
   return {
     type: "MINIGAMEONE",
     gamestate: gamename
+  };
+}
+function startLobby() {
+  return {
+    type: "LOBBY",
+    gamestate: "lobby"
   };
 }
 //reducer
@@ -189,7 +199,7 @@ function maingamereducer() {
     case "LOBBY":
       return _extends({}, state, {
         //set new state
-        gamestate: action.gamestate
+        gamestate: 'lobby'
       });
     case "MINIGAMEONE":
       //alert("discuss state");
@@ -215,6 +225,7 @@ var MainFrame = function (_React$Component3) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+      console.log("this.props.game " + this.props.game);
     }
   }, {
     key: 'componentWillUnmount',
@@ -227,7 +238,6 @@ var MainFrame = function (_React$Component3) {
       var _this5 = this;
 
       var gamestatelabel = this.props.gamestate;
-
       return _react2.default.createElement(
         _reactRouterDom.BrowserRouter,
         null,
@@ -256,10 +266,17 @@ var MainFrame = function (_React$Component3) {
               )
             )
           ),
+          '/*',
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', render: function render(props) {
               return _react2.default.createElement(LobbyScreen, _extends({}, props, { game: _this5.props.gamestate }));
             } }),
-          _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
+          '*/',
+          _react2.default.createElement(
+            _reactRouterDom.Switch,
+            null,
+            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: LobbyScreen }),
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
+          )
         )
       );
     }
@@ -268,11 +285,13 @@ var MainFrame = function (_React$Component3) {
   return MainFrame;
 }(_react2.default.Component);
 
+(0, _reactRouterDom.withRouter)(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
+
 function mapStateToPropsMainFrame(state) {
   return { gamestate: state.gamestate
   };
 }
-MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame: startGame })(MainFrame);
+MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame: startGame, startLobby: startLobby })(MainFrame);
 var storeMainGame = Redux.createStore(maingamereducer);
 
 _reactDom2.default.render(_react2.default.createElement(
@@ -412,7 +431,6 @@ $(function () {
 
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
-      //trigger startgame
       console.log('get sendbutton');
       //only if admin then start the game.
       if (data.data == "admin") {
@@ -421,7 +439,6 @@ $(function () {
     });
 
     socket.on('sendvote', function (data) {
-      //trigger startgame
       console.log('get sendvote');
       //update vote
       updateVote(data);
@@ -435,6 +452,7 @@ $(function () {
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', function (data) {
       //TODO: add a player canvas
+      console.log('user joined: ' + data.username);
       if (data.username != 'mainclient') {
         var canvasnum = Object.keys(clientdict).length;
         var playerobj = {};
@@ -447,7 +465,7 @@ $(function () {
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
         playerIdToNum[data.username] = canvasnum;
-
+        console.log('player obj created ' + playerobj);
         if (canvasnum == 0) {
           //make admin
           socket.emit('makeadmin', {
@@ -455,6 +473,12 @@ $(function () {
             client: data.id
           });
         }
+      } else if (data.username == 'mainclient') {
+        $loginPage.fadeOut();
+        $chatPage.show();
+        //go to lobby page
+        console.log('start lobby');
+        storeMainGame.dispatch(startLobby());
       }
       log(data.username + ' joined');
       addParticipantsMessage(data);
@@ -570,8 +594,8 @@ $(function () {
 
     // If the username is valid
     if (username) {
-      $loginPage.fadeOut();
-      $chatPage.show();
+      //$loginPage.fadeOut();
+      //$chatPage.show();
       $loginPage.off('click');
       setTimeout(function () {
         console.log("waiting in set username");

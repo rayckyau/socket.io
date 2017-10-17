@@ -97,7 +97,11 @@ function initRoomNS(roomCode){
         id: socketid,
         mainclient: mainclientid
       });
-      // echo globally (all clients) that a person has connected
+      socket.emit('user joined', {
+        username: socket.username,
+        numUsers: numUsers,
+        id: socket.id,
+      });
       socket.broadcast.emit('user joined', {
         username: socket.username,
         numUsers: numUsers,

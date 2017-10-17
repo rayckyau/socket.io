@@ -3,9 +3,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Route,
   Link,
+  Switch,
   withRouter
 } from 'react-router-dom'
 import {MiniGameOneLayout} from './minigameone'
@@ -31,12 +32,18 @@ class LobbyScreen extends React.Component {
 
   //function that is called when admin starts game
   startGame(){
-    //
+    //console.log("this.props.game " + this.props.game);
     if (this.props.game == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
         minigameone.storeTimer.dispatch(minigameone.startTimer(10));
+      }
+
+    }
+    else if (this.props.game == 'lobby'){
+      if (this.props.history.location.pathname != '/'){
+        this.props.history.push('/');
       }
 
     }
@@ -49,31 +56,31 @@ class LobbyScreen extends React.Component {
     return (
       <div>
       <div className="row">
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p0" width="268" height="340"></canvas>p1
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p1" width="268" height="340"></canvas>p2
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p2" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p3" width="268" height="340"></canvas>
         </div>
       </div>
 
       <div className="row">
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p4" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p5" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p6" width="268" height="340"></canvas>
         </div>
-        <div className="col-sm-3 text-center" align="center">
+        <div className="col-sm-3 text-center">
           <canvas id="canvas-p7" width="268" height="340"></canvas>
         </div>
       </div>
@@ -93,7 +100,7 @@ class About extends React.Component {
 }
 
 const initialMainGameState = {
-  gamestate: "LOBBY"
+  gamestate: "lobby"
 };
 //action creators
 // Action Creators
@@ -103,6 +110,12 @@ function startGame(gamename) {
     gamestate: gamename
   };
 }
+function startLobby() {
+  return {
+    type: "LOBBY",
+    gamestate: "lobby"
+  };
+}
 //reducer
 function maingamereducer(state = initialMainGameState, action) {
   switch (action.type) {
@@ -110,7 +123,7 @@ function maingamereducer(state = initialMainGameState, action) {
       return {
         ...state,
         //set new state
-        gamestate: action.gamestate
+        gamestate: 'lobby'
       };
     case "MINIGAMEONE":
       //alert("discuss state");
@@ -127,6 +140,7 @@ function maingamereducer(state = initialMainGameState, action) {
 class MainFrame extends React.Component {
   componentDidMount() {
     this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+    console.log("this.props.game " + this.props.game);
   }
 
   componentWillUnmount() {
@@ -135,32 +149,31 @@ class MainFrame extends React.Component {
 
   render() {
     const gamestatelabel = this.props.gamestate;
-
     return (
-      <Router>
-        <div>
-
+      <BrowserRouter>
+      <div>
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/minigameone">minigameone</Link></li>
           </ul>
 
-            <Route exact path="/" render ={(props) => (
-                <LobbyScreen {...props} game={this.props.gamestate}/>
-            )}/>
+          <Switch>
+            <Route exact path="/" component={LobbyScreen}/>
             <Route path="/minigameone" component={MiniGameOneLayout}/>
-
-          </div>
-        </Router>
+          </Switch>
+      </div>
+      </BrowserRouter>
     );
   }
 }
+
+withRouter(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
 
 function mapStateToPropsMainFrame(state) {
   return { gamestate: state.gamestate
          };
 }
-MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame })(MainFrame);
+MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame, startLobby })(MainFrame);
 const storeMainGame = Redux.createStore(maingamereducer);
 
 ReactDOM.render(
@@ -296,7 +309,6 @@ $(function() {
 
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
-      //trigger startgame
       console.log('get sendbutton');
       //only if admin then start the game.
       if (data.data == "admin"){
@@ -307,7 +319,6 @@ $(function() {
     });
 
     socket.on('sendvote', function (data) {
-      //trigger startgame
       console.log('get sendvote');
       //update vote
       updateVote(data);
@@ -321,6 +332,7 @@ $(function() {
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', function (data) {
       //TODO: add a player canvas
+      console.log('user joined: '+data.username);
       if (data.username != 'mainclient'){
         let canvasnum = Object.keys(clientdict).length;
         const playerobj = {};
@@ -333,7 +345,7 @@ $(function() {
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
         playerIdToNum[data.username] = canvasnum;
-
+        console.log('player obj created '+playerobj);
         if (canvasnum == 0){
           //make admin
           socket.emit('makeadmin',{
@@ -341,6 +353,13 @@ $(function() {
             client: data.id
           })
         }
+      }
+      else if (data.username == 'mainclient'){
+        $loginPage.fadeOut();
+        $chatPage.show();
+        //go to lobby page
+        console.log('start lobby');
+        storeMainGame.dispatch(startLobby());
       }
       log(data.username + ' joined');
       addParticipantsMessage(data);
@@ -461,8 +480,8 @@ $(function() {
 
     // If the username is valid
     if (username) {
-      $loginPage.fadeOut();
-      $chatPage.show();
+      //$loginPage.fadeOut();
+      //$chatPage.show();
       $loginPage.off('click');
       setTimeout(function(){
           console.log("waiting in set username");

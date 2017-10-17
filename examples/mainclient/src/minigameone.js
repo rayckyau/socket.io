@@ -564,35 +564,35 @@ export class MiniGameOneLayout extends React.Component {
           <div className="col-sm-10">
             <div>
             <div className="row">
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p0" width="268" height="340"></canvas>
                 <br/>
                 player1
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p1" width="268" height="340"></canvas>
                 <br/>
                 player2
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p2" width="268" height="340"></canvas>
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p3" width="268" height="340"></canvas>
               </div>
             </div>
 
             <div className="row">
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p4" width="268" height="340"></canvas>
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p5" width="268" height="340"></canvas>
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p6" width="268" height="340"></canvas>
               </div>
-              <div className="col-sm-3 text-center" align="center">
+              <div className="col-sm-3 text-center">
                 <canvas id="canvas-p7" width="268" height="340"></canvas>
               </div>
             </div>
