@@ -142,7 +142,7 @@ class BotNav extends React.Component {
 
     }
     //change state to msg mode
-    storePlayer.dispatch(changeModeMsg('submitted'));
+    storePlayer.dispatch(changeModeMsg('submitted', 'main msg: submitted'));
   }
 
   render(){
@@ -178,7 +178,7 @@ class PlayerPage extends React.Component {
     }
     else{
       return (
-        <div>{props.message}</div>
+        <div>{props.mainmsg}</div>
       )
     }
   }
@@ -201,7 +201,8 @@ const initialPlayerState = {
   mode: "draw",
   admin: "false",
   vote: "",
-  message: "hello world"
+  message: "hello world",
+  mainmsg: "mainmsg"
 };
 
 //action creator
@@ -220,11 +221,12 @@ function changeModeVote(msg) {
     message: msg
   };
 }
-function changeModeMsg(msg) {
+function changeModeMsg(msg, mainmsg="") {
   return {
     type: "MESSAGE",
     mode: 'msg',
-    message: msg
+    message: msg,
+    mainmsg: mainmsg
   };
 }
 function setVote(vote) {
@@ -253,7 +255,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         mode: action.mode,
         admin: state.admin,
         vote: state.vote,
-        message: action.message
+        message: action.message,
+        mainmsg: state.mainmsg
       };
     case "VOTE":
       return {
@@ -262,7 +265,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         mode: action.mode,
         admin: state.admin,
         vote: action.vote,
-        message: action.message
+        message: action.message,
+        mainmsg: state.mainmsg
       };
     case "MESSAGE":
       return {
@@ -271,7 +275,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         mode: action.mode,
         admin: state.admin,
         vote: state.vote,
-        message: action.message
+        message: action.message,
+        mainmsg: action.mainmsg
       };
     case "ADMIN":
       return {
@@ -280,7 +285,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         mode: state.mode,
         admin: action.admin,
         vote: state.vote,
-        message: state.message
+        message: state.message,
+        mainmsg: state.mainmsg
       };
     default:
       return state;
@@ -291,7 +297,8 @@ function mapStateToPropsPlayerPage(state) {
   return { mode: state.mode,
            admin: state.admin,
            vote: state.vote,
-           message: state.message
+           message: state.message,
+           mainmsg: state.mainmsg
          };
 }
 //END MINIGAME REDUX
@@ -325,7 +332,7 @@ export function changePlayerState(mystate, msg, payload = ""){
     storePlayer.dispatch(changeModeVote(msg));
   }
   else if (mystate == 'msg'){
-    storePlayer.dispatch(changeModeMsg(msg));
+    storePlayer.dispatch(changeModeMsg(msg, payload));
   }
   else {
     storePlayer.dispatch(changeModeMsg("no state found in data"));

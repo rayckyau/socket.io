@@ -306,7 +306,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       drawsocket.on('forcebuttonsubmit', function(data) {
         console.log(data.username + ' joined');
         $.subSend(data.username);
-        navi.changePlayerState('msg', 'game moving on');
+        navi.changePlayerState('msg', 'game moving on', 'main msg: game moving on');
       });
 
       drawsocket.on('makeadmin', function(data) {

@@ -236,7 +236,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg');
+          $.callstatechangeall('msg', 'thnk now', "main msg: think");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
@@ -642,7 +642,7 @@ function setupGame(){
         socketLiar = playerobj.socketid;
         //set liar stuff
         console.log("send msg to liar");
-        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid);
+        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid, "hint: blahg");
       }
       else{
         console.log("send msg to else");
