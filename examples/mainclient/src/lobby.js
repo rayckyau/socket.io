@@ -236,6 +236,17 @@ $(function() {
     return clientdict;
   };
 
+  $.resetLastVoteData = function(){
+    lastVoteData = null;
+  }
+
+  //clear votes
+  $.resetVotes = function() {
+    for (let i=0;i<votes.length;i++){
+      votes[i] = 0;
+    }
+  }
+
   //return majority vote
   $.retMajorityVote = function() {
     return returnMajorityVote();
@@ -243,6 +254,20 @@ $(function() {
 
   $.retDataVote = function() {
     return lastVoteData;
+  };
+
+  $.isAllVoted = function() {
+    let sum = 0;
+    for (let i=0;i<votes.length;i++){
+      sum += votes[i];
+    }
+    console.log("sum: " + sum +" " +Object.keys(clientdict).length);
+    if (sum == Object.keys(clientdict).length){
+      return true;
+    }
+    else {
+      return false;
+    }
   };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {

@@ -228,8 +228,26 @@ class Timer extends React.Component {
   }
 
   checkStop(timeleft){
+    let mystate = storeGame.getState();
+
+    //when counting if vote state is spyredeem and a vote is in
+    //we can skip straight to next state
+    if (mystate.gamestate == "VOTESPY"){
+      let votedLoc = $.retDataVote();
+      if (votedLoc != null){
+        timeleft = 0;
+      }
+    }
+    else if (mystate.gamestate == "VOTE"){
+      //if the number of votes is equal to numb of players
+      //we can skip to next state
+      if ($.isAllVoted()){
+        timeleft = 0;
+      }
+
+    }
+
     if (timeleft <= 0){
-      var mystate = storeGame.getState();
       //alert(mystate.loopcounter);
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
@@ -243,6 +261,8 @@ class Timer extends React.Component {
           if (mystate.loopcounter == 2){
             storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
             storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
+            $.resetVotes();
+            $.resetLastVoteData();
             storeGame.dispatch(startVote());
             $.callstatechangeall('vote', "vote for liar", playernames.join());
           }
@@ -266,6 +286,8 @@ class Timer extends React.Component {
             $.callstatechangeall('msg');
           }else{
             console.log("spy redeem chance");
+            $.resetVotes();
+            $.resetLastVoteData();
             //if spy is chosen move into new mode only for spy
             $.callstatechangeprivate("vote", "choose the location", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
@@ -322,6 +344,7 @@ class Timer extends React.Component {
     }
     else{
       //do nothing
+
     }
       return timeleft;
   }

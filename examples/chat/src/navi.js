@@ -142,7 +142,7 @@ class BotNav extends React.Component {
 
     }
     //change state to msg mode
-    storePlayer.dispatch(changeModeMsg('submitted', 'main msg: submitted'));
+    storePlayer.dispatch(changeModeMsg(null, 'main msg: submitted'));
   }
 
   render(){
