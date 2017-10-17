@@ -46,10 +46,10 @@ var PORT = _env2.default.serverport;
 var LobbyScreen = function (_React$Component) {
   _inherits(LobbyScreen, _React$Component);
 
-  function LobbyScreen(props) {
+  function LobbyScreen() {
     _classCallCheck(this, LobbyScreen);
 
-    return _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).call(this, props));
+    return _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).apply(this, arguments));
   }
 
   _createClass(LobbyScreen, [{
@@ -60,6 +60,7 @@ var LobbyScreen = function (_React$Component) {
       this.interval = setInterval(function () {
         return _this2.startGame();
       }, 1000);
+      console.log("LobbyScreen this.props.gamestate " + this.props.gamestate);
     }
   }, {
     key: 'componentWillUnmount',
@@ -73,13 +74,13 @@ var LobbyScreen = function (_React$Component) {
     key: 'startGame',
     value: function startGame() {
       //console.log("this.props.game " + this.props.game);
-      if (this.props.game == 'gameone') {
+      if (this.props.gamestate == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
           minigameone.storeTimer.dispatch(minigameone.startTimer(10));
         }
-      } else if (this.props.game == 'lobby') {
+      } else if (this.props.gamestate == 'lobby') {
         if (this.props.history.location.pathname != '/') {
           this.props.history.push('/');
         }
@@ -150,29 +151,6 @@ var LobbyScreen = function (_React$Component) {
   return LobbyScreen;
 }(_react2.default.Component);
 
-var About = function (_React$Component2) {
-  _inherits(About, _React$Component2);
-
-  function About() {
-    _classCallCheck(this, About);
-
-    return _possibleConstructorReturn(this, (About.__proto__ || Object.getPrototypeOf(About)).apply(this, arguments));
-  }
-
-  _createClass(About, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'About page'
-      );
-    }
-  }]);
-
-  return About;
-}(_react2.default.Component);
-
 var initialMainGameState = {
   gamestate: "lobby"
 };
@@ -212,8 +190,8 @@ function maingamereducer() {
   }
 }
 
-var MainFrame = function (_React$Component3) {
-  _inherits(MainFrame, _React$Component3);
+var MainFrame = function (_React$Component2) {
+  _inherits(MainFrame, _React$Component2);
 
   function MainFrame() {
     _classCallCheck(this, MainFrame);
@@ -224,20 +202,17 @@ var MainFrame = function (_React$Component3) {
   _createClass(MainFrame, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.interval = setInterval(this.forceUpdate.bind(this), 1000);
-      console.log("this.props.game " + this.props.game);
+      //this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+      console.log("MainFrame this.props.game " + this.props.gamestate);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      clearInterval(this.interval);
+      //clearInterval(this.interval);
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
-
-      var gamestatelabel = this.props.gamestate;
       return _react2.default.createElement(
         _reactRouterDom.BrowserRouter,
         null,
@@ -266,11 +241,6 @@ var MainFrame = function (_React$Component3) {
               )
             )
           ),
-          '/*',
-          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', render: function render(props) {
-              return _react2.default.createElement(LobbyScreen, _extends({}, props, { game: _this5.props.gamestate }));
-            } }),
-          '*/',
           _react2.default.createElement(
             _reactRouterDom.Switch,
             null,
@@ -285,13 +255,13 @@ var MainFrame = function (_React$Component3) {
   return MainFrame;
 }(_react2.default.Component);
 
-(0, _reactRouterDom.withRouter)(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
-
 function mapStateToPropsMainFrame(state) {
   return { gamestate: state.gamestate
   };
 }
 MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame: startGame, startLobby: startLobby })(MainFrame);
+LobbyScreen = (0, _reactRouterDom.withRouter)(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
+
 var storeMainGame = Redux.createStore(maingamereducer);
 
 _reactDom2.default.render(_react2.default.createElement(

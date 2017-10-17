@@ -19,11 +19,11 @@ let HOSTNAME = env.serverendpoint;
 let PORT = env.serverport;
 
 class LobbyScreen extends React.Component {
-  constructor(props){
-    super(props);
-  }
+
   componentDidMount() {
     this.interval = setInterval(() => this.startGame(), 1000);
+    console.log("LobbyScreen this.props.gamestate " + this.props.gamestate);
+
   }
 
   componentWillUnmount() {
@@ -33,7 +33,7 @@ class LobbyScreen extends React.Component {
   //function that is called when admin starts game
   startGame(){
     //console.log("this.props.game " + this.props.game);
-    if (this.props.game == 'gameone'){
+    if (this.props.gamestate == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
@@ -41,7 +41,7 @@ class LobbyScreen extends React.Component {
       }
 
     }
-    else if (this.props.game == 'lobby'){
+    else if (this.props.gamestate == 'lobby'){
       if (this.props.history.location.pathname != '/'){
         this.props.history.push('/');
       }
@@ -89,15 +89,6 @@ class LobbyScreen extends React.Component {
   }
 }
 
-class About extends React.Component {
-  render() {
-    return (
-      <div>
-      About page
-      </div>
-    );
-  }
-}
 
 const initialMainGameState = {
   gamestate: "lobby"
@@ -139,16 +130,15 @@ function maingamereducer(state = initialMainGameState, action) {
 
 class MainFrame extends React.Component {
   componentDidMount() {
-    this.interval = setInterval(this.forceUpdate.bind(this), 1000);
-    console.log("this.props.game " + this.props.game);
+    //this.interval = setInterval(this.forceUpdate.bind(this), 1000);
+    console.log("MainFrame this.props.game " + this.props.gamestate);
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    //clearInterval(this.interval);
   }
 
   render() {
-    const gamestatelabel = this.props.gamestate;
     return (
       <BrowserRouter>
       <div>
@@ -167,13 +157,14 @@ class MainFrame extends React.Component {
   }
 }
 
-withRouter(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
 
 function mapStateToPropsMainFrame(state) {
   return { gamestate: state.gamestate
          };
 }
 MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame, startLobby })(MainFrame);
+LobbyScreen = withRouter(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
+
 const storeMainGame = Redux.createStore(maingamereducer);
 
 ReactDOM.render(
