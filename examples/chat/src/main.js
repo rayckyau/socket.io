@@ -182,6 +182,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       console.log("in mount canvas: "+drawcanvas);
     };
 
+    //send a mosueup event so you can't hold down the event between state changes
     $.clearMouseEvent = function(){
       var mouseEvent = new MouseEvent("mouseup", {});
       drawcanvas[0].dispatchEvent(mouseEvent);
