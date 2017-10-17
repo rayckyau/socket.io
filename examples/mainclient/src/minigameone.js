@@ -240,17 +240,22 @@ class Timer extends React.Component {
       }
     }
     else if (mystate.gamestate == "VOTE"){
-      //if the number of votes is equal to numb of players
+      //if the number of votes is equal to num of players
       //we can skip to next state
       if ($.isAllVoted()){
         $.callstatechangeall('msg', null, "All votes are in");
         timeleft = 0;
       }
-
+    }
+    else {
+      if ($.isReadyPlayers()){
+        $.callstatechangeall('msg', null, "Everyone is ready");
+        timeleft = 0;
+      }
     }
 
     if (timeleft <= 0){
-      //alert(mystate.loopcounter);
+      $.resetReadyPlayers();
       if (mystate.gamestate ==  "DRAW"){
           storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));

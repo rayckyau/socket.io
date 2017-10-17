@@ -292,6 +292,7 @@ $(function () {
   var playerIdToNum = {};
 
   var lastVoteData = void 0;
+  var sendButtonCounter = 0;
   var socket;
 
   //helper socket functions
@@ -331,6 +332,19 @@ $(function () {
   //return all players
   $.returnAllPlayers = function () {
     return clientdict;
+  };
+
+  //get sendbutton counter for num of palyers rdy
+  $.isReadyPlayers = function () {
+    if (sendButtonCounter == Object.keys(clientdict).length) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  $.resetReadyPlayers = function () {
+    sendButtonCounter = 0;
   };
 
   $.resetLastVoteData = function () {
@@ -418,6 +432,7 @@ $(function () {
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
       console.log('get sendbutton');
+      sendButtonCounter++;
       //only if admin then start the game.
       if (data.data == "admin") {
         storeMainGame.dispatch(startGame('gameone'));
