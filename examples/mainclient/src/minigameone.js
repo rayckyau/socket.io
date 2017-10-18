@@ -10,6 +10,7 @@ import {
   Link,
   withRouter
 } from 'react-router-dom'
+import ProgressBar from 'react-progressbar.js';
 
 const TIMELIMIT_DRAW = 60;
 const TIMELIMIT_VOTE = 20;
@@ -220,6 +221,10 @@ function getElapsedTime(baseTime, startedAt, stoppedAt = new Date().getTime()) {
 
 // TIMER COMPONENT
 class Timer extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
   componentDidMount() {
     this.interval = setInterval(this.forceUpdate.bind(this), 1000);
   }
@@ -366,10 +371,24 @@ class Timer extends React.Component {
   render() {
     const { baseTime, startedAt, stoppedAt } = this.props;
     const elapsed = getElapsedTime(baseTime, startedAt, stoppedAt);
-
+    var options = {
+                strokeWidth: 4
+            };
+    var containerStyle = {
+        width: '100px',
+        height: '100px'
+    };
+    var Circle = ProgressBar.Circle;
+    let roundedTime = Math.round(elapsed);
     return (
-      <div>
-        <div>Time: {this.checkStop(Math.round(elapsed))}</div>
+      <div className="Timer">
+      <Circle
+              progress={elapsed/100}
+              text={this.checkStop(roundedTime)}
+              options={options}
+              initialAnimate={true}
+              containerStyle={containerStyle}
+              containerClassName={'timerbar'} />
         <div>
           <button onClick={() => storeTimer.dispatch(startTimer(3))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
