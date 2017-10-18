@@ -300,7 +300,6 @@ $(function () {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
     var payload = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
 
-    console.log("try to emit changestateall");
     socket.emit('changestateall', {
       state: mode,
       message: msg,
@@ -313,7 +312,6 @@ $(function () {
     var clientid = arguments[2];
     var payload = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "";
 
-    console.log("try to emit changestateprivate");
     socket.emit('changestateprivate', {
       state: mode,
       message: msg,
@@ -327,6 +325,10 @@ $(function () {
       var context = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
     });
+  };
+
+  $.getPlayernumById = function (username) {
+    return playerIdToNum[username];
   };
 
   //return all players

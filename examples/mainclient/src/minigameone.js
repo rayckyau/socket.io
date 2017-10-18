@@ -216,7 +216,6 @@ function getElapsedTime(baseTime, startedAt, stoppedAt = new Date().getTime()) {
   }
 }
 
-
 // TIMER COMPONENT
 class Timer extends React.Component {
   componentDidMount() {
@@ -271,7 +270,13 @@ class Timer extends React.Component {
             $.resetVotes();
             $.resetLastVoteData();
             storeGame.dispatch(startVote());
-            $.callstatechangeall('vote', "vote for liar", playernames.join());
+            //for all players
+            for (let i=0;i<playernames.length;i++){
+              let newvotestring = playernames.join().replace(playernames[i],'');
+              newvotestring = newvotestring.replace(/(^,)|(,$)/g,'').replace(/(,\s*$)|(^,*)/,'');
+              console.log(newvotestring);
+              $.callstatechangeprivate('vote', "vote for liar", playersockets[i], newvotestring);
+            }
           }
           else{
             storeGame.dispatch(startDraw());
@@ -639,6 +644,7 @@ export class MiniGameOneLayout extends React.Component {
 
 let words = [];
 let playernames = [];
+let playersockets = [];
 let secretPlace;
 let socketLiar;
 /* Open when someone clicks on the span element */
@@ -666,7 +672,7 @@ function setupGame(){
       let playerobj = clientsobj[key];
       //add player names into an array
       playernames[playerobj.playernum] = playerobj.username;
-
+      playersockets[playerobj.playernum] = playerobj.socketid;
       if (index == liarnum){
         //save liar
         socketLiar = playerobj.socketid;

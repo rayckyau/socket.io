@@ -207,7 +207,6 @@ $(function() {
 
   //helper socket functions
   $.callstatechangeall = function(mode, msg = "", payload = ""){
-    console.log("try to emit changestateall");
     socket.emit('changestateall',{
       state: mode,
       message: msg,
@@ -216,7 +215,6 @@ $(function() {
   };
 
   $.callstatechangeprivate = function(mode, msg = "", clientid, payload = ""){
-    console.log("try to emit changestateprivate");
     socket.emit('changestateprivate',{
       state: mode,
       message: msg,
@@ -231,6 +229,10 @@ $(function() {
       context.clearRect(0,0, canvas.width, canvas.height);
     })
   };
+
+  $.getPlayernumById = function(username){
+    return playerIdToNum[username];
+  }
 
   //return all players
   $.returnAllPlayers = function() {
