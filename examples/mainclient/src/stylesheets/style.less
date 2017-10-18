@@ -55,7 +55,8 @@ ul {
 /* Login Page */
 
 .login.page {
-  background-color: #000;
+  background-color: #b9c8f9;
+background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23384d83' fill-opacity='0.12'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .login.page .form {
@@ -79,7 +80,10 @@ ul {
 }
 
 .login.page .title {
-  font-size: 200%;
+  color: black;
+  font-family: 'Patrick Hand', sans-serif;
+  font-size: 60px;
+  font-weight: 100;
 }
 
 .login.page .usernameInput {
@@ -87,7 +91,7 @@ ul {
   letter-spacing: 3px;
 }
 
-.login.page .title, .login.page .usernameInput {
+.login.page .usernameInput {
   color: #fff;
   font-weight: 100;
 }
@@ -111,21 +115,46 @@ ul {
 .log {
   color: gray;
   font-size: 70%;
-  margin: 5px;
-  text-align: center;
+  margin: 10px;
+  text-align: right;
 }
 
 /* Messages */
 
 .chatArea {
+  display: flex;
+  justify-content: space-between;
   padding-bottom: 0px;
+}
+
+#roomcodeArea {
+  float: left;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  color: black;
+  font-family: 'Patrick Hand', sans-serif;
+  font-size: 50px;
+
+}
+
+.chatArea .title{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  color: black;
+  font-family: 'Patrick Hand', sans-serif;
+  font-size: 50px;
 }
 
 .messages {
   height: 100px;
+  width: 300px;
   margin: 0;
-  overflow-y: scroll;
-  padding: 10px 20px 10px 20px;
+  overflow-y: hidden;
 }
 
 .message.typing .messageBody {
@@ -158,7 +187,11 @@ ul {
   padding: 5px;
 }
 [id^=canvas]{
-  background-color: gray;
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+[id^=canvas]:hover{
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 [class*="col-"] {

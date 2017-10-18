@@ -72,31 +72,47 @@ class LobbyScreen extends React.Component {
       <div>
       <div className="row">
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p0" width="268" height="340"></canvas>{this.state.playerlabels[0]}
+          <canvas id="canvas-p0" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[0]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p1" width="268" height="340"></canvas>{this.state.playerlabels[1]}
+          <canvas id="canvas-p1" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[1]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p2" width="268" height="340"></canvas>{this.state.playerlabels[2]}
+          <canvas id="canvas-p2" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[2]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p3" width="268" height="340"></canvas>{this.state.playerlabels[3]}
+          <canvas id="canvas-p3" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[3]}
         </div>
       </div>
 
       <div className="row">
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p4" width="268" height="340"></canvas>{this.state.playerlabels[4]}
+          <canvas id="canvas-p4" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[4]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p5" width="268" height="340"></canvas>{this.state.playerlabels[5]}
+          <canvas id="canvas-p5" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[5]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p6" width="268" height="340"></canvas>{this.state.playerlabels[6]}
+          <canvas id="canvas-p6" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[6]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p7" width="268" height="340"></canvas>{this.state.playerlabels[7]}
+          <canvas id="canvas-p7" width="268" height="340"></canvas>
+          <br/>
+          {this.state.playerlabels[7]}
         </div>
       </div>
       </div>
@@ -313,7 +329,7 @@ $(function() {
      socket = require('socket.io-client')('http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      defineSocket();
-     log(roomCode, {
+     log('Room Code: '+roomCode, {
        prepend: true
      });
      setTimeout(function(){
@@ -396,6 +412,7 @@ $(function() {
             client: data.id
           })
         }
+        log(data.username + ' joined');
       }
       else if (data.username == 'mainclient'){
         $loginPage.fadeOut();
@@ -403,16 +420,15 @@ $(function() {
         //go to lobby page
         console.log('start lobby');
         storeMainGame.dispatch(startLobby());
+        log('Main client is ready.');
       }
-      log(data.username + ' joined');
-      addParticipantsMessage(data);
+
     });
 
     // Whenever the server emits 'user left', log it in the chat body
     socket.on('user left', function (data) {
       //TODO: remove player from dict
       log(data.username + ' left');
-      addParticipantsMessage(data);
       removeChatTyping(data);
     });
 
@@ -458,6 +474,8 @@ $(function() {
         .then(function (parsedBody) {
             // POST succeeded...
             console.log('room code: %s', parsedBody);
+            //update roomcode
+            $('#roomcodeArea span').text(parsedBody);
             connectToSocket(parsedBody);
         })
         .catch(function (err) {

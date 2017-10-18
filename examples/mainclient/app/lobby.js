@@ -76,6 +76,7 @@ var LobbyScreen = function (_React$Component) {
     key: 'startGame',
     value: function startGame() {
       //update player names
+      //TODO: optimize by checking if state has changed first
       for (var key in $.getPlayerNumToId()) {
         if ($.getPlayerNumToId().hasOwnProperty(key)) {
           this.state.playerlabels[key] = $.getPlayerNumToId()[key];
@@ -109,24 +110,28 @@ var LobbyScreen = function (_React$Component) {
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[0]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[1]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[2]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[3]
           )
         ),
@@ -137,24 +142,28 @@ var LobbyScreen = function (_React$Component) {
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[4]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[5]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[6]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' }),
+            _react2.default.createElement('br', null),
             this.state.playerlabels[7]
           )
         )
@@ -392,7 +401,7 @@ $(function () {
     socket = require('socket.io-client')('http://' + HOSTNAME + ':' + PORT + '/' + roomCode);
     console.log('try: %s', 'http://' + HOSTNAME + ':' + PORT + '/' + roomCode);
     defineSocket();
-    log(roomCode, {
+    log('Room Code: ' + roomCode, {
       prepend: true
     });
     setTimeout(function () {
@@ -473,22 +482,21 @@ $(function () {
             client: data.id
           });
         }
+        log(data.username + ' joined');
       } else if (data.username == 'mainclient') {
         $loginPage.fadeOut();
         $chatPage.show();
         //go to lobby page
         console.log('start lobby');
         storeMainGame.dispatch(startLobby());
+        log('Main client is ready.');
       }
-      log(data.username + ' joined');
-      addParticipantsMessage(data);
     });
 
     // Whenever the server emits 'user left', log it in the chat body
     socket.on('user left', function (data) {
       //TODO: remove player from dict
       log(data.username + ' left');
-      addParticipantsMessage(data);
       removeChatTyping(data);
     });
 
@@ -533,6 +541,8 @@ $(function () {
     rp(options).then(function (parsedBody) {
       // POST succeeded...
       console.log('room code: %s', parsedBody);
+      //update roomcode
+      $('#roomcodeArea span').text(parsedBody);
       connectToSocket(parsedBody);
     }).catch(function (err) {
       // POST failed...
