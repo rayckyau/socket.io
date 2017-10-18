@@ -11,12 +11,12 @@ import {
   withRouter
 } from 'react-router-dom'
 
-const TIMELIMIT_DRAW = 45;
-const TIMELIMIT_VOTE = 15;
-const TIMELIMIT_DISCUSS = 10;
+const TIMELIMIT_DRAW = 60;
+const TIMELIMIT_VOTE = 20;
+const TIMELIMIT_DISCUSS = 15;
 const TIMELIMIT_BEGIN = 10;
-const TIMELIMIT_END = 5;
-const TIMELIMIT_CONT = 3;
+const TIMELIMIT_END = 10;
+const TIMELIMIT_CONT = 5;
 
 const PLACEBUCKETNUM = 2;
 const PLACEPERBUCKET = 3;
@@ -42,14 +42,15 @@ helperbuckets[0] = [
 
 //exotic place
 placebuckets[1] = [
-"Japan",
-"Shanghai",
+"Iraq",
+"Mongolia",
 "Afghanistan",
 "Egypt",
 "Australia"];
 
 helperbuckets[1] = [
-"exotic place"
+"an exotic place",
+"a desert"
 ];
 
 //mountainous
@@ -57,9 +58,8 @@ placebuckets[2] = [
 "Machu Pichu",
 "Mount Everest",
 "Middle Earth",
-"Stonehenge",
-"Las Vegas",
-"Hawaii"
+"Hawaii",
+"Las Vegas"
 ]
 
 helperbuckets[2] = [
@@ -77,7 +77,8 @@ placebuckets[3] = [
 
 helperbuckets[3] = [
 "water",
-"rubber ducky"
+"a life vest",
+"an aquatic animal"
 ];
 
 //sitting places
@@ -88,9 +89,9 @@ placebuckets[4] = [
 "Coffee Shop"
 ]
 
-helperbuckets[1] = [
+helperbuckets[4] = [
 "a person sitting",
-"a conversation"
+"two people together"
 ];
 
 //standing
@@ -104,7 +105,8 @@ placebuckets[5] = [
 
 helperbuckets[5] = [
 "a person standing",
-"picture frame"
+"a picture frame",
+"a photographer"
 ];
 
 function contains(a, obj) {
@@ -234,7 +236,7 @@ class Timer extends React.Component {
     if (mystate.gamestate == "VOTESPY"){
       let votedLoc = $.retDataVote();
       if (votedLoc != null){
-        $.callstatechangeall('msg', null, "All votes are in");
+        $.callstatechangeall('msg', null, "All votes are in!");
         timeleft = 0;
       }
     }
@@ -242,13 +244,13 @@ class Timer extends React.Component {
       //if the number of votes is equal to num of players
       //we can skip to next state
       if ($.isAllVoted()){
-        $.callstatechangeall('msg', null, "All votes are in");
+        $.callstatechangeall('msg', null, "All votes are in!");
         timeleft = 0;
       }
     }
     else {
       if ($.isReadyPlayers()){
-        $.callstatechangeall('msg', null, "Everyone is ready");
+        $.callstatechangeall('msg', null, "Everyone is ready!");
         timeleft = 0;
       }
     }
@@ -260,7 +262,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg', null, "main msg: think");
+          $.callstatechangeall('msg', null, "Try to find a suspicious drawing!");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
@@ -274,8 +276,7 @@ class Timer extends React.Component {
             for (let i=0;i<playernames.length;i++){
               let newvotestring = playernames.join().replace(playernames[i],'');
               newvotestring = newvotestring.replace(/(^,)|(,$)/g,'').replace(/(,\s*$)|(^,*)/,'');
-              console.log(newvotestring);
-              $.callstatechangeprivate('vote', "vote for liar", playersockets[i], newvotestring);
+              $.callstatechangeprivate('vote', "Vote for the liar", playersockets[i], newvotestring);
             }
           }
           else{
@@ -290,7 +291,6 @@ class Timer extends React.Component {
           storeTimer.dispatch(stopTimer());
           //call returnMajorityVote function to get result
           let majvote = $.retMajorityVote();
-          console.log("majvote: " + majvote);
           //reveal winner
           if (majvote == -1){
             //make winner the spy
@@ -298,10 +298,11 @@ class Timer extends React.Component {
             $.callstatechangeall('msg');
           }else{
             console.log("spy redeem chance");
+            $.callstatechangeall('msg', "Waiting...");
             $.resetVotes();
             $.resetLastVoteData();
             //if spy is chosen move into new mode only for spy
-            $.callstatechangeprivate("vote", "choose the location", socketLiar , words.join())
+            $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
           storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
@@ -315,17 +316,17 @@ class Timer extends React.Component {
           //if data is the same as target location spy wins, else spy loses
           if (votedLoc == words[secretPlace]){
             //spy wins
-            winner = "liar";
+            winner = "Liar";
             storeGame.dispatch(startEnd(winner));
           }
           else{
-            winner = "everyone else";
+            winner = "Everyone Else";
             storeGame.dispatch(startEnd(winner));
           }
           storeTimer.dispatch(stopTimer());
           storeTimer.dispatch(resetTimer(TIMELIMIT_END));
           storeTimer.dispatch(startTimer(TIMELIMIT_END));
-          $.callstatechangeall('winner is '+ winner);
+          $.callstatechangeall('msg', 'The winner is '+ winner);
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
@@ -676,16 +677,14 @@ function setupGame(){
       if (index == liarnum){
         socketLiar = playerobj.socketid;
         //set liar stuff
-        console.log(helperbuckets);
-        console.log(whichbuckets);
         let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
         let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
-        let hintstring = "Hint: Trying drawing "+ firsthint +" or "+ secondhint;
-        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid, hintstring);
+        let hintstring = "Hint: Try drawing "+firsthint+" or "+secondhint+".";
+        $.callstatechangeprivate('msg', 'You are the liar!', playerobj.socketid, hintstring);
       }
       else{
         //assign secret place
-        $.callstatechangeprivate('msg', words[secretPlace], playerobj.socketid);
+        $.callstatechangeprivate('msg', "Secret place: " + words[secretPlace], playerobj.socketid);
       }
       index++;
     }

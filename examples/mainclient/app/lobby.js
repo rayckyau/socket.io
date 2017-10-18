@@ -468,7 +468,6 @@ $(function () {
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
         playerIdToNum[data.username] = canvasnum;
-        console.log('player obj created ' + playerobj);
         if (canvasnum == 0) {
           //make admin
           socket.emit('makeadmin', {
