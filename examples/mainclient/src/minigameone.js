@@ -584,6 +584,23 @@ function WordList(props) {
 
 //MINIGAME LAYOUT
 export class MiniGameOneLayout extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {playerlabels: playernames};
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => this.updateNames(), 2000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  updateNames(){
+    //TODO: optimize by checking if state has changed first
+    this.setState({playerlabels: playernames});
+  }
 
   render() {
     return (
@@ -603,33 +620,45 @@ export class MiniGameOneLayout extends React.Component {
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p0" width="268" height="340"></canvas>
                 <br/>
-                player1
+                {this.state.playerlabels[0]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p1" width="268" height="340"></canvas>
                 <br/>
-                player2
+                {this.state.playerlabels[1]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p2" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[2]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p3" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[3]}
               </div>
             </div>
 
             <div className="row">
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p4" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[4]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p5" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[5]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p6" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[6]}
               </div>
               <div className="col-sm-3 text-center">
                 <canvas id="canvas-p7" width="268" height="340"></canvas>
+                <br/>
+                {this.state.playerlabels[7]}
               </div>
             </div>
             </div>

@@ -46,10 +46,13 @@ var PORT = _env2.default.serverport;
 var LobbyScreen = function (_React$Component) {
   _inherits(LobbyScreen, _React$Component);
 
-  function LobbyScreen() {
+  function LobbyScreen(props) {
     _classCallCheck(this, LobbyScreen);
 
-    return _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).call(this, props));
+
+    _this.state = { playerlabels: ['player1 join', 'player2 join', 'player3 join', 'player4 join', 'player5 join', 'player6 join', 'player7 join', 'player8 join', 'player9 join', 'player10 join'] };
+    return _this;
   }
 
   _createClass(LobbyScreen, [{
@@ -72,6 +75,13 @@ var LobbyScreen = function (_React$Component) {
   }, {
     key: 'startGame',
     value: function startGame() {
+      //update player names
+      for (var key in $.getPlayerNumToId()) {
+        if ($.getPlayerNumToId().hasOwnProperty(key)) {
+          this.state.playerlabels[key] = $.getPlayerNumToId()[key];
+        }
+      }
+      this.setState({ playerlabels: this.state.playerlabels });
       if (this.props.gamestate == 'gameone') {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
@@ -99,23 +109,25 @@ var LobbyScreen = function (_React$Component) {
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
-            'p1'
+            this.state.playerlabels[0]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
             _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
-            'p2'
+            this.state.playerlabels[1]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' }),
+            this.state.playerlabels[2]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' }),
+            this.state.playerlabels[3]
           )
         ),
         _react2.default.createElement(
@@ -124,22 +136,26 @@ var LobbyScreen = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' }),
+            this.state.playerlabels[4]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' }),
+            this.state.playerlabels[5]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' }),
+            this.state.playerlabels[6]
           ),
           _react2.default.createElement(
             'div',
             { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' })
+            _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' }),
+            this.state.playerlabels[7]
           )
         )
       );
@@ -216,28 +232,6 @@ var MainFrame = function (_React$Component2) {
         _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(
-            'ul',
-            null,
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/' },
-                'Home'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/minigameone' },
-                'minigameone'
-              )
-            )
-          ),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: LobbyScreen }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/minigameone', component: _minigameone.MiniGameOneLayout })
         )
@@ -325,6 +319,10 @@ $(function () {
       var context = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
     });
+  };
+
+  $.getPlayerNumToId = function () {
+    return playernumToId;
   };
 
   $.getPlayernumById = function (username) {

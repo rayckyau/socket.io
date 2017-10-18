@@ -20,6 +20,15 @@ let HOSTNAME = env.serverendpoint;
 let PORT = env.serverport;
 
 class LobbyScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {playerlabels: ['player1 join', 'player2 join',
+                                'player3 join', 'player4 join',
+                                'player5 join', 'player6 join',
+                                'player7 join', 'player8 join',
+                                'player9 join', 'player10 join'
+                              ]};
+  }
 
   componentDidMount() {
     this.interval = setInterval(() => this.startGame(), 1000);
@@ -31,6 +40,14 @@ class LobbyScreen extends React.Component {
 
   //function that is called when admin starts game
   startGame(){
+    //update player names
+    //TODO: optimize by checking if state has changed first
+    for (let key in $.getPlayerNumToId()){
+      if ($.getPlayerNumToId().hasOwnProperty(key)){
+        this.state.playerlabels[key] = $.getPlayerNumToId()[key];
+      }
+    }
+    this.setState({playerlabels: this.state.playerlabels});
     if (this.props.gamestate == 'gameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
@@ -55,31 +72,31 @@ class LobbyScreen extends React.Component {
       <div>
       <div className="row">
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p0" width="268" height="340"></canvas>p1
+          <canvas id="canvas-p0" width="268" height="340"></canvas>{this.state.playerlabels[0]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p1" width="268" height="340"></canvas>p2
+          <canvas id="canvas-p1" width="268" height="340"></canvas>{this.state.playerlabels[1]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p2" width="268" height="340"></canvas>
+          <canvas id="canvas-p2" width="268" height="340"></canvas>{this.state.playerlabels[2]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p3" width="268" height="340"></canvas>
+          <canvas id="canvas-p3" width="268" height="340"></canvas>{this.state.playerlabels[3]}
         </div>
       </div>
 
       <div className="row">
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p4" width="268" height="340"></canvas>
+          <canvas id="canvas-p4" width="268" height="340"></canvas>{this.state.playerlabels[4]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p5" width="268" height="340"></canvas>
+          <canvas id="canvas-p5" width="268" height="340"></canvas>{this.state.playerlabels[5]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p6" width="268" height="340"></canvas>
+          <canvas id="canvas-p6" width="268" height="340"></canvas>{this.state.playerlabels[6]}
         </div>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p7" width="268" height="340"></canvas>
+          <canvas id="canvas-p7" width="268" height="340"></canvas>{this.state.playerlabels[7]}
         </div>
       </div>
       </div>
@@ -139,15 +156,8 @@ class MainFrame extends React.Component {
     return (
       <HashRouter>
       <div>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/minigameone">minigameone</Link></li>
-          </ul>
-
-
           <Route exact path="/" component={LobbyScreen}/>
           <Route path="/minigameone" component={MiniGameOneLayout}/>
-
       </div>
       </HashRouter>
     );
@@ -229,6 +239,10 @@ $(function() {
       context.clearRect(0,0, canvas.width, canvas.height);
     })
   };
+
+  $.getPlayerNumToId = function(){
+    return playernumToId;
+  }
 
   $.getPlayernumById = function(username){
     return playerIdToNum[username];
