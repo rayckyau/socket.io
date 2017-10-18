@@ -604,10 +604,10 @@ function WordList(props) {
   let wordsInWordList = props.words;
   console.log("wordsinwordlist: "+wordsInWordList);
   const listItems = wordsInWordList.map((word) =>
-    <button type="button" className="btn btn-secondary btn-lg" disabled>{word}</button>
+    <button type="button" className="word btn btn-secondary btn-lg" disabled>{word}</button>
   );
   return (
-      <div>{listItems}</div>
+      <div className="WordList">{listItems}</div>
   );
 }
 //END WORDLIST REACT
