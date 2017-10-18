@@ -86,13 +86,13 @@ class TopNav extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      message: "asd"
+      message: "HappyDraw!"
     }
   }
 
   render(){
     return (
-      <nav className="navbar navbar-light sticky-top bg-faded">
+      <nav className="TopNav navbar navbar-light sticky-top bg-faded">
         <div>{this.props.message}</div>
       </nav>
     )
@@ -178,7 +178,7 @@ class PlayerPage extends React.Component {
     }
     else{
       return (
-        <div>{props.mainmsg}</div>
+        <div id="mainmsg">{props.mainmsg}</div>
       )
     }
   }
