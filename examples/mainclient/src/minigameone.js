@@ -371,19 +371,20 @@ class Timer extends React.Component {
   render() {
     const { baseTime, startedAt, stoppedAt } = this.props;
     const elapsed = getElapsedTime(baseTime, startedAt, stoppedAt);
-    var options = {
+    let options = {
                 strokeWidth: 4
             };
-    var containerStyle = {
+    let containerStyle = {
         width: '100px',
         height: '100px'
     };
-    var Circle = ProgressBar.Circle;
+    let Circle = ProgressBar.Circle;
     let roundedTime = Math.round(elapsed);
+    let mystate = storeTimer.getState();
     return (
       <div className="Timer">
       <Circle
-              progress={elapsed/100}
+              progress={elapsed/mystate.baseTime}
               text={this.checkStop(roundedTime)}
               options={options}
               initialAnimate={true}
