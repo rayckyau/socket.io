@@ -674,14 +674,16 @@ function setupGame(){
       playernames[playerobj.playernum] = playerobj.username;
       playersockets[playerobj.playernum] = playerobj.socketid;
       if (index == liarnum){
-        //save liar
         socketLiar = playerobj.socketid;
         //set liar stuff
-        console.log("send msg to liar");
-        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid, "hint: blahg");
+        console.log(helperbuckets);
+        console.log(whichbuckets);
+        let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
+        let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
+        let hintstring = "Hint: Trying drawing "+ firsthint +" or "+ secondhint;
+        $.callstatechangeprivate('msg', 'you are liar', playerobj.socketid, hintstring);
       }
       else{
-        console.log("send msg to else");
         //assign secret place
         $.callstatechangeprivate('msg', words[secretPlace], playerobj.socketid);
       }
