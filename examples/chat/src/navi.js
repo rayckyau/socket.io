@@ -201,7 +201,7 @@ const initialPlayerState = {
   mode: "draw",
   admin: "false",
   vote: "",
-  message: "hello world",
+  message: "HappyDraw!",
   mainmsg: "mainmsg"
 };
 
@@ -242,7 +242,8 @@ function setVote(vote) {
 function changeToAdmin() {
   return {
     type: "ADMIN",
-    admin: "true"
+    admin: "true",
+    message: 'You are now admin of the room!'
   };
 }
 
@@ -298,7 +299,7 @@ function playerpagereducer(state = initialPlayerState, action) {
         mode: state.mode,
         admin: action.admin,
         vote: state.vote,
-        message: state.message,
+        message: action.message,
         mainmsg: state.mainmsg
       };
     default:
