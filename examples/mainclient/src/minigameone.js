@@ -390,7 +390,7 @@ class Timer extends React.Component {
               initialAnimate={true}
               containerStyle={containerStyle}
               containerClassName={'timerbar'} />
-        <div>
+        <div className="debug">
           <button onClick={() => storeTimer.dispatch(startTimer(3))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
           <button onClick={() => storeTimer.dispatch(resetTimer(3))}>res</button>
@@ -572,7 +572,7 @@ class MiniGameOne extends React.Component {
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
         <div id="roundcounter">Round {this.props.loopcounter} </div>
-        <div>Winner: {this.props.winner}</div>
+        <div>{this.props.winner}</div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
