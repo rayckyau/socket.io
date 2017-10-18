@@ -14,6 +14,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRouterDom = require('react-router-dom');
 
+var _reshake = require('reshake');
+
 var _minigameone = require('./minigameone');
 
 var minigameone = _interopRequireWildcard(_minigameone);
@@ -265,6 +267,25 @@ _reactDom2.default.render(_react2.default.createElement(
   { store: storeMainGame },
   _react2.default.createElement(MainFrame, null)
 ), document.getElementById('mainframe'));
+
+_reactDom2.default.render(_react2.default.createElement(
+  _reshake.Shake,
+  {
+    h: 18,
+    v: 19,
+    r: 8,
+    dur: 1000,
+    int: 19.8,
+    max: 100,
+    fixed: true,
+    fixedStop: false,
+    freez: false },
+  _react2.default.createElement(
+    'div',
+    { className: 'title' },
+    'HappyDraw'
+  )
+), document.getElementById('happydrawtitle'));
 
 $(function () {
   var FADE_TIME = 150; // ms

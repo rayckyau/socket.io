@@ -41,12 +41,14 @@
     "jquery": "^3.2.1",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
+    "react-progressbar.js": "^0.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
+    "reshake": "^1.0.7",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {

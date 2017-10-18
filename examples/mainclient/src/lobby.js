@@ -10,6 +10,11 @@ import {
   Switch,
   withRouter
 } from 'react-router-dom'
+import {
+  Shake,
+  ShakeLittle,
+  ShakeSlow
+} from 'reshake'
 import {MiniGameOneLayout} from './minigameone'
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
@@ -194,6 +199,21 @@ ReactDOM.render(
     <ReactRedux.Provider store={storeMainGame}>
       <MainFrame />
     </ReactRedux.Provider>,  document.getElementById('mainframe'));
+
+ReactDOM.render(
+  <Shake
+  h={18}
+  v={19}
+  r={8}
+  dur={1000}
+  int={19.8}
+  max={100}
+  fixed={true}
+  fixedStop={false}
+  freez={false}>
+    <div className="title">HappyDraw</div>
+  </Shake>,  document.getElementById('happydrawtitle'));
+
 
 $(function() {
   var FADE_TIME = 150; // ms

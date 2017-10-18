@@ -534,6 +534,15 @@ class MiniGameOne extends React.Component {
     super(props);
   }
 
+  returnGameState(gamestatelabel){
+    if (gamestatelabel == "VOTESPY"){
+      return "Liar Chance"
+    }
+    else {
+      return gamestatelabel;
+    }
+  }
+
 
   render() {
     const gamestatelabel = this.props.gamestate;
@@ -541,7 +550,9 @@ class MiniGameOne extends React.Component {
     const words = this.props.words;
     return (
       <div>
-        <div>{gamestatelabel} Round: {this.props.loopcounter} , Winner: {this.props.winner}</div>
+        <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
+        <div id="roundcounter">Round {this.props.loopcounter} </div>
+        <div>Winner: {this.props.winner}</div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
@@ -604,7 +615,7 @@ export class MiniGameOneLayout extends React.Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container-fluid minigameone">
          <div className="row justify-content-md-center">
           <div className="col-sm-2">
              <ReactRedux.Provider store={storeGame}>
