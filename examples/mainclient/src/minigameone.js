@@ -12,16 +12,16 @@ import {
 } from 'react-router-dom'
 import ProgressBar from 'react-progressbar.js';
 
-const TIMELIMIT_DRAW = 60;
-const TIMELIMIT_VOTE = 20;
-const TIMELIMIT_DISCUSS = 15;
+const TIMELIMIT_DRAW = 90;
+const TIMELIMIT_VOTE = 30;
+const TIMELIMIT_DISCUSS = 20;
 const TIMELIMIT_BEGIN = 10;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
 
 const PLACEBUCKETNUM = 2;
 const PLACEPERBUCKET = 3;
-const BUCKETS = 5;
+const BUCKETS = 7;
 
 const placebuckets = [];
 const helperbuckets = [];
@@ -108,6 +108,27 @@ helperbuckets[5] = [
 "a person standing",
 "a picture frame",
 "a photographer"
+];
+
+placebuckets[6] = [
+  "Zombie Apocalypse",
+  "Jogging",
+  "Running a marathon"
+]
+
+helperbuckets[6] = [
+"a person running"
+];
+
+placebuckets[7] = [
+  "Flying a plane",
+  "Building a rocket",
+  "Shooting for the stars",
+  "Outer Space"
+]
+
+helperbuckets[7] = [
+"a rocket ship"
 ];
 
 function contains(a, obj) {
@@ -445,7 +466,8 @@ function startDiscuss() {
 function startVote() {
   return {
     type: "VOTE",
-    gamestate: "VOTE"
+    gamestate: "VOTE",
+    loopcounter: 0
   };
 }
 function startVoteSpy() {
@@ -479,7 +501,7 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter,
+        loopcounter: state.loopcounter+1,
         winner: state.winner,
         words: state.words
       };
@@ -489,7 +511,7 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter+1,
+        loopcounter: state.loopcounter,
         winner: state.winner,
         words: state.words
       };
@@ -499,7 +521,7 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter,
+        loopcounter: action.loopcounter,
         winner: state.winner,
         words: state.words
         //set to END state
@@ -617,20 +639,42 @@ function WordList(props) {
 export class MiniGameOneLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {playerlabels: playernames};
+    this.state = {gamestate: null};
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => this.updateNames(), 2000);
+    this.interval = setInterval(() => this.checkGameState(), 1000);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  updateNames(){
+  checkGameState(){
     //TODO: optimize by checking if state has changed first
-    this.setState({playerlabels: playernames});
+    //only change state if state is GAMERECAP/VOTERECAP
+    if ((storeGame.getState().gamestate != "GAMERECAP") || (storeGame.getState().gamestate != "VOTERECAP"))
+    {
+      this.setState({gamestate:storeGame.getState().gamestate});
+    }
+  }
+
+  displayPage(gamestate){
+    if (gamestate == 'GAMERECAP'){
+      return (
+        <div>gamerecap stuff</div>
+      )
+    }
+    else if (gamestate == 'VOTERECAP'){
+      return (
+        <div>voterecap stuff</div>
+      )
+    }
+    else{
+      return (
+        <CanvasLayout />
+      )
+    }
   }
 
   render() {
@@ -645,60 +689,86 @@ export class MiniGameOneLayout extends React.Component {
               <Timer updateInterval={1000} />
              </ReactRedux.Provider>
           </div>
-          <div className="col-sm-10">
-            <div>
-            <div className="row">
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p0" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[0]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p1" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[1]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p2" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[2]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p3" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[3]}
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p4" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[4]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p5" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[5]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p6" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[6]}
-              </div>
-              <div className="col-sm-3 text-center">
-                <canvas id="canvas-p7" width="268" height="340"></canvas>
-                <br/>
-                {this.state.playerlabels[7]}
-              </div>
-            </div>
-            </div>
-          </div>
-
+          {this.displayPage(this.state.gamestate)}
          </div>
-
       </div>
     );
+  }
+}
+
+export class CanvasLayout extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {playerlabels: playernames};
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => this.updateNames(), 2000);
+
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  updateNames() {
+    //TODO: optimize by checking if state has changed first
+    this.setState({playerlabels: playernames});
+  }
+
+  render() {
+    return (
+      <div className="col-sm-10">
+        <div>
+        <div className="row">
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p0" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[0]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p1" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[1]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p2" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[2]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p3" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[3]}
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p4" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[4]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p5" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[5]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p6" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[6]}
+          </div>
+          <div className="col-sm-3 text-center">
+            <canvas id="canvas-p7" width="268" height="340"></canvas>
+            <br/>
+            {this.state.playerlabels[7]}
+          </div>
+        </div>
+        </div>
+      </div>
+
+    )
   }
 }
 
