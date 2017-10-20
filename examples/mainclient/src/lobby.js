@@ -339,6 +339,10 @@ $(function() {
   function drawLine(fromx, fromy, tox, toy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    //define drawing settings
+    ctxdrawcanvas.lineWidth = 2;
+    ctxdrawcanvas.lineJoin = 'round';
+    ctxdrawcanvas.lineCap = 'round';
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.moveTo(fromx, fromy);
     ctxdrawcanvas.lineTo(tox, toy);
@@ -495,7 +499,7 @@ $(function() {
             // POST succeeded...
             console.log('room code: %s', parsedBody);
             //update roomcode
-            $('#roomcodeArea span').text(parsedBody);
+            $('#roomcode span').text(parsedBody);
             connectToSocket(parsedBody);
         })
         .catch(function (err) {

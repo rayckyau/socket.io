@@ -208,7 +208,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
     // Sets the client's username
     function setUsername() {
-      var username = cleanInput($usernameInput.val().trim());
+      var username = cleanInput($usernameInput.val().trim()).toUpperCase();
       let roomcodeclean = cleanInput($roomInput.val().trim()).toUpperCase();
       room = roomcodeclean;
       if (username) {
