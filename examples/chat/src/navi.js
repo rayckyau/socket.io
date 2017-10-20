@@ -37,7 +37,7 @@ class DrawCanvas extends React.Component {
 
 function VoteItem(props) {
     return (
-      <label className="btn btn-outline-primary">
+      <label className="mybtn blue">
         <input className="vote" type="radio" value={props.value} onClick={props.onClick}/>
         {props.value}
       </label>
@@ -74,8 +74,9 @@ class Vote extends React.Component {
     const yourPick = this.state.yourPick;
     return (
         <div>
-          <b>{yourPick}</b>
           {this.voteList()}
+          <br/>
+          <b>Voting for : {yourPick}</b>
         </div>
     )
   }
@@ -148,7 +149,7 @@ class BotNav extends React.Component {
   render(){
     return (
         <nav className="navbar navbar-light sticky-bottom bg-faded ">
-          <button className="btn btn-outline-success" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
+          <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
         </nav>
     )
 

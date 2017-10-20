@@ -14,7 +14,7 @@ import ProgressBar from 'react-progressbar.js';
 
 const TIMELIMIT_DRAW = 90;
 const TIMELIMIT_VOTE = 30;
-const TIMELIMIT_DISCUSS = 20;
+const TIMELIMIT_DISCUSS = 30;
 const TIMELIMIT_BEGIN = 10;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
@@ -112,8 +112,8 @@ helperbuckets[5] = [
 
 placebuckets[6] = [
   "Zombie Apocalypse",
-  "Jogging",
-  "Running a marathon"
+  "Hiking Path",
+  "Race Track"
 ]
 
 helperbuckets[6] = [
@@ -121,14 +121,14 @@ helperbuckets[6] = [
 ];
 
 placebuckets[7] = [
-  "Flying a plane",
-  "Building a rocket",
-  "Shooting for the stars",
+  "Hangar",
+  "Space Agency",
+  "Mars",
   "Outer Space"
 ]
 
 helperbuckets[7] = [
-"a rocket ship"
+"a rocket"
 ];
 
 function contains(a, obj) {
@@ -288,7 +288,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg', null, "Try to find a suspicious drawing!");
+          $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing! Get ready for round 2!");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
           storeTimer.dispatch(stopTimer());
@@ -302,7 +302,7 @@ class Timer extends React.Component {
             for (let i=0;i<playernames.length;i++){
               let newvotestring = playernames.join().replace(playernames[i],'');
               newvotestring = newvotestring.replace(/(^,)|(,$)/g,'').replace(/(,\s*$)|(^,*)/,'');
-              $.callstatechangeprivate('vote', "Vote for the liar", playersockets[i], newvotestring);
+              $.callstatechangeprivate('vote', "Vote for the Liar", playersockets[i], newvotestring);
             }
           }
           else{
@@ -321,7 +321,7 @@ class Timer extends React.Component {
           if (majvote == -1){
             //make winner the spy
             storeGame.dispatch(startEnd("liar"));
-            $.callstatechangeall('msg');
+            $.callstatechangeall('msg', "The Liar won!", "The liar has won the game. Look at the main screen for the recap.");
           }else{
             console.log("spy redeem chance");
             $.callstatechangeall('msg', "Waiting...");
