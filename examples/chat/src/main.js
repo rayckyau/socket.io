@@ -56,6 +56,10 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
     let prev = {};
 
+    window.onbeforeunload = function() {
+       return "Buddy, are you sure you want to leave? Think of the kittens!";
+     }
+
     //init canvas bindings
     //TODO: investigate mem leak on killing canvases??
     setupDrawCanvasListeners();
