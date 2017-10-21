@@ -124,11 +124,47 @@ placebuckets[7] = [
   "Hangar",
   "Space Agency",
   "Mars",
-  "Outer Space"
+  "Outer Space",
+  "Science Center"
 ]
 
 helperbuckets[7] = [
 "a rocket"
+];
+
+placebuckets[8] = [
+  "Chemistry Class",
+  "Emergency Room",
+  "Doctor's Office",
+  "Bathroom"
+]
+
+helperbuckets[8] = [
+"a faucet",
+"hand sanitizer"
+];
+
+placebuckets[9] = [
+  "Horse Track",
+  "Barn",
+  "Zoo"
+]
+
+helperbuckets[9] = [
+"a horse"
+]
+
+placebuckets[10] = [
+  "Jungle",
+  "Garden",
+  "National Park",
+  "Madagascar",
+  "Forest"
+]
+
+helperbuckets[10] = [
+"a tree",
+"a butterfly"
 ];
 
 function contains(a, obj) {
@@ -255,6 +291,7 @@ class Timer extends React.Component {
   }
 
   checkStop(timeleft){
+    console.log("checkstop");
     let mystate = storeGame.getState();
 
     //when counting if vote state is spyredeem and a vote is in
@@ -282,18 +319,17 @@ class Timer extends React.Component {
     }
 
     if (timeleft <= 0){
+      console.log("resetready");
       $.resetReadyPlayers();
+      storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
-          storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(TIMELIMIT_DISCUSS));
+          console.log("Draw");
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
           $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing! Get ready for round 2!");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
-          storeTimer.dispatch(stopTimer());
           if (mystate.loopcounter == 2){
-            storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
             storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
             $.resetVotes();
             $.resetLastVoteData();
@@ -308,20 +344,19 @@ class Timer extends React.Component {
           else{
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
-            storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
             storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
             $.callstatechangeall('draw', null);
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
-          storeTimer.dispatch(stopTimer());
           //call returnMajorityVote function to get result
           let majvote = $.retMajorityVote();
           //reveal winner
           if (majvote == -1){
             //make winner the spy
-            storeGame.dispatch(startEnd("liar"));
-            $.callstatechangeall('msg', "The Liar won!", "The liar has won the game. Look at the main screen for the recap.");
+            winner = "Liar";
+            storeGame.dispatch(startVoteRecap());
+            $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
           }else{
             console.log("spy redeem chance");
             $.callstatechangeall('msg', "Waiting...");
@@ -331,47 +366,43 @@ class Timer extends React.Component {
             $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
-          storeTimer.dispatch(resetTimer(TIMELIMIT_VOTE));
           storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
       }
       else if (mystate.gamestate ==  "VOTESPY"){
           //call returnDataVote function to get result
           let votedLoc = $.retDataVote();
-          let winner = "";
+          winner = "";
           console.log("voted: " + votedLoc + "secret: "+words[secretPlace])
           //if data is the same as target location spy wins, else spy loses
           if (votedLoc == words[secretPlace]){
             //spy wins
             winner = "Liar";
-            storeGame.dispatch(startEnd(winner));
           }
           else{
             winner = "Everyone Else";
-            storeGame.dispatch(startEnd(winner));
           }
-          storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(TIMELIMIT_END));
-          storeTimer.dispatch(startTimer(TIMELIMIT_END));
+          console.log("start recap");
+          $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
+          storeTimer.dispatch(startTimer(10));
+          storeGame.dispatch(startVoteRecap());
+      }
+      else if (mystate.gamestate ==  "VOTERECAP"){
+          storeTimer.dispatch(startTimer(20));
+          storeGame.dispatch(startEnd(winner));
           $.callstatechangeall('msg', 'The winner is '+ winner);
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
-          storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(TIMELIMIT_BEGIN));
           storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
           storeGame.dispatch(startBegin());
       }
       else if (mystate.gamestate ==  "BEGIN"){
-          storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(TIMELIMIT_DRAW));
           storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
           storeGame.dispatch(startDraw());
           $.callstatechangeall('draw', null);
       }
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
-          storeTimer.dispatch(stopTimer());
-          storeTimer.dispatch(resetTimer(TIMELIMIT_CONT));
           storeTimer.dispatch(startTimer(TIMELIMIT_CONT));
           storeGame.dispatch(startIdle());
           $.callstatechangeall('msg', null);
@@ -476,6 +507,12 @@ function startVoteSpy() {
     gamestate: "VOTESPY"
   };
 }
+function startVoteRecap() {
+  return {
+    type: "VOTERECAP",
+    gamestate: "VOTERECAP"
+  };
+}
 function startEnd(winner) {
   return {
     type: "END",
@@ -526,17 +563,26 @@ function minigameonereducer(state = initialGameState, action) {
         words: state.words
         //set to END state
       }
-      case "VOTESPY":
-        //send VOTE state to client
-        return {
-          ...state,
-          //set new state
-          gamestate: action.gamestate,
-          loopcounter: state.loopcounter,
-          winner: state.winner,
-          words: state.words
-          //set to END state
-        }
+    case "VOTESPY":
+      //send VOTE state to client
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate,
+        loopcounter: state.loopcounter,
+        winner: state.winner,
+        words: state.words
+        //set to END state
+      }
+    case "VOTERECAP":
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate,
+        loopcounter: state.loopcounter,
+        winner: state.winner,
+        words: state.words
+      }
     case "END":
         //animate winner or loser
       return {
@@ -614,7 +660,7 @@ function mapStateToPropsGameOne(state) {
 
 //bind state to props
 Timer = ReactRedux.connect(mapStateToPropsTimer, { startTimer, stopTimer, resetTimer })(Timer);
-MiniGameOne = ReactRedux.connect(mapStateToPropsGameOne, { startDraw, startDiscuss, startVote })(MiniGameOne);
+MiniGameOne = ReactRedux.connect(mapStateToPropsGameOne, { startDraw, startDiscuss, startVote, startVoteRecap, startBegin, startIdle, startVoteSpy })(MiniGameOne);
 
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
@@ -624,7 +670,6 @@ export const storeGame = Redux.createStore(minigameonereducer);
 //WORDLIST REACT
 function WordList(props) {
   let wordsInWordList = props.words;
-  console.log("wordsinwordlist: "+wordsInWordList);
   const listItems = wordsInWordList.map((word) =>
     <button type="button" className="word btn btn-secondary btn-lg" disabled>{word}</button>
   );
@@ -653,21 +698,27 @@ export class MiniGameOneLayout extends React.Component {
   checkGameState(){
     //TODO: optimize by checking if state has changed first
     //only change state if state is GAMERECAP/VOTERECAP
-    if ((storeGame.getState().gamestate != "GAMERECAP") || (storeGame.getState().gamestate != "VOTERECAP"))
+    if ((storeGame.getState().gamestate == "GAMERECAP") || (storeGame.getState().gamestate == "VOTERECAP"))
     {
       this.setState({gamestate:storeGame.getState().gamestate});
     }
   }
 
   displayPage(gamestate){
+    console.log(gamestate);
     if (gamestate == 'GAMERECAP'){
       return (
         <div>gamerecap stuff</div>
       )
     }
     else if (gamestate == 'VOTERECAP'){
+      const listItems = playernames.map((player) =>
+        <VoteBar name={player} votename={"votename"} votenum={10}/>
+      );
       return (
-        <div>voterecap stuff</div>
+        <div className="col-sm-10">
+          <div>{listItems}</div>
+        </div>
       )
     }
     else{
@@ -691,6 +742,26 @@ export class MiniGameOneLayout extends React.Component {
           </div>
           {this.displayPage(this.state.gamestate)}
          </div>
+      </div>
+    );
+  }
+}
+
+class VoteBar extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="votebar">
+        <div id="textdiv">
+          <h1 id="name">{this.props.name}</h1>
+          <p id="votedfor">voted for <b>{this.props.votename}</b></p>
+        </div>
+        <div id="numdiv">
+          <h1 id="number"><div class="counter" data-count={this.props.votenum}>0</div></h1>
+        </div>
       </div>
     );
   }
@@ -778,6 +849,7 @@ let playernames = [];
 let playersockets = [];
 let secretPlace;
 let socketLiar;
+let winner;
 /* Open when someone clicks on the span element */
 function openNav() {
     document.getElementById("myNav").style.height = "100%";
