@@ -11,6 +11,7 @@ import {
   withRouter
 } from 'react-router-dom'
 import ProgressBar from 'react-progressbar.js';
+import CountUp, { startAnimation } from 'react-countup';
 
 const TIMELIMIT_DRAW = 90;
 const TIMELIMIT_VOTE = 30;
@@ -779,7 +780,7 @@ class VoteBar extends React.Component {
           <p id="votedfor">voted for <b>{this.props.votename}</b></p>
         </div>
         <div id="numdiv">
-          <h1 id="number"><div class="counter" data-count={this.props.votenum}>0</div></h1>
+          <h1 id="number"><CountUp start={0} end={this.props.votenum} /></h1>
         </div>
       </div>
     );
