@@ -136,7 +136,8 @@ placebuckets[8] = [
   "Chemistry Class",
   "Emergency Room",
   "Doctor's Office",
-  "Bathroom"
+  "Bathroom",
+  "Hospital"
 ]
 
 helperbuckets[8] = [
@@ -291,13 +292,12 @@ class Timer extends React.Component {
   }
 
   checkStop(timeleft){
-    console.log("checkstop");
     let mystate = storeGame.getState();
 
     //when counting if vote state is spyredeem and a vote is in
     //we can skip straight to next state
     if (mystate.gamestate == "VOTESPY"){
-      let votedLoc = $.retDataVote();
+      let votedLoc = $.retlastVote();
       if (votedLoc != null){
         $.callstatechangeall('msg', null, "All votes are in!");
         timeleft = 0;
@@ -370,7 +370,7 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "VOTESPY"){
           //call returnDataVote function to get result
-          let votedLoc = $.retDataVote();
+          let votedLoc = $.retlastVote();
           winner = "";
           console.log("voted: " + votedLoc + "secret: "+words[secretPlace])
           //if data is the same as target location spy wins, else spy loses
@@ -383,6 +383,7 @@ class Timer extends React.Component {
           }
           console.log("start recap");
           $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
+
           storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startVoteRecap());
       }
@@ -712,12 +713,30 @@ export class MiniGameOneLayout extends React.Component {
       )
     }
     else if (gamestate == 'VOTERECAP'){
-      const listItems = playernames.map((player) =>
-        <VoteBar name={player} votename={"votename"} votenum={10}/>
+      playervotedata = $.retVoteData();
+      playervotes = $.retVotes();
+      console.log("voterecap store ojbs");
+      console.log(playernames);
+      console.log(playervotedata);
+      console.log(playervotes);
+      //TODO: use object keys loop and store object as a single 3 size array. playervotedata, playername, vote
+      let votebardata = [];
+      for (let i=0;i<playernames.length;i++){
+        votebardata[i] = { playername: playernames[i],
+                                  votenum: playervotes[i],
+                           playervotedata: playervotedata[i]
+
+                         }
+      }
+      console.log(votebardata);
+      const listItems = votebardata.map((player) =>
+        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum}/>
       );
       return (
         <div className="col-sm-10">
+        <div className="row justify-content-md-center">
           <div>{listItems}</div>
+        </div>
         </div>
       )
     }
@@ -846,6 +865,8 @@ export class CanvasLayout extends React.Component {
 
 let words = [];
 let playernames = [];
+let playervotedata = [];
+let playervotes = [];
 let playersockets = [];
 let secretPlace;
 let socketLiar;

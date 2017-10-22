@@ -58,7 +58,7 @@ function initRoomNS(roomCode){
     });
 
     socket.on('sendvote', function (data) {
-        console.log('received: sendvote');
+        console.log('received: sendvote ' + data.id);
         let mainclient = namespaces[roomCode];
         socket.to(mainclient).emit('sendvote', data);
     });

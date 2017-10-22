@@ -244,6 +244,7 @@ $(function() {
   let cursors = {};
   let clientdict = {};
   let votes = [0,0,0,0,0,0,0,0,0,0,0,0];
+  let voteData = ['','','','','','','','','','','',''];
   let playernumToId = {};
   let playerIdToNum = {};
 
@@ -311,6 +312,7 @@ $(function() {
   $.resetVotes = function() {
     for (let i=0;i<votes.length;i++){
       votes[i] = 0;
+      voteData[i] = 0;
     }
   }
 
@@ -319,8 +321,16 @@ $(function() {
     return returnMajorityVote();
   };
 
-  $.retDataVote = function() {
+  $.retlastVote = function() {
     return lastVoteData;
+  };
+
+  $.retVoteData = function() {
+    return voteData;
+  };
+
+  $.retVotes = function() {
+    return votes;
   };
 
   $.isAllVoted = function() {
@@ -403,7 +413,7 @@ $(function() {
     });
 
     socket.on('sendvote', function (data) {
-      console.log('get sendvote');
+      console.log('get sendvote ' + data.id);
       //update vote
       updateVote(data);
     });
@@ -515,16 +525,19 @@ $(function() {
     //save last vote data
     lastVoteData = data.data;
     //get playerid to num
-    let num = playerIdToNum[data.data];
-    votes[num]++;
+    votes[playerIdToNum[data.data]]++;
+    let num = playerIdToNum[data.id];
+    console.log(data.id);
+    console.log(num);
+    voteData[num] = data.data;
     console.log(votes);
+    console.log(voteData);
   }
 
   //returns null if there is no majority
   //returns player num of majority vote
   //TODO: bad return inconsistent type
   function returnMajorityVote(){
-    console.log(votes);
     //loop through
     let majority = 0;
     let playernum = 0;

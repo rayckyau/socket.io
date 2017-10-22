@@ -195,20 +195,20 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     $.subSend = function(payload){
       drawsocket.emit('sendbutton', {
         'data': payload,
-        'id': 'testid'
+        'id': username
       });
     };
 
     $.voteSend = function(payload){
       drawsocket.emit('sendvote', {
         'data': payload,
-        'id': 'testid'
+        'id': username
       });
     };
 
     // Sets the client's username
     function setUsername() {
-      var username = cleanInput($usernameInput.val().trim()).toUpperCase();
+      username = cleanInput($usernameInput.val().trim()).toUpperCase();
       let roomcodeclean = cleanInput($roomInput.val().trim()).toUpperCase();
       room = roomcodeclean;
       if (username) {
