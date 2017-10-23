@@ -729,78 +729,22 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   displayPage(gamestate){
+    const canvasitems = playernames.map((playername, index) =>
+    <div className="col-sm-3 text-center">
+      <div id="cf">
+        <img className="bottom" src={playersave[index][1]}/>
+        <img className="top" src={playersave[index][2]}/>
+      </div>
+      <br/>
+      {playernames[index]} ({playerpoints[index]})
+    </div>
+    );
     if (gamestate == 'GAMERECAP'){
       return (
         <div className="col-sm-10">
           <div>
-          <div className="row">
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[0][1]}/>
-                <img className="top" src={playersave[0][2]}/>
-              </div>
-              <br/>
-              {playernames[0]} ({playerpoints[0]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[1][1]}/>
-                <img className="top" src={playersave[1][2]}/>
-              </div>
-              <br/>
-              {playernames[1]} ({playerpoints[1]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[2][1]}/>
-                <img className="top" src={playersave[2][2]}/>
-              </div>
-              <br/>
-              {playernames[2]} ({playerpoints[2]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[3][1]}/>
-                <img className="top" src={playersave[3][2]}/>
-              </div>
-              <br/>
-              {playernames[3]} ({playerpoints[3]})
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[4][1]}/>
-                <img className="top" src={playersave[4][2]}/>
-              </div>
-              <br/>
-              {playernames[4]} ({playerpoints[4]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[5][1]}/>
-                <img className="top" src={playersave[5][2]}/>
-              </div>
-              <br/>
-              {playernames[5]} ({playerpoints[5]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[6][1]}/>
-                <img className="top" src={playersave[6][2]}/>
-              </div>
-              <br/>
-              {playernames[6]} ({playerpoints[6]})
-            </div>
-            <div className="col-sm-3 text-center">
-              <div id="cf">
-                <img className="bottom" src={playersave[7][1]}/>
-                <img className="top" src={playersave[7][2]}/>
-              </div>
-              <br/>
-              {playernames[7]} ({playerpoints[7]})
-            </div>
+          <div className="row justify-content-md-center">
+            {canvasitems}
           </div>
           </div>
         </div>
@@ -902,54 +846,21 @@ export class CanvasLayout extends React.Component {
   }
 
   render() {
+
+    const canvasitems = playernames.map((playername, index) =>
+        <div className="col-sm-3 text-center">
+          <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+          <br/>
+          {this.state.playerlabels[index]}
+        </div>
+
+    );
     return (
       <div className="col-sm-10">
         <div>
-        <div className="row">
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p0" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[0]}
+        <div className="row justify-content-md-center">
+          {canvasitems}
           </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p1" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[1]}
-          </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p2" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[2]}
-          </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p3" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[3]}
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p4" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[4]}
-          </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p5" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[5]}
-          </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p6" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[6]}
-          </div>
-          <div className="col-sm-3 text-center">
-            <canvas id="canvas-p7" width="268" height="340"></canvas>
-            <br/>
-            {this.state.playerlabels[7]}
-          </div>
-        </div>
         </div>
       </div>
 
