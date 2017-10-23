@@ -323,7 +323,11 @@ class Timer extends React.Component {
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
-          console.log("Draw");
+          //save drawings
+          let canvases = $.getAllCanvas();
+          for (let i=0;i<canvases.length;i++){
+            playersave[i][mystate.loopcounter] = canvases[i].toDataURL();;
+          }
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
           $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing! Get ready for round 2!");
@@ -342,12 +346,6 @@ class Timer extends React.Component {
             }
           }
           else{
-            //save drawings
-            let canvases = $.getAllCanvas();
-            for (let i=0;i<canvases.length;i++){
-              playersave[i] = canvases[i].toDataURL();;
-            }
-            console.log(playersave);
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
             storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
@@ -400,6 +398,7 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
           $.callstatechangeall('msg', 'recap game');
+          storeGame.dispatch(startBegin());
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
@@ -413,9 +412,8 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
-          storeTimer.dispatch(startTimer(TIMELIMIT_CONT));
           storeGame.dispatch(startGameRecap());
-          $.callstatechangeall('msg', null);
+          $.callstatechangeall('msg', 'recap game');
       }
       else{
         //error state
@@ -730,10 +728,82 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   displayPage(gamestate){
-    console.log(gamestate);
     if (gamestate == 'GAMERECAP'){
       return (
-        <div> gamerecap stuff<img src={playersave[0]}></img> </div>
+        <div className="col-sm-10">
+          <div>
+          <div className="row">
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[0][1]}/>
+                <img className="top" src={playersave[0][2]}/>
+              </div>
+              <br/>
+              {playernames[0]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[1][1]}/>
+                <img className="top" src={playersave[1][2]}/>
+              </div>
+              <br/>
+              {playernames[1]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[2][1]}/>
+                <img className="top" src={playersave[2][2]}/>
+              </div>
+              <br/>
+              {playernames[2]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[3][1]}/>
+                <img className="top" src={playersave[3][2]}/>
+              </div>
+              <br/>
+              {playernames[3]}
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[4][1]}/>
+                <img className="top" src={playersave[4][2]}/>
+              </div>
+              <br/>
+              {playernames[4]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[5][1]}/>
+                <img className="top" src={playersave[5][2]}/>
+              </div>
+              <br/>
+              {playernames[5]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[6][1]}/>
+                <img className="top" src={playersave[6][2]}/>
+              </div>
+              <br/>
+              {playernames[6]}
+            </div>
+            <div className="col-sm-3 text-center">
+              <div id="cf">
+                <img className="bottom" src={playersave[7][1]}/>
+                <img className="top" src={playersave[7][2]}/>
+              </div>
+              <br/>
+              {playernames[7]}
+            </div>
+          </div>
+          </div>
+        </div>
+
       )
     }
     else if (gamestate == 'VOTERECAP'){
@@ -892,7 +962,16 @@ let playernames = [];
 let playervotedata = [];
 let playervotes = [];
 let playersockets = [];
-let playersave = [];
+let playersave = [[],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                ];
+let playersaveagain = [];
 let secretPlace;
 let socketLiar;
 let winner;
