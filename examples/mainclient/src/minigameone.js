@@ -21,8 +21,8 @@ const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
 
 const PLACEBUCKETNUM = 2;
-const PLACEPERBUCKET = 3;
-const BUCKETS = 7;
+const PLACEPERBUCKET = 4;
+const BUCKETS = 9;
 
 const placebuckets = [];
 const helperbuckets = [];
@@ -57,7 +57,7 @@ helperbuckets[1] = [
 
 //mountainous
 placebuckets[2] = [
-"Machu Pichu",
+"Machu Picchu",
 "Mount Everest",
 "Middle Earth",
 "Hawaii",
@@ -188,7 +188,7 @@ function populatewordarray(){
   let randobucket = 0;
   whichbuckets.length = 0;
 
-  while (whichbuckets.length != PLACEBUCKETNUM){
+  while (whichbuckets.length != 1){
     console.log(whichbuckets.length);
     randobucket = Math.floor(Math.random() * BUCKETS);
     while (!contains(whichbuckets, randobucket)){
@@ -353,26 +353,12 @@ class Timer extends React.Component {
           }
       }
       else if (mystate.gamestate ==  "VOTE"){
-          //call returnMajorityVote function to get result
-          let majvote = $.retMajorityVote();
-          //reveal winner
-          if (majvote == -1){
-            //make winner the spy
-            winner = "Liar";
-            storeGame.dispatch(startVoteRecap());
-            $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
-          }else{
-            console.log("spy redeem chance");
-            $.callstatechangeall('msg', "Waiting...");
-            $.resetVotes();
-            $.resetLastVoteData();
-            //if spy is chosen move into new mode only for spy
-            $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
-            storeGame.dispatch(startVoteSpy());
-          }
+          storeGame.dispatch(startVoteRecap());
+          $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
           storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
       }
       else if (mystate.gamestate ==  "VOTESPY"){
+          //chance for spy to win
           //call returnDataVote function to get result
           let votedLoc = $.retlastVote();
           winner = "";
@@ -381,23 +367,38 @@ class Timer extends React.Component {
           if (votedLoc == words[secretPlace]){
             //spy wins
             winner = "Liar";
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!",
+            "The Liar chose the correct secret place. Next time don't be so obvious!");
           }
           else{
             winner = "Everyone Else";
+            $.callstatechangeall('msg', 'The winner is everyone else! The liar was '+ playernames[liarnum] + "!",
+            "The Liar chose the correct secret place. Next time don't be so obvious!"););
           }
-          console.log("start recap");
-          $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
-
-          storeTimer.dispatch(startTimer(10));
           storeGame.dispatch(startEnd(winner));
       }
       else if (mystate.gamestate ==  "VOTERECAP"){
-          storeTimer.dispatch(startTimer(20));
-          storeGame.dispatch(startEnd(winner));
-          $.callstatechangeall('msg', 'The winner is '+ winner);
+          //call returnMajorityVote function to get result
+          let majvote = $.retMajorityVote();
+          //reveal winner
+          if (majvote == -1){
+            winner = "Liar";
+            storeGame.dispatch(startEnd(winner));
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + "as the Liar!");
+          }else{
+            console.log("liar redeem chance");
+            $.callstatechangeall('msg', "Waiting for the Liar...",
+              "The Liar was found out! However there is still a chance for the liar to win if they choose the correct location.");
+            $.resetVotes();
+            $.resetLastVoteData();
+            //if spy is chosen move into new mode only for spy
+            $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
+            storeGame.dispatch(startVoteSpy());
+          }
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
-          $.callstatechangeall('msg', 'recap game');
+          setupGame();
+          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
           storeGame.dispatch(startBegin());
       }
       else if (mystate.gamestate ==  "IDLE"){
@@ -721,7 +722,7 @@ export class MiniGameOneLayout extends React.Component {
   checkGameState(){
     //TODO: optimize by checking if state has changed first
     //only change state if state is GAMERECAP/VOTERECAP
-    if ((storeGame.getState().gamestate == "GAMERECAP") || (storeGame.getState().gamestate == "VOTERECAP"))
+    if ((storeGame.getState().gamestate == "GAMERECAP") || (storeGame.getState().gamestate == "VOTERECAP") || (storeGame.getState().gamestate == "BEGIN"))
     {
       this.setState({gamestate:storeGame.getState().gamestate});
     }
@@ -975,6 +976,7 @@ let playersaveagain = [];
 let secretPlace;
 let socketLiar;
 let winner;
+let liarnum;
 /* Open when someone clicks on the span element */
 function openNav() {
     document.getElementById("myNav").style.height = "100%";
@@ -991,7 +993,7 @@ function setupGame(){
   let clientsobj = $.returnAllPlayers();
   let numplayers = Object.keys(clientsobj).length;
   //pick rand number, that num is liar
-  let liarnum = Math.floor(Math.random()*numplayers);
+  liarnum = Math.floor(Math.random()*numplayers);
   let index = 0;
   secretPlace = Math.floor(Math.random()*words.length);
   //FOR LOOP
@@ -1005,8 +1007,8 @@ function setupGame(){
         socketLiar = playerobj.socketid;
         //set liar stuff
         let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
-        let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
-        let hintstring = "Hint: Try drawing "+firsthint+" or "+secondhint+".";
+        //let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
+        let hintstring = "Hint: Try drawing "+firsthint+".";
         $.callstatechangeprivate('msg', 'You are the liar!', playerobj.socketid, hintstring);
       }
       else{
