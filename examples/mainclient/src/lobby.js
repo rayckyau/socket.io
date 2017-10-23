@@ -277,6 +277,14 @@ $(function() {
     })
   };
 
+  $.getAllCanvas = function() {
+    let canvasarray = [];
+    $.each( $('canvas'), function(index, canvas){
+      canvasarray[index] = canvas;
+    })
+    return canvasarray;
+  };
+
   $.getPlayerNumToId = function(){
     return playernumToId;
   }

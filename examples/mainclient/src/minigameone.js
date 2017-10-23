@@ -320,7 +320,6 @@ class Timer extends React.Component {
     }
 
     if (timeleft <= 0){
-      console.log("resetready");
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
@@ -343,6 +342,12 @@ class Timer extends React.Component {
             }
           }
           else{
+            //save drawings
+            let canvases = $.getAllCanvas();
+            for (let i=0;i<canvases.length;i++){
+              playersave[i] = canvases[i].toDataURL();;
+            }
+            console.log(playersave);
             storeGame.dispatch(startDraw());
             $.clearAllCanvas();
             storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
@@ -386,12 +391,15 @@ class Timer extends React.Component {
           $.callstatechangeall('msg', 'Vote Summary', 'Look at the main screen for the vote summary.');
 
           storeTimer.dispatch(startTimer(10));
-          storeGame.dispatch(startVoteRecap());
+          storeGame.dispatch(startEnd(winner));
       }
       else if (mystate.gamestate ==  "VOTERECAP"){
           storeTimer.dispatch(startTimer(20));
           storeGame.dispatch(startEnd(winner));
           $.callstatechangeall('msg', 'The winner is '+ winner);
+      }
+      else if (mystate.gamestate ==  "GAMERECAP"){
+          $.callstatechangeall('msg', 'recap game');
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
@@ -406,7 +414,7 @@ class Timer extends React.Component {
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
           storeTimer.dispatch(startTimer(TIMELIMIT_CONT));
-          storeGame.dispatch(startIdle());
+          storeGame.dispatch(startGameRecap());
           $.callstatechangeall('msg', null);
       }
       else{
@@ -515,6 +523,12 @@ function startVoteRecap() {
     gamestate: "VOTERECAP"
   };
 }
+function startGameRecap() {
+  return {
+    type: "GAMERECAP",
+    gamestate: "GAMERECAP"
+  };
+}
 function startEnd(winner) {
   return {
     type: "END",
@@ -577,6 +591,15 @@ function minigameonereducer(state = initialGameState, action) {
         //set to END state
       }
     case "VOTERECAP":
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate,
+        loopcounter: state.loopcounter,
+        winner: state.winner,
+        words: state.words
+      }
+    case "GAMERECAP":
       return {
         ...state,
         //set new state
@@ -710,7 +733,7 @@ export class MiniGameOneLayout extends React.Component {
     console.log(gamestate);
     if (gamestate == 'GAMERECAP'){
       return (
-        <div>gamerecap stuff</div>
+        <div> gamerecap stuff<img src={playersave[0]}></img> </div>
       )
     }
     else if (gamestate == 'VOTERECAP'){
@@ -869,6 +892,7 @@ let playernames = [];
 let playervotedata = [];
 let playervotes = [];
 let playersockets = [];
+let playersave = [];
 let secretPlace;
 let socketLiar;
 let winner;

@@ -352,6 +352,14 @@ $(function () {
     });
   };
 
+  $.getAllCanvas = function () {
+    var canvasarray = [];
+    $.each($('canvas'), function (index, canvas) {
+      canvasarray[index] = canvas;
+    });
+    return canvasarray;
+  };
+
   $.getPlayerNumToId = function () {
     return playernumToId;
   };
