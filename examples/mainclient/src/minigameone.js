@@ -373,7 +373,7 @@ class Timer extends React.Component {
           else{
             winner = "Everyone Else";
             $.callstatechangeall('msg', 'The winner is everyone else! The liar was '+ playernames[liarnum] + "!",
-            "The Liar chose the correct secret place. Next time don't be so obvious!"););
+            "The Liar chose the correct secret place. Next time don't be so obvious!");
           }
           storeGame.dispatch(startEnd(winner));
       }
@@ -384,7 +384,7 @@ class Timer extends React.Component {
           if (majvote == -1){
             winner = "Liar";
             storeGame.dispatch(startEnd(winner));
-            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + "as the Liar!");
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!");
           }else{
             console.log("liar redeem chance");
             $.callstatechangeall('msg', "Waiting for the Liar...",
