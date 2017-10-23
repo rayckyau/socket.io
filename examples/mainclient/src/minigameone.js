@@ -740,7 +740,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[0][2]}/>
               </div>
               <br/>
-              {playernames[0]}
+              {playernames[0]} ({playerpoints[0]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -748,7 +748,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[1][2]}/>
               </div>
               <br/>
-              {playernames[1]}
+              {playernames[1]} ({playerpoints[1]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -756,7 +756,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[2][2]}/>
               </div>
               <br/>
-              {playernames[2]}
+              {playernames[2]} ({playerpoints[2]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -764,7 +764,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[3][2]}/>
               </div>
               <br/>
-              {playernames[3]}
+              {playernames[3]} ({playerpoints[3]})
             </div>
           </div>
 
@@ -775,7 +775,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[4][2]}/>
               </div>
               <br/>
-              {playernames[4]}
+              {playernames[4]} ({playerpoints[4]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -783,7 +783,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[5][2]}/>
               </div>
               <br/>
-              {playernames[5]}
+              {playernames[5]} ({playerpoints[5]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -791,7 +791,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[6][2]}/>
               </div>
               <br/>
-              {playernames[6]}
+              {playernames[6]} ({playerpoints[6]})
             </div>
             <div className="col-sm-3 text-center">
               <div id="cf">
@@ -799,7 +799,7 @@ export class MiniGameOneLayout extends React.Component {
                 <img className="top" src={playersave[7][2]}/>
               </div>
               <br/>
-              {playernames[7]}
+              {playernames[7]} ({playerpoints[7]})
             </div>
           </div>
           </div>
@@ -960,6 +960,7 @@ export class CanvasLayout extends React.Component {
 
 let words = [];
 let playernames = [];
+let playerpoints = [0,0,0,0,0,0,0,0];
 let playervotedata = [];
 let playervotes = [];
 let playersockets = [];
