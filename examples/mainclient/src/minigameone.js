@@ -374,7 +374,8 @@ class Timer extends React.Component {
             //for all players
             for (let i=0;i<playernames.length;i++){
               let newvotestring = playernames.join().replace(playernames[i],'');
-              newvotestring = newvotestring.replace(/(^,)|(,$)/g,'').replace(/(,\s*$)|(^,*)/,'');
+              newvotestring = newvotestring.replace(/,+/g,',').replace(/(^,)|(,$)/g,'');
+              console.log("NEWVOTESTRING: " + newvotestring);
               $.callstatechangeprivate('vote', "Vote for the Liar", playersockets[i], newvotestring);
             }
           }
