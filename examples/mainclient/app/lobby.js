@@ -478,7 +478,11 @@ $(function () {
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
       console.log('get sendbutton');
-      isReady[playerIdToNum[data.id]] = true;
+      if (data.data == "ready") {
+        isReady[playerIdToNum[data.id]] = true;
+      } else if (data.data == "notready") {
+        isReady[playerIdToNum[data.id]] = false;
+      }
       //only if admin then start the game.
       if (data.data == "admin") {
         storeMainGame.dispatch(startGame('gameone'));

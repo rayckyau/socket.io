@@ -131,20 +131,34 @@ class BotNav extends React.Component {
 
   clickButton(){
     let mystate = storePlayer.getState();
+    let newbuttonlabel = "OK";
     if (mystate.mode == "vote"){
       submitSend('ready');
     }
-    else{
+    else if (mystate.mode == "draw"){
       if (mystate.admin == "true"){
         submitSend('admin');
       }
-      else {
-        submitSend('testpayload');
+
+      if (this.state.buttonLabel == "OK"){
+        submitSend('ready');
+        newbuttonlabel = "Not Ready";
+
+      }else {
+        submitSend('notready');
+        newbuttonlabel = "OK";
       }
+    }
+    else {
+      submitSend('payload');
 
     }
+    this.setState({
+      buttonLabel: newbuttonlabel,
+      data: 'payload'
+    });
     //change state to msg mode
-    storePlayer.dispatch(changeModeMsg(null, 'Waiting on game...'));
+    //storePlayer.dispatch(changeModeMsg(null, 'Waiting on game...'));
   }
 
   render(){
