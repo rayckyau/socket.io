@@ -56,6 +56,7 @@ class Vote extends React.Component {
   handleClick(val) {
     this.setState({yourPick: val})
     storePlayer.dispatch(setVote(val));
+    submitVote(val);
   }
 
   voteList() {
@@ -131,7 +132,7 @@ class BotNav extends React.Component {
   clickButton(){
     let mystate = storePlayer.getState();
     if (mystate.mode == "vote"){
-      submitVote(mystate.vote);
+      submitSend('ready');
     }
     else{
       if (mystate.admin == "true"){

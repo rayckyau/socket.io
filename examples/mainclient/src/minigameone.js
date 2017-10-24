@@ -28,6 +28,8 @@ const placebuckets = [];
 const helperbuckets = [];
 const whichbuckets = [];
 
+let majorityVote = -1;
+
 //modern city
 placebuckets[0] = [
 "Paris",
@@ -178,8 +180,39 @@ function contains(a, obj) {
     return false;
 }
 
-function populatewordarray(){
+//return player number with highest votes
+//return -1 if no majority vote
+function setMajorityVote(pnum){
+  majorityVote = pnum;
+}
 
+function getMajorityVote(){
+  return majorityVote;
+}
+
+//return array vote count also calculate majority vote
+function countVotes(arraydata){
+  let highestNum = -1;
+  let retArray = [0,0,0,0,0,0,0,0];
+  for (let i=0;i<arraydata.length;i++){
+    let playernum = $.getPlayernumById(arraydata[i]);
+    retArray[playernum]++;
+
+    if (highestNum == retArray[playernum]){
+      retArray[playernum];
+      setMajorityVote(-1);
+    }
+    else if (highestNum < retArray[playernum]){
+      highestNum = retArray[playernum];
+      setMajorityVote(highestNum);
+    }
+
+  }
+
+  return retArray;
+}
+
+function populatewordarray(){
   let retarraycount = 0;
   let bucketcount = 0;
   let retarray = [];
@@ -307,7 +340,7 @@ class Timer extends React.Component {
     else if (mystate.gamestate == "VOTE"){
       //if the number of votes is equal to num of players
       //we can skip to next state
-      if ($.isAllVoted()){
+      if ($.isReadyPlayers()){
         $.callstatechangeall('msg', null, "All votes are in!");
         timeleft = 0;
       }
@@ -379,7 +412,7 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "VOTERECAP"){
           //call returnMajorityVote function to get result
-          let majvote = $.retMajorityVote();
+          let majvote = getMajorityVote();
           //reveal winner
           if (majvote == -1){
             winner = "Liar";
@@ -753,7 +786,7 @@ export class MiniGameOneLayout extends React.Component {
     }
     else if (gamestate == 'VOTERECAP'){
       playervotedata = $.retVoteData();
-      playervotes = $.retVotes();
+      playervotes = countVotes(playervotedata);
       console.log("voterecap store ojbs");
       console.log(playernames);
       console.log(playervotedata);

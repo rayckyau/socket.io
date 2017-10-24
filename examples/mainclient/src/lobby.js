@@ -244,12 +244,12 @@ $(function() {
   let cursors = {};
   let clientdict = {};
   let votes = [0,0,0,0,0,0,0,0,0,0,0,0];
+  let isReady = [false, false, false, false, false, false, false, false, false ,false];
   let voteData = ['','','','','','','','','','','',''];
   let playernumToId = {};
   let playerIdToNum = {};
-
+  let playercount = 0;
   let lastVoteData;
-  let sendButtonCounter = 0;
   var socket;
 
   //helper socket functions
@@ -300,16 +300,18 @@ $(function() {
 
   //get sendbutton counter for num of palyers rdy
   $.isReadyPlayers = function(){
-    if (sendButtonCounter == Object.keys(clientdict).length){
-      return true;
+    for (let i=0;i<playercount;i++){
+      if (isReady[i] == false){
+        return false;
+      }
     }
-    else {
-      return false;
-    }
+    return true;
   }
 
   $.resetReadyPlayers = function(){
-    sendButtonCounter = 0;
+    for (let i=0;i<playercount;i++){
+      isReady[i] = false;
+    }
   }
 
   $.resetLastVoteData = function(){
@@ -324,11 +326,6 @@ $(function() {
     }
   }
 
-  //return majority vote
-  $.retMajorityVote = function() {
-    return returnMajorityVote();
-  };
-
   $.retlastVote = function() {
     return lastVoteData;
   };
@@ -339,19 +336,6 @@ $(function() {
 
   $.retVotes = function() {
     return votes;
-  };
-
-  $.isAllVoted = function() {
-    let sum = 0;
-    for (let i=0;i<votes.length;i++){
-      sum += votes[i];
-    }
-    if (sum == Object.keys(clientdict).length){
-      return true;
-    }
-    else {
-      return false;
-    }
   };
 
   function drawLine(fromx, fromy, tox, toy, playerid) {
@@ -411,13 +395,11 @@ $(function() {
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
       console.log('get sendbutton');
-      sendButtonCounter++;
+      isReady[playerIdToNum[data.id]] = true;
       //only if admin then start the game.
       if (data.data == "admin"){
         storeMainGame.dispatch(startGame('gameone'));
       }
-
-
     });
 
     socket.on('sendvote', function (data) {
@@ -437,6 +419,7 @@ $(function() {
       console.log('user joined: '+data.username);
       if (data.username != 'mainclient'){
         let canvasnum = Object.keys(clientdict).length;
+        playercount++;
         const playerobj = {};
         playerobj["username"] = data.username;
         playerobj["isadmin"] = false;
@@ -535,39 +518,8 @@ $(function() {
     //get playerid to num
     votes[playerIdToNum[data.data]]++;
     let num = playerIdToNum[data.id];
-    console.log(data.id);
-    console.log(num);
     voteData[num] = data.data;
-    console.log(votes);
-    console.log(voteData);
-  }
 
-  //returns null if there is no majority
-  //returns player num of majority vote
-  //TODO: bad return inconsistent type
-  function returnMajorityVote(){
-    //loop through
-    let majority = 0;
-    let playernum = 0;
-    let tie = false;
-    let ret = {};
-    for (let i=0;i<votes.length;i++){
-      if (votes[i] > majority){
-        playernum = i;
-        majority = votes[i];
-        tie = false;
-      }
-      else if (votes[i] == majority){
-        tie = true;
-      }
-    }
-
-    if (tie){
-      return -1;
-    }
-    else {
-      return playernum;
-    }
   }
 
   function addParticipantsMessage (data) {
