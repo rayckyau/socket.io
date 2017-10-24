@@ -192,6 +192,7 @@ function getMajorityVote(){
 
 //return array vote count also calculate majority vote
 function countVotes(arraydata){
+  setMajorityVote(-1);
   let highestNum = -1;
   let retArray = [0,0,0,0,0,0,0,0];
   for (let i=0;i<arraydata.length;i++){
@@ -204,7 +205,7 @@ function countVotes(arraydata){
     }
     else if (highestNum < retArray[playernum]){
       highestNum = retArray[playernum];
-      setMajorityVote(highestNum);
+      setMajorityVote(playernum);
     }
 
   }
@@ -331,8 +332,7 @@ class Timer extends React.Component {
     //when counting if vote state is spyredeem and a vote is in
     //we can skip straight to next state
     if (mystate.gamestate == "VOTESPY"){
-      let votedLoc = $.retlastVote();
-      if (votedLoc != null){
+      if ($.isReadyPlayerNum(liarnum)){
         $.callstatechangeall('msg', null, "All votes are in!");
         timeleft = 0;
       }
@@ -375,7 +375,6 @@ class Timer extends React.Component {
             for (let i=0;i<playernames.length;i++){
               let newvotestring = playernames.join().replace(playernames[i],'');
               newvotestring = newvotestring.replace(/,+/g,',').replace(/(^,)|(,$)/g,'');
-              console.log("NEWVOTESTRING: " + newvotestring);
               $.callstatechangeprivate('vote', "Vote for the Liar", playersockets[i], newvotestring);
             }
           }
@@ -394,7 +393,7 @@ class Timer extends React.Component {
       else if (mystate.gamestate ==  "VOTESPY"){
           //chance for spy to win
           //call returnDataVote function to get result
-          let votedLoc = $.retlastVote();
+          let votedLoc = $.retVoteData()[liarnum];
           winner = "";
           console.log("voted: " + votedLoc + "secret: "+words[secretPlace])
           //if data is the same as target location spy wins, else spy loses
@@ -407,19 +406,15 @@ class Timer extends React.Component {
           else{
             winner = "Everyone Else";
             $.callstatechangeall('msg', 'The winner is everyone else! The liar was '+ playernames[liarnum] + "!",
-            "The Liar chose the correct secret place. Next time don't be so obvious!");
+            "Good job everyone you caught the liar!");
           }
           storeGame.dispatch(startEnd(winner));
       }
       else if (mystate.gamestate ==  "VOTERECAP"){
           //call returnMajorityVote function to get result
           let majvote = getMajorityVote();
-          //reveal winner
-          if (majvote == -1){
-            winner = "Liar";
-            storeGame.dispatch(startEnd(winner));
-            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!");
-          }else{
+          console.log("MAJORITY: "+majvote + playernames[liarnum] + liarnum);
+          if (majvote == liarnum){
             console.log("liar redeem chance");
             $.callstatechangeall('msg', "Waiting for the Liar...",
               "The Liar was found out! However there is still a chance for the liar to win if they choose the correct location.");
@@ -428,6 +423,11 @@ class Timer extends React.Component {
             //if spy is chosen move into new mode only for spy
             $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
+          }
+          else{
+            winner = "Liar";
+            storeGame.dispatch(startEnd(winner));
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!");
           }
       }
       else if (mystate.gamestate ==  "GAMERECAP"){

@@ -383,6 +383,14 @@ $(function () {
     return true;
   };
 
+  $.isReadyPlayerId = function (id) {
+    return isReady[playerIdToNum[id]];
+  };
+
+  $.isReadyPlayerNum = function (num) {
+    return isReady[num];
+  };
+
   $.resetReadyPlayers = function () {
     for (var i = 0; i < playercount; i++) {
       isReady[i] = false;
