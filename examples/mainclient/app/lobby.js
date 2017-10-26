@@ -182,12 +182,14 @@ var initialMainGameState = {
 //action creators
 // Action Creators
 function startGame(gamename) {
+  $.sendGameState("minigameone");
   return {
     type: "MINIGAMEONE",
     gamestate: gamename
   };
 }
 function startLobby() {
+  $.sendGameState("lobby");
   return {
     type: "LOBBY",
     gamestate: "lobby"
@@ -321,6 +323,13 @@ $(function () {
   var socket;
 
   //helper socket functions
+  $.sendGameState = function (gamestate) {
+    socket.emit('changegame', {
+      message: 'changeing gamestate of mainclient',
+      game: gamestate
+    });
+  };
+
   $.callstatechangeall = function (mode) {
     var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
     var payload = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
@@ -483,6 +492,7 @@ $(function () {
       } else if (data.data == "notready") {
         isReady[playerIdToNum[data.id]] = false;
       }
+      console.log(isReady);
       //only if admin then start the game.
       if (data.data == "admin") {
         storeMainGame.dispatch(startGame('gameone'));

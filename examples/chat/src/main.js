@@ -318,6 +318,11 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         navi.setAdmin();
       });
 
+      drawsocket.on('changegame', function(data) {
+        console.log('set admin');
+        navi.setGame(data.game);
+      });
+
       // Whenever the server emits 'user joined', log it in the chat body
       drawsocket.on('user joined', function(data) {
         console.log(data.username + ' joined');

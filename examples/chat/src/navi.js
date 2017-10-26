@@ -124,41 +124,52 @@ class BotNav extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      buttonLabel: 'OK',
+      clientmode: "",
+      buttonLabel: "OK",
       data: 'payload'
     }
   }
 
-  clickButton(){
-    let mystate = storePlayer.getState();
-    let newbuttonlabel = "OK";
-    if (mystate.mode == "vote"){
-      submitSend('ready');
+  componentWillReceiveProps(nextProps){
+    if (nextProps.mode !== this.state.clientmode){
+      this.setState({clientmode: nextProps.mode,
+                    buttonLabel: "OK",
+                    data: 'payload'}
+      );
     }
-    else if (mystate.mode == "draw"){
-      if (mystate.admin == "true"){
-        submitSend('admin');
-      }
+  }
 
+  clickButton(){
+    //if i'm admin and i'm in lobby, ok button should ready gamename
+    console.log("admin and gamestate: "+this.props.admin+" "+this.props.mainclientstate);
+    if ((this.props.admin == true) && (this.props.mainclientstate == "lobby")){
+      submitSend('admin');
+      return;
+    }
+
+    if (this.props.mode == "vote"){
+      submitSend('ready');
+      storePlayer.dispatch(changeModeMsg(null, 'Voting completed!'));
+    }
+    else if (this.props.mode == "draw"){
       if (this.state.buttonLabel == "OK"){
         submitSend('ready');
-        newbuttonlabel = "Not Ready";
-
+        this.setState({clientmode: "draw",
+                      buttonLabel: "Not Ready",
+                      data: 'payload'}
+        );
       }else {
         submitSend('notready');
-        newbuttonlabel = "OK";
+        this.setState({clientmode: "draw",
+                      buttonLabel: "OK",
+                      data: 'payload'}
+        );
       }
     }
     else {
-      submitSend('payload');
-
+      submitSend('ready');
+      storePlayer.dispatch(changeModeMsg(null, 'Waiting on game...'));
     }
-    this.setState({
-      buttonLabel: newbuttonlabel,
-      data: 'payload'
-    });
-    //change state to msg mode
-    //storePlayer.dispatch(changeModeMsg(null, 'Waiting on game...'));
   }
 
   render(){
@@ -215,10 +226,11 @@ class PlayerPage extends React.Component {
 
 const initialPlayerState = {
   mode: "draw",
-  admin: "false",
+  admin: false,
   vote: "",
   message: "HappyDraw!",
-  mainmsg: "mainmsg"
+  mainmsg: "mainmsg",
+  mainclientstate: "lobby"
 };
 
 //action creator
@@ -226,7 +238,7 @@ function changeModeDraw(msg) {
   return {
     type: "DRAW",
     mode: 'draw',
-    message: msg
+    message: msg,
   };
 }
 function changeModeVote(msg) {
@@ -234,7 +246,7 @@ function changeModeVote(msg) {
     type: "VOTE",
     mode: 'vote',
     vote: '',
-    message: msg
+    message: msg,
   };
 }
 //if msg is null then do not change state
@@ -243,7 +255,7 @@ function changeModeMsg(msg, mainmsg="") {
     type: "MESSAGE",
     mode: 'msg',
     message: msg,
-    mainmsg: mainmsg
+    mainmsg: mainmsg,
   };
 }
 function setVote(vote) {
@@ -252,14 +264,21 @@ function setVote(vote) {
     type: "VOTE",
     mode: 'vote',
     vote: vote,
-    message: ''
+    message: '',
   };
 }
-function changeToAdmin() {
+function changeToAdmin(msg, vote="") {
   return {
     type: "ADMIN",
-    admin: "true",
-    message: 'You are now admin of the room!'
+    admin: true,
+    vote: vote,
+    message: msg,
+  };
+}
+function changeMainclientState(state) {
+  return {
+    type: "MAINCLIENTCHANGE",
+    mainclientstate: state
   };
 }
 
@@ -277,7 +296,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         admin: state.admin,
         vote: state.vote,
         message: action.message,
-        mainmsg: state.mainmsg
+        mainmsg: state.mainmsg,
+        mainclientstate: state.mainclientstate
       };
     case "VOTE":
       if (action.message == null){
@@ -290,7 +310,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         admin: state.admin,
         vote: action.vote,
         message: action.message,
-        mainmsg: state.mainmsg
+        mainmsg: state.mainmsg,
+        mainclientstate: state.mainclientstate
       };
     case "MESSAGE":
       if (action.message == null){
@@ -303,7 +324,8 @@ function playerpagereducer(state = initialPlayerState, action) {
         admin: state.admin,
         vote: state.vote,
         message: action.message,
-        mainmsg: action.mainmsg
+        mainmsg: action.mainmsg,
+        mainclientstate: state.mainclientstate
       };
     case "ADMIN":
       if (action.message == null){
@@ -316,7 +338,22 @@ function playerpagereducer(state = initialPlayerState, action) {
         admin: action.admin,
         vote: state.vote,
         message: action.message,
-        mainmsg: state.mainmsg
+        mainmsg: state.mainmsg,
+        mainclientstate: state.mainclientstate
+      };
+    case "MAINCLIENTCHANGE":
+      if (action.message == null){
+        action.message = state.message;
+      }
+      return {
+        ...state,
+        //set new state
+        mode: state.mode,
+        admin: state.admin,
+        vote: state.vote,
+        message: state.message,
+        mainmsg: state.mainmsg,
+        mainclientstate: action.mainclientstate
       };
     default:
       return state;
@@ -328,14 +365,21 @@ function mapStateToPropsPlayerPage(state) {
            admin: state.admin,
            vote: state.vote,
            message: state.message,
-           mainmsg: state.mainmsg
+           mainmsg: state.mainmsg,
+           mainclientstate: state.mainclientstate
+         };
+}
+function mapStateToPropsBotNav(state) {
+  return { mode: state.mode,
+           admin: state.admin,
+           mainclientstate: state.mainclientstate
          };
 }
 //END MINIGAME REDUX
 
 //bind state to props
-PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw, setVote })(PlayerPage);
-
+PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw, setVote, changeToAdmin, changeMainclientState })(PlayerPage);
+BotNav = ReactRedux.connect(mapStateToPropsBotNav)(BotNav);
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
 const storePlayer = Redux.createStore(playerpagereducer);
@@ -343,6 +387,10 @@ var voteOptions = [];
 
 export function setAdmin(){
   storePlayer.dispatch(changeToAdmin());
+}
+
+export function setGame(gamestate){
+  storePlayer.dispatch(changeMainclientState(gamestate));
 }
 
 export function changePlayerState(mystate, msg, payload = ""){

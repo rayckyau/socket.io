@@ -132,12 +132,14 @@ const initialMainGameState = {
 //action creators
 // Action Creators
 function startGame(gamename) {
+  $.sendGameState("minigameone");
   return {
     type: "MINIGAMEONE",
     gamestate: gamename
   };
 }
 function startLobby() {
+  $.sendGameState("lobby");
   return {
     type: "LOBBY",
     gamestate: "lobby"
@@ -253,6 +255,13 @@ $(function() {
   var socket;
 
   //helper socket functions
+  $.sendGameState = function(gamestate){
+    socket.emit('changegame',{
+      message: 'changeing gamestate of mainclient',
+      game: gamestate
+    })
+  }
+
   $.callstatechangeall = function(mode, msg = "", payload = ""){
     socket.emit('changestateall',{
       state: mode,
@@ -407,9 +416,10 @@ $(function() {
       if (data.data=="ready"){
         isReady[playerIdToNum[data.id]] = true;
       }
-      else if (data.data=="notready"){   
+      else if (data.data=="notready"){
         isReady[playerIdToNum[data.id]] = false;
       }
+      console.log(isReady);
       //only if admin then start the game.
       if (data.data == "admin"){
         storeMainGame.dispatch(startGame('gameone'));
