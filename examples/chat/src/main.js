@@ -153,9 +153,6 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       });
     }
 
-
-
-
     // Remove inactive clients after 10 seconds of inactivity
     setInterval(function() {
 
@@ -281,7 +278,6 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       });
 
       drawsocket.on('moving', function(data) {
-
         if (!(data.id in clients)) {
           // a new user has come online. create a cursor for them
           cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
@@ -339,9 +335,10 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
       drawsocket.on('reconnect', function() {
         console.log('you have been reconnected');
+        /*
         if (username) {
           drawsocket.emit('add user', username);
-        }
+        }*/
       });
 
       drawsocket.on('reconnect_error', function() {

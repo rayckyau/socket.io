@@ -375,7 +375,7 @@ class Timer extends React.Component {
             for (let i=0;i<playernames.length;i++){
               let newvotestring = playernames.join().replace(playernames[i],'');
               newvotestring = newvotestring.replace(/,+/g,',').replace(/(^,)|(,$)/g,'');
-              $.callstatechangeprivate('vote', "Vote for the Liar", playersockets[i], newvotestring);
+              $.callstatechangeprivate('vote', "Vote for The Imposter", playersockets[i], newvotestring);
             }
           }
           else{
@@ -400,13 +400,13 @@ class Timer extends React.Component {
           if (votedLoc == words[secretPlace]){
             //spy wins
             winner = "Liar";
-            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!",
-            "The Liar chose the correct secret place. Next time don't be so obvious!");
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!",
+            "The Imposter chose the correct secret place. Next time don't be so obvious!");
           }
           else{
             winner = "Everyone Else";
-            $.callstatechangeall('msg', 'The winner is everyone else! The liar was '+ playernames[liarnum] + "!",
-            "Good job everyone you caught the liar!");
+            $.callstatechangeall('msg', 'The Illuminati wins! The Imposter was '+ playernames[liarnum] + "!",
+            "Good job everyone you caught The Imposter!");
           }
           storeGame.dispatch(startEnd(winner));
       }
@@ -416,8 +416,8 @@ class Timer extends React.Component {
           console.log("MAJORITY: "+majvote + playernames[liarnum] + liarnum);
           if (majvote == liarnum){
             console.log("liar redeem chance");
-            $.callstatechangeall('msg', "Waiting for the Liar...",
-              "The Liar was found out! However there is still a chance for the liar to win if they choose the correct location.");
+            $.callstatechangeall('msg', "Waiting for The Imposter...",
+              "The Imposter was found! However there is still a chance for The Imposter to win if they choose the correct location.");
             $.resetVotes();
             $.resetLastVoteData();
             //if spy is chosen move into new mode only for spy
@@ -427,7 +427,7 @@ class Timer extends React.Component {
           else{
             winner = "Liar";
             storeGame.dispatch(startEnd(winner));
-            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as the Liar!");
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!");
           }
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
@@ -807,8 +807,8 @@ export class MiniGameOneLayout extends React.Component {
       );
       return (
         <div className="col-sm-10">
-        <div className="row justify-content-md-center">
-          <div>{listItems}</div>
+        <div className="row">
+          {listItems}
         </div>
         </div>
       )
@@ -890,7 +890,7 @@ export class CanvasLayout extends React.Component {
 
     );
     return (
-      <div className="col-sm-10">
+      <div className="col-sm-10 rightpanel">
         <div>
         <div className="row justify-content-md-center">
           {canvasitems}
