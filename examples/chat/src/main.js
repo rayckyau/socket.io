@@ -50,7 +50,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
     // A flag for drawing activity
     let drawing = false;
-
+    let points = [];
     let clients = {};
     let cursors = {};
 
@@ -103,13 +103,16 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         ctx = $('#paper')[0].getContext('2d');
         console.log('draw true'+ctx);
         //define drawing settings
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 4;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         drawing = true;
         let offset = drawcanvas[0].getBoundingClientRect();
         prev.x = e.pageX - offset.left;
         prev.y = e.pageY - offset.top;
+        //push points into array
+        points.length = 0;
+        points.push({x: prev.x, y: prev.y});
         let socketid = drawsocket.id;
         drawsocket.emit('mousemove', {
           'x': prev.x,
@@ -121,6 +124,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
       drawcanvas.bind('mouseup mouseleave', function(e) {
         drawing = false;
+        drawLineQuad();
+        points.length = 0;
       });
 
       let lastEmit = $.now();
@@ -130,6 +135,12 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
           let offset = drawcanvas[0].getBoundingClientRect();
           const xcord = e.pageX - offset.left;
           const ycord = e.pageY- offset.top;
+          //push into points array
+          points.push({x: prev.x, y: prev.y});
+          //if points is bigger than 3 then we shift/keep size to 3
+          if (points.length > 3){
+            points.shift();
+          }
           if ($.now() - lastEmit > 30) {
             let socketid = drawsocket.id;
 
@@ -144,7 +155,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
           // Draw a line for the current user's movement, as it is
           // not received in the socket.on('moving') event above
           if (drawing) {
-            drawLine(prev.x, prev.y, xcord, ycord);
+            //drawLine(prev.x, prev.y, xcord, ycord);
+            drawLineQuad();
             prev.x = xcord;
             prev.y = ycord;
 
@@ -174,6 +186,23 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       ctx.moveTo(fromx, fromy);
       ctx.lineTo(tox, toy);
       ctx.stroke();
+    }
+
+    function drawLineQuad(){
+      //console.log(points);
+      //if small points draw a dot
+      if ((points.length > 0) && (points.length < 3))  {
+  			let b = points[0];
+  			ctx.beginPath();
+  			ctx.arc(b.x, b.y, ctx.lineWidth / 2, 0, Math.PI * 2, !0);
+  			ctx.fill();
+  			ctx.closePath();
+  			return;
+  		}
+      ctx.beginPath();
+		  ctx.moveTo(points[0].x, points[0].y);
+  		ctx.quadraticCurveTo(points[2].x, points[2].y, points[1].x, points[1].y);
+  		ctx.stroke();
     }
 
     $.mountCanvas = function(){
