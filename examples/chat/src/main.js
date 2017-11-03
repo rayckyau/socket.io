@@ -126,11 +126,11 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
       drawcanvas.bind('mouseup mouseleave', function(e) {
         drawing = false;
-        drawLineQuad();
+        drawLineQuad(drawsocket.id);
         points.length = 0;
         drawsocket.emit('mouseup', {
           'drawing': false,
-          'id': socketid
+          'id': drawsocket.id
         });
       });
 
@@ -162,7 +162,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
           // not received in the socket.on('moving') event above
           if (drawing) {
             //drawLine(prev.x, prev.y, xcord, ycord);
-            drawLineQuad();
+            drawLineQuad(drawsocket.id);
             prev.x = xcord;
             prev.y = ycord;
 
@@ -194,7 +194,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       ctx.stroke();
     }
 
-    function drawLineQuad(){
+    function drawLineQuad(pid){
       //console.log(points);
       //if small points draw a dot
       if ((points.length > 0) && (points.length < 3))  {
@@ -203,6 +203,12 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
   			ctx.arc(b.x, b.y, ctx.lineWidth / 2, 0, Math.PI * 2, !0);
   			ctx.fill();
   			ctx.closePath();
+        drawsocket.emit('drawdot', {
+          'x': prev.x,
+          'y': prev.y,
+          'drawing': true,
+          'id': pid
+        });
   			return;
   		}
       ctx.beginPath();

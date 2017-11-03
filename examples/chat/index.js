@@ -84,6 +84,11 @@ function initRoomNS(roomCode){
         socket.to(mainclient).emit('pendown', data);
     });
 
+    socket.on('drawdot', function (data) {
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('drawdot', data);
+    });
+
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
       // we tell the client to execute 'new message'

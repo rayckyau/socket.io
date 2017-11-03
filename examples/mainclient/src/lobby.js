@@ -371,7 +371,16 @@ $(function() {
     ctxdrawcanvas.stroke();
   }
 
-  function drawLineQuad(pointsarray, playerid) {
+  function drawDot(fromx, fromy, playerid){
+    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+    const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.beginPath();
+    ctxdrawcanvas.arc(fromx, fromy, ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
+    ctxdrawcanvas.fill();
+    ctxdrawcanvas.closePath();
+  }
+
+  function drawLineQuad(fromx, fromy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
     //define drawing settings
@@ -465,6 +474,14 @@ $(function() {
 
     socket.on('penup', function(data) {
       drawLineQuad(clientsDrawpoints[data.id], data.id);
+      clientsDrawpoints[data.id] = [];
+      // Saving the current client state
+      clients[data.id] = data;
+      clients[data.id].updated = $.now();
+    });
+
+    socket.on('drawdot', function(data) {
+      drawDot(data.x, data.y, data.id);
       clientsDrawpoints[data.id] = [];
       // Saving the current client state
       clients[data.id] = data;
