@@ -319,6 +319,7 @@ $(function () {
   var playernumToId = {};
   var playerIdToNum = {};
   var playercount = 0;
+  var clientsDrawpoints = {};
   var lastVoteData = void 0;
   var socket;
 
@@ -434,12 +435,37 @@ $(function () {
     var drawcanvas = $('#' + clientdict[playerid].canvasid);
     var ctxdrawcanvas = drawcanvas[0].getContext('2d');
     //define drawing settings
-    ctxdrawcanvas.lineWidth = 2;
+    ctxdrawcanvas.lineWidth = 4;
     ctxdrawcanvas.lineJoin = 'round';
     ctxdrawcanvas.lineCap = 'round';
+    ctxdrawcanvas.shadowBlur = 2;
+    ctxdrawcanvas.shadowColor = 'rgb(0, 0, 0)';
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.moveTo(fromx, fromy);
     ctxdrawcanvas.lineTo(tox, toy);
+    ctxdrawcanvas.stroke();
+  }
+
+  function drawLineQuad(pointsarray, playerid) {
+    var drawcanvas = $('#' + clientdict[playerid].canvasid);
+    var ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    //define drawing settings
+    ctxdrawcanvas.lineWidth = 4;
+    ctxdrawcanvas.lineJoin = 'round';
+    ctxdrawcanvas.lineCap = 'round';
+
+    //draw dots
+    if (pointsarray.length > 0 && pointsarray.length < 3) {
+      var b = pointsarray[0];
+      ctxdrawcanvas.beginPath();
+      ctxdrawcanvas.arc(b.x, b.y, ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
+      ctxdrawcanvas.fill();
+      ctxdrawcanvas.closePath();
+      return;
+    }
+    ctxdrawcanvas.beginPath();
+    ctxdrawcanvas.moveTo(pointsarray[0].x, pointsarray[0].y);
+    ctxdrawcanvas.quadraticCurveTo(pointsarray[2].x, pointsarray[2].y, pointsarray[1].x, pointsarray[1].y);
     ctxdrawcanvas.stroke();
   }
 
@@ -467,6 +493,9 @@ $(function () {
       if (!(data.id in clients)) {
         // a new user has come online. create a cursor for them
         cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
+        //create drawpoints array for new user
+        clientsDrawpoints[data.id] = [];
+        //TODO: cleanup if user leaves
       }
       // Move the mouse pointer
       cursors[data.id].css({
@@ -474,11 +503,44 @@ $(function () {
         'top': data.y
       });
       // Is the user drawing?
-      if (data.drawing && clients[data.id]) {
+      if (data.drawing == true && clients[data.id]) {
         // Draw a line on the canvas. clients[data.id] holds
         // the previous position of this user's mouse pointer
+        //update drawing points for client
+        //if array points is greater than 3 then trim it
+        if (clientsDrawpoints[data.id].length > 3) {
+          clientsDrawpoints[data.id].shift();
+        }
+        clientsDrawpoints[data.id].push({ x: data.x, y: data.y });
+        //drawLineQuad(clientsDrawpoints[data.id], data.id);
         drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
       }
+      // Saving the current client state
+      clients[data.id] = data;
+      clients[data.id].updated = $.now();
+    });
+
+    socket.on('pendown', function (data) {
+      if (!(data.id in clients)) {
+        // a new user has come online. create a cursor for them
+        cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
+        //create drawpoints array for new user
+        clientsDrawpoints[data.id] = [];
+        //TODO: cleanup if user leaves
+      }
+      //reset drawing points array
+      clientsDrawpoints[data.id].length = 0;
+      if (data.drawing == true && clients[data.id]) {
+        clientsDrawpoints[data.id].push({ x: data.x, y: data.y });
+      }
+      // Saving the current client state
+      clients[data.id] = data;
+      clients[data.id].updated = $.now();
+    });
+
+    socket.on('penup', function (data) {
+      drawLineQuad(clientsDrawpoints[data.id], data.id);
+      clientsDrawpoints[data.id] = [];
       // Saving the current client state
       clients[data.id] = data;
       clients[data.id].updated = $.now();

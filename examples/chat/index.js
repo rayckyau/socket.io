@@ -74,6 +74,16 @@ function initRoomNS(roomCode){
         socket.to(mainclient).emit('moving', data);
     });
 
+    socket.on('mouseup', function (data) {
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('penup', data);
+    });
+
+    socket.on('mousedown', function (data) {
+        let mainclient = namespaces[roomCode];
+        socket.to(mainclient).emit('pendown', data);
+    });
+
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
       // we tell the client to execute 'new message'

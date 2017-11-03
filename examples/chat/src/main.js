@@ -106,6 +106,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         ctx.lineWidth = 4;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 1;
+        ctx.shadowColor = 'rgb(0, 0, 0)';
         drawing = true;
         let offset = drawcanvas[0].getBoundingClientRect();
         prev.x = e.pageX - offset.left;
@@ -114,10 +116,10 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         points.length = 0;
         points.push({x: prev.x, y: prev.y});
         let socketid = drawsocket.id;
-        drawsocket.emit('mousemove', {
+        drawsocket.emit('mousedown', {
           'x': prev.x,
           'y': prev.y,
-          'drawing': false,
+          'drawing': true,
           'id': socketid
         });
       });
@@ -126,6 +128,10 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         drawing = false;
         drawLineQuad();
         points.length = 0;
+        drawsocket.emit('mouseup', {
+          'drawing': false,
+          'id': socketid
+        });
       });
 
       let lastEmit = $.now();
@@ -141,7 +147,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
           if (points.length > 3){
             points.shift();
           }
-          if ($.now() - lastEmit > 30) {
+          if ($.now() - lastEmit > 20) {
             let socketid = drawsocket.id;
 
             drawsocket.emit('mousemove', {
