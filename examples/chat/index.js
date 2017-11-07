@@ -29,10 +29,18 @@ function createRoomCode (){
   return text;
 }
 
+function queryRoomCode(roomcode){
+  if (Object.keys(namespaces).includes(roomcode)){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 function initRoomNS(roomCode){
   var room = io.of('/'+roomCode)
   .on('connection', function (socket) {
-    var addedUser = false;
     var numUsers = 0;
 
     socket.on('changestateall', function (data) {
@@ -101,7 +109,6 @@ function initRoomNS(roomCode){
     // when the client emits 'add user', this listens and executes
     socket.on('add user', function (username) {
       console.log('User connect: %s', username);
-      if (addedUser) return;
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
@@ -110,7 +117,6 @@ function initRoomNS(roomCode){
       // we store the username in the socket session for this client
       socket.username = username;
       ++numUsers;
-      addedUser = true;
       let socketid = socket.id;
       socket.emit('login', {
         numUsers: numUsers,
@@ -145,16 +151,13 @@ function initRoomNS(roomCode){
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
-      if (addedUser) {
-        --numUsers;
-
         // echo globally that this client has left
         socket.broadcast.emit('user left', {
           username: socket.username,
           numUsers: numUsers
         });
-      }
     });
+
   }
 
   );
@@ -166,12 +169,9 @@ function initRoomNS(roomCode){
 
 //room creation
 app.post('/createRoom', function (req, res) {
-   //read machine id
-   //read secret token
-
-
+   //TODO: read machine id and secret token as a key
    //create room
-   var roomCode = createRoomCode();
+   let roomCode = createRoomCode();
    roomList.add(initRoomNS(roomCode));
    console.log('Room created %s', roomCode);
    res.end( JSON.stringify(roomCode));
@@ -179,4 +179,14 @@ app.post('/createRoom', function (req, res) {
 
 });
 
-// Chatroom
+app.get('/checkRoom/:room', function (req, res) {
+   //check room
+   let isRoomExists = queryRoomCode(req.params.room);
+   console.log('Room check: ' + req.params.room + isRoomExists);
+   if (isRoomExists){
+     res.send(isRoomExists);
+   }
+   else {
+     res.send(isRoomExists);
+   }
+});

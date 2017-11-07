@@ -55,13 +55,49 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     let cursors = {};
 
     let prev = {};
-
+    /*
     window.onbeforeunload = function() {
        return "Buddy, are you sure you want to leave? Think of the kittens!";
      }
+*/
+     function checkRoomCode(roomcode){
+       let rp = require('request-promise');
+       let url = 'http://' + window.location.hostname + ':' + PORT;
+       console.log('request to : '+ url+'/checkRoom/'+roomcode)
+       let options = {
+           method: 'GET',
+           uri: url+'/checkRoom/'+roomcode,
+           body: {
+               room: roomcode
+           },
+           json: true // Automatically stringifies the body to JSON
+       };
+       rp(options)
+           .then(function (parsedBody) {
+               console.log('room check: %s', parsedBody);
+               if (parsedBody){
+                 if (username) {
+                   $loginPage.fadeOut();
+                   $drawPage.show();
+                   $loginPage.off('click');
+                   var url = 'http://' + window.location.hostname + ':' + PORT +'/';
+                   drawsocket = io(url + room);
+                   defineSocket();
+                   socketReady = true;
+                   console.log('User try socket: %s', url + room);
+                   // Tell the server your username
+                   drawsocket.emit('add user', username);
+                 }
+               }
+           })
+           .catch(function (err) {
+               console.log(err);
+               //return false;
+           });
+
+     }
 
     //init canvas bindings
-    //TODO: investigate mem leak on killing canvases??
     setupDrawCanvasListeners();
 
     function setupDrawCanvasListeners(){
@@ -245,22 +281,12 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     };
 
     // Sets the client's username
-    function setUsername() {
+    function attemptRoomJoin() {
       username = cleanInput($usernameInput.val().trim()).toUpperCase();
       let roomcodeclean = cleanInput($roomInput.val().trim()).toUpperCase();
       room = roomcodeclean;
-      if (username) {
-        $loginPage.fadeOut();
-        $drawPage.show();
-        $loginPage.off('click');
-        var url = 'http://' + window.location.hostname + ':' + PORT +'/';
-        drawsocket = io(url + room);
-        defineSocket();
-        socketReady = true;
-        console.log('User try socket: %s', url + room);
-        // Tell the server your username
-        drawsocket.emit('add user', username);
-      }
+      //check if room exists here
+      checkRoomCode(room);
     }
 
     // Prevents input from having injected markup
@@ -281,29 +307,24 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     }
 
     $('#enterroom').click(function(){
+      //add room check and cookie check here
+      //if isRoomExists and isCookieExists
+
       if (username) {
-        sendMessage();
-        drawsocket.emit('stop typing');
         typing = false;
       } else {
-        setUsername();
+        attemptRoomJoin();
       }
     });
 
     // Keyboard events
     $window.keydown(function(event) {
-      // Auto-focus the current input when a key is typed
-      if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-        //$currentInput.focus();
-      }
       // When the client hits ENTER on their keyboard
       if (event.which === 13) {
         if (username) {
-          sendMessage();
-          drawsocket.emit('stop typing');
           typing = false;
         } else {
-          setUsername();
+          attemptRoomJoin();
         }
       }
     });
