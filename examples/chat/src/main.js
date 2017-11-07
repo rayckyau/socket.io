@@ -35,11 +35,12 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
     let mainclientid;
 
-    // This demo depends on the canvas element
     if (!('getContext' in document.createElement('canvas'))) {
       alert('Sorry, it looks like your browser does not support canvas!');
       return false;
     }
+
+    //onbeforeunload
 
     let doc = $(document),
       drawcanvas = $('#paper'),
@@ -55,50 +56,87 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     let cursors = {};
 
     let prev = {};
-    /*
-    window.onbeforeunload = function() {
-       return "Buddy, are you sure you want to leave? Think of the kittens!";
-     }
-*/
-     function checkRoomCode(roomcode){
-       let rp = require('request-promise');
-       let url = 'http://' + window.location.hostname + ':' + PORT;
-       console.log('request to : '+ url+'/checkRoom/'+roomcode)
-       let options = {
-           method: 'GET',
-           uri: url+'/checkRoom/'+roomcode,
-           body: {
-               room: roomcode
-           },
-           json: true // Automatically stringifies the body to JSON
-       };
-       rp(options)
-           .then(function (parsedBody) {
-               console.log('room check: %s', parsedBody);
-               if (parsedBody){
-                 if (username) {
-                   $loginPage.fadeOut();
-                   $drawPage.show();
-                   $loginPage.off('click');
-                   var url = 'http://' + window.location.hostname + ':' + PORT +'/';
-                   drawsocket = io(url + room);
-                   defineSocket();
-                   socketReady = true;
-                   console.log('User try socket: %s', url + room);
-                   // Tell the server your username
-                   drawsocket.emit('add user', username);
-                 }
-               }
-           })
-           .catch(function (err) {
-               console.log(err);
-               //return false;
-           });
 
-     }
-
+    /////////stuff to do when page loads/////////////
+    //check session
+    checkSession();
     //init canvas bindings
     setupDrawCanvasListeners();
+
+    function checkSession(){
+      let rp = require('request-promise');
+      let url = 'http://' + window.location.hostname + ':' + PORT;
+      console.log('request to : '+ url+'/checkSession');
+      let options = {
+          method: 'GET',
+          uri: url+'/checkSession',
+          body: {
+              payload: 'hello'
+          },
+          json: true // Automatically stringifies the body to JSON
+      };
+      rp(options)
+          .then(function (parsedBody) {
+              console.log('session check: %s', parsedBody.views);
+
+              //if session exists then go straight to checkroom code
+              //set username and room code
+              if (parsedBody.views){
+                console.log('session username: %s', parsedBody.username);
+                console.log('session room: %s', parsedBody.room);
+                username = parsedBody.username;
+                checkRoomCode(parsedBody.room)
+                return;
+              }
+              else {
+                console.log("no session");
+                return;
+              }
+
+          })
+          .catch(function (err) {
+              console.log(err);
+              return;
+          });
+     }//end checkroom
+
+   function checkRoomCode(roomcode){
+     let rp = require('request-promise');
+     let url = 'http://' + window.location.hostname + ':' + PORT;
+     console.log('request to : '+ url+'/checkRoom/'+roomcode+'?username='+username)
+     let options = {
+         method: 'GET',
+         uri: url+'/checkRoom/'+roomcode+'?username='+username,
+         body: {
+             room: roomcode
+         },
+         json: true // Automatically stringifies the body to JSON
+     };
+     rp(options)
+         .then(function (parsedBody) {
+             console.log('room check: %s', parsedBody);
+             if (parsedBody){
+               //check cookie here
+               if (username) {
+                 $loginPage.fadeOut();
+                 $drawPage.show();
+                 $loginPage.off('click');
+                 var url = 'http://' + window.location.hostname + ':' + PORT +'/';
+                 drawsocket = io(url + room);
+                 defineSocket();
+                 socketReady = true;
+                 console.log('User try socket: %s', url + room);
+                 // Tell the server your username
+                 drawsocket.emit('add user', username);
+                 return;
+               }
+             }
+         })
+         .catch(function (err) {
+             console.log(err);
+             return;
+         });
+    }//end checkroom
 
     function setupDrawCanvasListeners(){
       // Get the position of a touch relative to the canvas
@@ -339,6 +377,16 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         mainclientid = data.mainclient;
       });
 
+      drawsocket.on('user reconnect', function(data) {
+        connected = true;
+        //store mainclient id
+        mainclientid = data.mainclient;
+        drawsocket.emit('user reconnect', {
+          'id': username,
+          'mainclient': mainclientid
+        });
+      });
+
       drawsocket.on('moving', function(data) {
         if (!(data.id in clients)) {
           // a new user has come online. create a cursor for them
@@ -391,16 +439,15 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         console.log(data.username + ' left');
       });
 
-      drawsocket.on('disconnect', function() {
+      drawsocket.on('disconnect', function(data) {
         console.log('you have been disconnected');
       });
 
       drawsocket.on('reconnect', function() {
         console.log('you have been reconnected');
-        /*
         if (username) {
           drawsocket.emit('add user', username);
-        }*/
+        }
       });
 
       drawsocket.on('reconnect_error', function() {

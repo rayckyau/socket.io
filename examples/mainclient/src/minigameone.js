@@ -754,7 +754,6 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   checkGameState(){
-    //TODO: optimize by checking if state has changed first
     //only change state if state is GAMERECAP/VOTERECAP
     if ((storeGame.getState().gamestate == "GAMERECAP") || (storeGame.getState().gamestate == "VOTERECAP") || (storeGame.getState().gamestate == "BEGIN"))
     {

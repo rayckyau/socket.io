@@ -580,6 +580,12 @@ $(function() {
       }
     });
 
+    socket.on('user reconnect', function (data) {
+      log(data.username + ' reconnected');
+      //find correct state
+      //send correct state back to user
+    });
+
     socket.on('reconnect_error', function () {
       log('attempt to reconnect has failed');
     });

@@ -2,22 +2,39 @@
 // Setup basic express server
 var ArrayList = require('arraylist');
 var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('../..')(server);
+//var app = express();
+//var server = require('http').createServer(app);
+//var io = require('../..')(server);
 var port = process.env.PORT || 3000;
 var roomList = new ArrayList();
 var namespaces = {};
 
 let roommainclientdict = {};
-let mainclientid;
+
+var app = require('express')(),
+  server  = require("http").createServer(app),
+  io = require("socket.io")(server),
+  session = require("express-session")({
+    secret: "my-secret",
+    resave: true,
+    saveUninitialized: true
+  }),
+  sharedsession = require("express-socket.io-session");
+
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
+// Attach session
+app.use(session);
+
+// Share session with io sockets
+//io.use(sharedsession(session));
+
 // Routing
 app.use(express.static(__dirname + '/public'));
+
 
 function createRoomCode (){
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -44,10 +61,12 @@ function initRoomNS(roomCode){
     var numUsers = 0;
 
     socket.on('changestateall', function (data) {
+        //TODO: save state on session
         socket.broadcast.emit('changestateall', data);
     });
 
     socket.on('changestateprivate', function (data) {
+        //TODO: save state on session
         let client = data.client;
         console.log('changestate private : '+client);
         socket.to(client).emit('changestateall', data);
@@ -108,7 +127,30 @@ function initRoomNS(roomCode){
 
     // when the client emits 'add user', this listens and executes
     socket.on('add user', function (username) {
+      let mainclient = namespaces[roomCode];
       console.log('User connect: %s', username);
+      /*
+      let user = socket.handshake.session;
+
+      if (user){
+        //say user reconnected
+        socket.to(mainclient).emit('user reconnect', {
+          id: socket.id,
+          username: socket.handshake.session.username
+        });
+        //TODO: right now just change to msg state
+        socket.emit('changestateall', {
+          state: 'msg',
+          message: 'back in',
+          payload: "All votes are in!"
+        });
+        return;
+      }
+      else {
+        socket.handshake.session.username = username;
+        socket.handshake.session.save();
+      }
+*/
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
@@ -120,8 +162,7 @@ function initRoomNS(roomCode){
       let socketid = socket.id;
       socket.emit('login', {
         numUsers: numUsers,
-        id: socketid,
-        mainclient: mainclientid
+        id: socketid
       });
       socket.emit('user joined', {
         username: socket.username,
@@ -174,19 +215,47 @@ app.post('/createRoom', function (req, res) {
    let roomCode = createRoomCode();
    roomList.add(initRoomNS(roomCode));
    console.log('Room created %s', roomCode);
+   res.setHeader('Content-Type', 'application/json');
    res.end( JSON.stringify(roomCode));
    //else give error page
 
 });
 
 app.get('/checkRoom/:room', function (req, res) {
-   //check room
+   res.setHeader('Content-Type', 'application/json');
+   //check room TODO: make this query redis
    let isRoomExists = queryRoomCode(req.params.room);
    console.log('Room check: ' + req.params.room + isRoomExists);
    if (isRoomExists){
+     if (req.session.views){
+       req.session.views++;
+       req.session.room = req.params.room;
+       req.session.username = req.query.username;
+       console.log("sviews: " + req.session.views);
+       console.log("sroom: " + req.session.room);
+       console.log("susername: " + req.session.username);
+     }
+     else{
+       //TODO: delete created session
+       console.log("room doesn't exist, don't make session");
+     }
      res.send(isRoomExists);
    }
    else {
      res.send(isRoomExists);
+   }
+});
+
+//check for session wherever you are
+app.get('/checkSession', function (req, res)  {
+   res.setHeader('Content-Type', 'application/json');
+   //if session exists then send back username/roomcode
+   if (req.session.views){
+     console.log("sendback views: " + req.session.views);
+     res.end( JSON.stringify({views:req.session.views, username: req.session.username, room: req.session.room}));
+   }
+   else {
+     req.session.views = 1;
+     res.end(JSON.stringify({view: req.session.views}));
    }
 });
