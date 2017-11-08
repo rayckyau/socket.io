@@ -85,22 +85,22 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
                 console.log('session username: %s', parsedBody.username);
                 console.log('session room: %s', parsedBody.room);
                 username = parsedBody.username;
-                checkRoomCode(parsedBody.room)
-                return;
+                checkRoomCode(parsedBody.room, true);
+                return true;
               }
               else {
                 console.log("no session");
-                return;
+                return true;
               }
 
           })
           .catch(function (err) {
               console.log(err);
-              return;
+              return false;
           });
      }//end checkroom
 
-   function checkRoomCode(roomcode){
+   function checkRoomCode(roomcode, session=false){
      let rp = require('request-promise');
      let url = 'http://' + window.location.hostname + ':' + PORT;
      console.log('request to : '+ url+'/checkRoom/'+roomcode+'?username='+username)
@@ -116,25 +116,30 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
          .then(function (parsedBody) {
              console.log('room check: %s', parsedBody);
              if (parsedBody){
-               //check cookie here
-               if (username) {
+               if (username){
                  $loginPage.fadeOut();
                  $drawPage.show();
                  $loginPage.off('click');
                  var url = 'http://' + window.location.hostname + ':' + PORT +'/';
-                 drawsocket = io(url + room);
+                 console.log('User try socket: %s', url + roomcode);
+                 drawsocket = io(url + roomcode);
                  defineSocket();
                  socketReady = true;
-                 console.log('User try socket: %s', url + room);
-                 // Tell the server your username
-                 drawsocket.emit('add user', username);
-                 return;
+                 if (session){
+                   console.log("session found");
+                   drawsocket.emit('reconnect user', {username: username, room: roomcode});
+                 }
+                 else {
+                   drawsocket.emit('add user', username);
+                 }
+
                }
              }
+             return true;
          })
          .catch(function (err) {
              console.log(err);
-             return;
+             return false;
          });
     }//end checkroom
 
@@ -377,16 +382,6 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         mainclientid = data.mainclient;
       });
 
-      drawsocket.on('user reconnect', function(data) {
-        connected = true;
-        //store mainclient id
-        mainclientid = data.mainclient;
-        drawsocket.emit('user reconnect', {
-          'id': username,
-          'mainclient': mainclientid
-        });
-      });
-
       drawsocket.on('moving', function(data) {
         if (!(data.id in clients)) {
           // a new user has come online. create a cursor for them
@@ -443,11 +438,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         console.log('you have been disconnected');
       });
 
-      drawsocket.on('reconnect', function() {
+      drawsocket.on('reconnect', function(data) {
         console.log('you have been reconnected');
-        if (username) {
-          drawsocket.emit('add user', username);
-        }
       });
 
       drawsocket.on('reconnect_error', function() {

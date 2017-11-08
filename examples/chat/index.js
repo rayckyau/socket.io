@@ -22,6 +22,7 @@ var app = require('express')(),
   sharedsession = require("express-socket.io-session");
 
 
+
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
@@ -30,7 +31,7 @@ server.listen(port, function () {
 app.use(session);
 
 // Share session with io sockets
-//io.use(sharedsession(session));
+io.use(sharedsession(session, {autoSave:true}));
 
 // Routing
 app.use(express.static(__dirname + '/public'));
@@ -129,28 +130,7 @@ function initRoomNS(roomCode){
     socket.on('add user', function (username) {
       let mainclient = namespaces[roomCode];
       console.log('User connect: %s', username);
-      /*
-      let user = socket.handshake.session;
 
-      if (user){
-        //say user reconnected
-        socket.to(mainclient).emit('user reconnect', {
-          id: socket.id,
-          username: socket.handshake.session.username
-        });
-        //TODO: right now just change to msg state
-        socket.emit('changestateall', {
-          state: 'msg',
-          message: 'back in',
-          payload: "All votes are in!"
-        });
-        return;
-      }
-      else {
-        socket.handshake.session.username = username;
-        socket.handshake.session.save();
-      }
-*/
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
@@ -199,10 +179,26 @@ function initRoomNS(roomCode){
         });
     });
 
+    socket.on('reconnect user', function (data) {
+        console.log('Found socket session');
+        let mainclient = namespaces[data.room];
+        //say user reconnected
+        socket.to(mainclient).emit('user reconnect', {
+          id: socket.id,
+          username: data.username
+        });
+        //TODO: right now just change to msg state
+        socket.emit('changestateall', {
+          state: 'msg',
+          message: 'back in',
+          payload: "All votes are in!"
+        });
+    });
+
+
   }
 
   );
-
 
   //return namespace obj
   return room;
