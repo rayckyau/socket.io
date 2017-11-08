@@ -103,6 +103,9 @@ class TopNav extends React.Component {
 }
 
 //TODO: super janky function to access socket. needs refactoring
+function saveSessionToServer(data){
+  $.saveSession(data);
+}
 function submitSend(payload){
   $.subSend(payload);
 }
@@ -395,6 +398,7 @@ export function setGame(gamestate){
 
 export function changePlayerState(mystate, msg, payload = ""){
   clearMouseEvent();
+  saveSessionToServer({state:mystate, message:msg, payload:payload});
   //change player state
   if (mystate == 'draw'){
     storePlayer.dispatch(changeModeDraw(msg));

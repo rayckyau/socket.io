@@ -59,15 +59,18 @@ function initRoomNS(roomCode){
     var numUsers = 0;
 
     socket.on('changestateall', function (data) {
-        //TODO: save state on session
         socket.broadcast.emit('changestateall', data);
     });
 
     socket.on('changestateprivate', function (data) {
-        //TODO: save state on session
         let client = data.client;
         console.log('changestate private : '+client);
         socket.to(client).emit('changestateall', data);
+    });
+
+    socket.on('save session', function (data) {
+        socket.handshake.session.statedata = data;
+        socket.handshake.session.save();
     });
 
     socket.on('makeadmin', function (data) {
@@ -127,9 +130,6 @@ function initRoomNS(roomCode){
     socket.on('add user', function (username) {
       let mainclient = namespaces[roomCode];
       console.log('User connect: %s', username);
-      //socket.handshake.session.username = username;
-      //socket.handshake.session.room = roomCode;
-      //socket.handshake.session.save();
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
@@ -182,18 +182,17 @@ function initRoomNS(roomCode){
         console.log('Found socket session');
         console.log('user: ' + socket.handshake.session.username);
         console.log('room: ' + socket.handshake.session.room);
+        console.log('data: ' + socket.handshake.session.statedata);
+        //find all session and replace the socketid
+
         let mainclient = namespaces[data.room];
         //say user reconnected
         socket.to(mainclient).emit('user reconnect', {
           id: socket.id,
           username: data.username
         });
-        //TODO: right now just change to msg state
-        socket.emit('changestateall', {
-          state: 'msg',
-          message: 'back in',
-          payload: "All votes are in!"
-        });
+        //send state from session
+        socket.emit('changestateall', socket.handshake.session.statedata);
     });
 
 
@@ -230,9 +229,6 @@ app.get('/checkRoom/:room', function (req, res) {
        req.session.views++;
        req.session.room = req.params.room;
        req.session.username = req.query.username;
-       console.log("sviews: " + req.session.views);
-       console.log("sroom: " + req.session.room);
-       console.log("susername: " + req.session.username);
      }
      else{
        //TODO: delete created session
@@ -250,9 +246,6 @@ app.get('/checkSession', function (req, res)  {
    res.setHeader('Content-Type', 'application/json');
    //if session exists then send back username/roomcode
    if (req.session.views){
-     console.log("sendback views: " + req.session.views);
-     console.log("sendback username: " + req.session.username);
-     console.log("sendback room: " + req.session.room);
      res.end( JSON.stringify({views:req.session.views, username: req.session.username, room: req.session.room}));
    }
    else {

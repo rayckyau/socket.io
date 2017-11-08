@@ -127,11 +127,16 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
                  socketReady = true;
                  if (session){
                    console.log("session found");
-                   drawsocket.emit('reconnect user', {username: username, room: roomcode});
+                   drawsocket.emit('reconnect user', {
+                     'username': username,
+                     'room': roomcode,
+                     'id': drawsocket.id
+                   });
                  }
                  else {
                    drawsocket.emit('add user', username);
                  }
+                 navi.changePlayerState("draw", "draw random stuff in lobby");
 
                }
              }
@@ -180,7 +185,6 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       drawcanvas.on('mousedown', function(e) {
         e.preventDefault();
         ctx = $('#paper')[0].getContext('2d');
-        console.log('draw true'+ctx);
         //define drawing settings
         ctx.lineWidth = 4;
         ctx.lineJoin = 'round';
@@ -290,17 +294,19 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         });
   			return;
   		}
-      ctx.beginPath();
-		  ctx.moveTo(points[0].x, points[0].y);
-  		ctx.quadraticCurveTo(points[2].x, points[2].y, points[1].x, points[1].y);
-  		ctx.stroke();
+      if (points.length != 0 ){
+        ctx.beginPath();
+  		  ctx.moveTo(points[0].x, points[0].y);
+    		ctx.quadraticCurveTo(points[2].x, points[2].y, points[1].x, points[1].y);
+    		ctx.stroke();
+      }
+
     }
 
     $.mountCanvas = function(){
       drawcanvas = $('#paper');
       drawcanvas.width = drawcanvas.width;
       setupDrawCanvasListeners();
-      console.log("in mount canvas: "+drawcanvas);
     };
 
     //send a mosueup event so you can't hold down the event between state changes
@@ -314,6 +320,11 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         'data': payload,
         'id': username
       });
+    };
+
+    $.saveSession = function(payload){
+      console.log("save session");
+      drawsocket.emit('save session', payload);
     };
 
     $.voteSend = function(payload){
@@ -404,7 +415,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       });
 
       drawsocket.on('changestateall', function(data) {
-        console.log(data.state + ' dsa ' + data.message);
+        console.log(data.state + ' ' + data.message);
         navi.changePlayerState(data.state, data.message, data.payload);
       });
 
@@ -420,7 +431,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
       });
 
       drawsocket.on('changegame', function(data) {
-        console.log('set admin');
+        console.log('changegame to ' + data.game);
         navi.setGame(data.game);
       });
 

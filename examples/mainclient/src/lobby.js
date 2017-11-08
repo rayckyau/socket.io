@@ -249,6 +249,7 @@ $(function() {
   let voteData = ['','','','','','','','','','','',''];
   let playernumToId = {};
   let playerIdToNum = {};
+  let usernameToSocketid = {};
   let playercount = 0;
   let clientsDrawpoints = {};
   let lastVoteData;
@@ -424,6 +425,7 @@ $(function() {
     });
 
     socket.on('moving', function(data) {
+      console.log(data.id);
       if (!(data.id in clients)) {
         // a new user has come online. create a cursor for them
         cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
@@ -431,11 +433,7 @@ $(function() {
         clientsDrawpoints[data.id] = [];
         //TODO: cleanup if user leaves
       }
-      // Move the mouse pointer
-      cursors[data.id].css({
-        'left': data.x,
-        'top': data.y
-      });
+
       // Is the user drawing?
       if ((data.drawing == true) && (clients[data.id])) {
         // Draw a line on the canvas. clients[data.id] holds
@@ -473,7 +471,7 @@ $(function() {
     });
 
     socket.on('penup', function(data) {
-      drawLineQuad(clientsDrawpoints[data.id], data.id);
+      //drawLineQuad(clientsDrawpoints[data.id], data.id);
       clientsDrawpoints[data.id] = [];
       // Saving the current client state
       clients[data.id] = data;
@@ -529,6 +527,8 @@ $(function() {
         playerobj["playernum"] = canvasnum;
         playerobj["socketid"] = data.id;
         clientdict[data.id] = playerobj;
+        //update username to socketid map
+        usernameToSocketid[data.username] = data.id;
         //update playernum to id map
         playernumToId[canvasnum] = data.username;
         playerIdToNum[data.username] = canvasnum;
@@ -556,7 +556,6 @@ $(function() {
     socket.on('user left', function (data) {
       //TODO: remove player from dict
       log(data.username + ' left');
-      removeChatTyping(data);
     });
 
     // Whenever the server emits 'typing', show the typing message
@@ -566,7 +565,6 @@ $(function() {
 
     // Whenever the server emits 'stop typing', kill the typing message
     socket.on('stop typing', function (data) {
-      removeChatTyping(data);
     });
 
     socket.on('disconnect', function () {
@@ -582,8 +580,16 @@ $(function() {
 
     socket.on('user reconnect', function (data) {
       log(data.username + ' reconnected');
-      //find correct state
-      //send correct state back to user
+      //get old socketid
+      let oldSocketid = usernameToSocketid[data.username];
+      let recoveredplayerObj = clientdict[oldSocketid];
+      //update obj
+      recoveredplayerObj["socketid"] = data.id;
+      clientdict[data.id] = recoveredplayerObj;
+      //delete old obj
+      delete clients[oldSocketid];
+      delete cursors[oldSocketid];
+      delete clientdict[oldSocketid];
     });
 
     socket.on('reconnect_error', function () {
@@ -712,13 +718,6 @@ $(function() {
     addChatMessage(data);
   }
 
-  // Removes the visual chat typing message
-  function removeChatTyping (data) {
-    getTypingMessages(data).fadeOut(function () {
-      $(this).remove();
-    });
-  }
-
   // Adds a message element to the messages and scrolls to the bottom
   // el - The element to add as a message
   // options.fade - If the element should fade-in (default = true)
@@ -755,25 +754,6 @@ $(function() {
     return $('<div/>').text(input).text();
   }
 
-  // Updates the typing event
-  function updateTyping () {
-    if (connected) {
-      if (!typing) {
-        typing = true;
-        socket.emit('typing');
-      }
-      lastTypingTime = (new Date()).getTime();
-
-      setTimeout(function () {
-        var typingTimer = (new Date()).getTime();
-        var timeDiff = typingTimer - lastTypingTime;
-        if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
-          socket.emit('stop typing');
-          typing = false;
-        }
-      }, TYPING_TIMER_LENGTH);
-    }
-  }
 
   // Gets the 'X is typing' messages of a user
   function getTypingMessages (data) {
