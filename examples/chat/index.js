@@ -30,9 +30,6 @@ server.listen(port, function () {
 // Attach session
 app.use(session);
 
-// Share session with io sockets
-io.use(sharedsession(session, {autoSave:true}));
-
 // Routing
 app.use(express.static(__dirname + '/public'));
 
@@ -57,7 +54,7 @@ function queryRoomCode(roomcode){
 }
 
 function initRoomNS(roomCode){
-  var room = io.of('/'+roomCode)
+  let room = io.of('/'+roomCode)
   .on('connection', function (socket) {
     var numUsers = 0;
 
@@ -130,7 +127,9 @@ function initRoomNS(roomCode){
     socket.on('add user', function (username) {
       let mainclient = namespaces[roomCode];
       console.log('User connect: %s', username);
-
+      //socket.handshake.session.username = username;
+      //socket.handshake.session.room = roomCode;
+      //socket.handshake.session.save();
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
@@ -181,6 +180,8 @@ function initRoomNS(roomCode){
 
     socket.on('reconnect user', function (data) {
         console.log('Found socket session');
+        console.log('user: ' + socket.handshake.session.username);
+        console.log('room: ' + socket.handshake.session.room);
         let mainclient = namespaces[data.room];
         //say user reconnected
         socket.to(mainclient).emit('user reconnect', {
@@ -199,7 +200,9 @@ function initRoomNS(roomCode){
   }
 
   );
-
+  room.use(sharedsession(session, {
+    autoSave: true
+  }));
   //return namespace obj
   return room;
 }
@@ -248,6 +251,8 @@ app.get('/checkSession', function (req, res)  {
    //if session exists then send back username/roomcode
    if (req.session.views){
      console.log("sendback views: " + req.session.views);
+     console.log("sendback username: " + req.session.username);
+     console.log("sendback room: " + req.session.room);
      res.end( JSON.stringify({views:req.session.views, username: req.session.username, room: req.session.room}));
    }
    else {
