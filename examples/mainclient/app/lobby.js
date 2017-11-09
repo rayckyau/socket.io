@@ -79,9 +79,9 @@ var LobbyScreen = function (_React$Component) {
     value: function startGame() {
       //update player names
       //TODO: optimize by checking if state has changed first
-      for (var key in $.getPlayerNumToId()) {
-        if ($.getPlayerNumToId().hasOwnProperty(key)) {
-          this.state.playerlabels[key] = $.getPlayerNumToId()[key];
+      for (var key in $.getplayernumToUser()) {
+        if ($.getplayernumToUser().hasOwnProperty(key)) {
+          this.state.playerlabels[key] = $.getplayernumToUser()[key];
         }
       }
       this.setState({ playerlabels: this.state.playerlabels });
@@ -316,8 +316,8 @@ $(function () {
   var votes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   var isReady = [false, false, false, false, false, false, false, false, false, false];
   var voteData = ['', '', '', '', '', '', '', '', '', '', '', ''];
-  var playernumToId = {};
-  var playerIdToNum = {};
+  var playernumToUser = {};
+  var playerUserToNum = {};
   var usernameToSocketid = {};
   var playercount = 0;
   var clientsDrawpoints = {};
@@ -363,6 +363,15 @@ $(function () {
     });
   };
 
+  //takes player socketid and clears the canvas
+  //TODO: not working
+  $.clearSelectedCanvas = function (playerid) {
+    console.log('#' + canvas.width);
+    var canvas = $('#' + clientdict[playerid].canvasid);
+    var context = canvas[0].getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
   $.getAllCanvas = function () {
     var canvasarray = [];
     $.each($('canvas'), function (index, canvas) {
@@ -371,12 +380,12 @@ $(function () {
     return canvasarray;
   };
 
-  $.getPlayerNumToId = function () {
-    return playernumToId;
+  $.getplayernumToUser = function () {
+    return playernumToUser;
   };
 
   $.getPlayernumById = function (username) {
-    return playerIdToNum[username];
+    return playerUserToNum[username];
   };
 
   //return all players
@@ -395,7 +404,7 @@ $(function () {
   };
 
   $.isReadyPlayerId = function (id) {
-    return isReady[playerIdToNum[id]];
+    return isReady[playerUserToNum[id]];
   };
 
   $.isReadyPlayerNum = function (num) {
@@ -500,7 +509,6 @@ $(function () {
     });
 
     socket.on('moving', function (data) {
-      console.log(data.id);
       if (!(data.id in clients)) {
         // a new user has come online. create a cursor for them
         cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
@@ -565,9 +573,9 @@ $(function () {
     socket.on('sendbutton', function (data) {
       console.log('get sendbutton');
       if (data.data == "ready") {
-        isReady[playerIdToNum[data.id]] = true;
+        isReady[playerUserToNum[data.id]] = true;
       } else if (data.data == "notready") {
-        isReady[playerIdToNum[data.id]] = false;
+        isReady[playerUserToNum[data.id]] = false;
       }
       console.log(isReady);
       //only if admin then start the game.
@@ -604,8 +612,8 @@ $(function () {
         //update username to socketid map
         usernameToSocketid[data.username] = data.id;
         //update playernum to id map
-        playernumToId[canvasnum] = data.username;
-        playerIdToNum[data.username] = canvasnum;
+        playernumToUser[canvasnum] = data.username;
+        playerUserToNum[data.username] = canvasnum;
         if (canvasnum == 0) {
           //make admin
           socket.emit('makeadmin', {
@@ -626,8 +634,14 @@ $(function () {
 
     // Whenever the server emits 'user left', log it in the chat body
     socket.on('user left', function (data) {
-      //TODO: remove player from dict
       log(data.username + ' left');
+      //clear canvas
+      $.clearSelectedCanvas(data.id);
+      //TODO: remove player from dict
+      //remove name label by updateing array
+      var canvasnum = playerUserToNum[data.username];
+      delete playerUserToNum[data.username];
+      playernumToUser[canvasnum] = data.username + " left";
     });
 
     // Whenever the server emits 'typing', show the typing message
@@ -657,9 +671,15 @@ $(function () {
       //update obj
       recoveredplayerObj["socketid"] = data.id;
       clientdict[data.id] = recoveredplayerObj;
+      //update username to socketid map
+      usernameToSocketid[data.username] = data.id;
+      //update playernum to id map
+      playernumToUser[recoveredplayerObj.playernum] = data.username;
+      playerUserToNum[data.username] = recoveredplayerObj.playernum;
       //delete old obj
       delete clients[oldSocketid];
       delete cursors[oldSocketid];
+      //TODO: will keep all connected old socketids for now
       delete clientdict[oldSocketid];
     });
 
@@ -693,13 +713,11 @@ $(function () {
   }
 
   function updateVote(data) {
-    console.log(data);
-    console.log(playerIdToNum);
     //save last vote data
     lastVoteData = data.data;
     //get playerid to num
-    votes[playerIdToNum[data.data]]++;
-    var num = playerIdToNum[data.id];
+    votes[playerUserToNum[data.data]]++;
+    var num = playerUserToNum[data.id];
     voteData[num] = data.data;
   }
 

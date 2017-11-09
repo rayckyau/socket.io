@@ -173,8 +173,9 @@ function initRoomNS(roomCode){
     socket.on('disconnect', function () {
         // echo globally that this client has left
         socket.broadcast.emit('user left', {
-          username: socket.username,
-          numUsers: numUsers
+          username: socket.handshake.session.username,
+          numUsers: numUsers,
+          id: socket.id
         });
     });
 
@@ -182,7 +183,6 @@ function initRoomNS(roomCode){
         console.log('Found socket session');
         console.log('user: ' + socket.handshake.session.username);
         console.log('room: ' + socket.handshake.session.room);
-        console.log('data: ' + socket.handshake.session.statedata);
         //find all session and replace the socketid
 
         let mainclient = namespaces[data.room];
