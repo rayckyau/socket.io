@@ -49,7 +49,7 @@ class Vote extends React.Component {
     super(props)
     this.state = {
       items: voteOptions,
-      yourPick: ''
+      yourPick: voteOptions[0] || ''
     }
   }
 
