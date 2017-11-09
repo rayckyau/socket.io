@@ -679,7 +679,6 @@ $(function () {
       //delete old obj
       delete clients[oldSocketid];
       delete cursors[oldSocketid];
-      //TODO: will keep all connected old socketids for now
       delete clientdict[oldSocketid];
     });
 

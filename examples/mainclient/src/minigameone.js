@@ -479,8 +479,8 @@ class Timer extends React.Component {
     return (
       <div className="Timer">
       <Circle
-              progress={elapsed/mystate.baseTime}
-              text={this.checkStop(roundedTime)}
+              progress={(elapsed-1)/mystate.baseTime}
+              text={(this.checkStop(roundedTime)-1).toString()}
               options={options}
               initialAnimate={true}
               containerStyle={containerStyle}
