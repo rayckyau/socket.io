@@ -14,7 +14,7 @@ import ProgressBar from 'react-progressbar.js';
 import CountUp, { startAnimation } from 'react-countup';
 
 const TIMELIMIT_DRAW = 90;
-const TIMELIMIT_VOTE = 30;
+const TIMELIMIT_VOTE = 60;
 const TIMELIMIT_DISCUSS = 30;
 const TIMELIMIT_BEGIN = 10;
 const TIMELIMIT_END = 10;
@@ -785,10 +785,6 @@ export class MiniGameOneLayout extends React.Component {
     else if (gamestate == 'VOTERECAP'){
       playervotedata = $.retVoteData();
       playervotes = countVotes(playervotedata);
-      console.log("voterecap store ojbs");
-      console.log(playernames);
-      console.log(playervotedata);
-      console.log(playervotes);
       //TODO: use object keys loop and store object as a single 3 size array. playervotedata, playername, vote
       let votebardata = [];
       for (let i=0;i<playernames.length;i++){
@@ -798,7 +794,6 @@ export class MiniGameOneLayout extends React.Component {
 
                          }
       }
-      console.log(votebardata);
       const listItems = votebardata.map((player) =>
         <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum}/>
       );
@@ -920,14 +915,23 @@ let secretPlace;
 let socketLiar;
 let winner;
 let liarnum;
-/* Open when someone clicks on the span element */
-function openNav() {
-    document.getElementById("myNav").style.height = "100%";
-}
 
-/* Close when someone clicks on the "x" symbol inside the overlay */
-function closeNav() {
-    document.getElementById("myNav").style.height = "0%";
+export function handleReconnect(){
+  console.log("handle reconnect minigameone");
+  //liarnum is player canvas of liar
+  //verify/update all playersockets
+  let clientsobj = $.returnAllPlayers();
+
+  for (let key in clientsobj){
+    if (clientsobj.hasOwnProperty(key)){
+      let playerobj = clientsobj[key];
+      playernames[playerobj.playernum] = playerobj.username;
+      playersockets[playerobj.playernum] = playerobj.socketid;
+      if (playerobj.playernum == liarnum){
+        socketLiar = playerobj.socketid;
+      }
+    }
+  }
 }
 
 function setupGame(){
@@ -937,7 +941,6 @@ function setupGame(){
   let numplayers = Object.keys(clientsobj).length;
   //pick rand number, that num is liar
   liarnum = Math.floor(Math.random()*numplayers);
-  let index = 0;
   secretPlace = Math.floor(Math.random()*words.length);
   //FOR LOOP
   for (let key in clientsobj){
@@ -946,19 +949,17 @@ function setupGame(){
       //add player names into an array
       playernames[playerobj.playernum] = playerobj.username;
       playersockets[playerobj.playernum] = playerobj.socketid;
-      if (index == liarnum){
+      if (playerobj.playernum == liarnum){
         socketLiar = playerobj.socketid;
         //set liar stuff
         let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
-        //let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
         let hintstring = "Hint: Try drawing "+firsthint+".";
-        $.callstatechangeprivate('msg', 'You are The Imposter!', playerobj.socketid, hintstring);
+        $.callstatechangeprivate('msg', 'You are The Imposter!', socketLiar, hintstring);
       }
       else{
         //assign secret place
         $.callstatechangeprivate('msg', "Secret Word: " + words[secretPlace], playerobj.socketid);
       }
-      index++;
     }
   }
 }

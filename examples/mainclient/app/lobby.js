@@ -366,7 +366,6 @@ $(function () {
   //takes player socketid and clears the canvas
   //TODO: not working
   $.clearSelectedCanvas = function (playerid) {
-    console.log('#' + canvas.width);
     var canvas = $('#' + clientdict[playerid].canvasid);
     var context = canvas[0].getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -637,7 +636,7 @@ $(function () {
     socket.on('user left', function (data) {
       log(data.username + ' left');
       //clear canvas
-      $.clearSelectedCanvas(data.id);
+      //$.clearSelectedCanvas(data.id);
       //TODO: remove player from dict
       //remove name label by updateing array
       var canvasnum = playerUserToNum[data.username];
@@ -685,10 +684,16 @@ $(function () {
           client: data.id
         });
       }
+
       //delete old obj
       delete clients[oldSocketid];
       delete cursors[oldSocketid];
       delete clientdict[oldSocketid];
+
+      //check game then apply handleReconnect of minigame
+      if (storeMainGame.getState().gamestate == "gameone") {
+        minigameone.handleReconnect();
+      }
     });
 
     socket.on('reconnect_error', function () {
