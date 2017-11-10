@@ -61,7 +61,6 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         // first overscrolling touchmove.
         maybePreventPullToRefresh = false;
         if (touchYDelta > 0) {
-          console.log("prevent overscroll");
           e.preventDefault();
           return;
         }
@@ -84,8 +83,19 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     let prev = {};
 
     /////////stuff to do when page loads/////////////
-    document.addEventListener('touchstart', touchstartHandler, false);
-    document.addEventListener('touchmove', touchmoveHandler, false);
+    //TODO: this snippet below is to handle IE stuff, not working
+    var passiveSupported = false;
+    try {
+      var options = Object.defineProperty({}, "passive", {
+        get: function() {
+          passiveSupported = true;
+        }
+      });
+
+      document.addEventListener('touchstart', touchstartHandler, { passive: false });
+      document.addEventListener('touchmove', touchmoveHandler, { passive: false });
+    } catch(err) {}
+
     //check session
     checkSession();
     //init canvas bindings
