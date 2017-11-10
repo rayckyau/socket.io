@@ -399,7 +399,7 @@ class Timer extends React.Component {
           //if data is the same as target location spy wins, else spy loses
           if (votedLoc == words[secretPlace]){
             //spy wins
-            winner = "Liar";
+            winner = "The Imposter";
             $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!",
             "The Imposter chose the correct secret place. Next time don't be so obvious!");
           }
@@ -415,17 +415,16 @@ class Timer extends React.Component {
           let majvote = getMajorityVote();
           console.log("MAJORITY: "+majvote + playernames[liarnum] + liarnum);
           if (majvote == liarnum){
-            console.log("liar redeem chance");
             $.callstatechangeall('msg', "Waiting for The Imposter...",
-              "The Imposter was found! However there is still a chance for The Imposter to win if they choose the correct location.");
+              "The Imposter was found! There is still a chance for The Imposter to win if they choose the correct Secret Word.");
             $.resetVotes();
             $.resetLastVoteData();
             //if spy is chosen move into new mode only for spy
-            $.callstatechangeprivate("vote", "Choose the location", socketLiar , words.join())
+            $.callstatechangeprivate("vote", "Choose the secret word.", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
           else{
-            winner = "Liar";
+            winner = "The Imposter";
             storeGame.dispatch(startEnd(winner));
             $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!");
           }
@@ -682,7 +681,7 @@ class MiniGameOne extends React.Component {
 
   returnGameState(gamestatelabel){
     if (gamestatelabel == "VOTESPY"){
-      return "Liar Chance"
+      return "Imposter Chance"
     }
     else {
       return gamestatelabel;
@@ -953,11 +952,11 @@ function setupGame(){
         let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
         //let secondhint = helperbuckets[whichbuckets[1]][Math.floor(Math.random()*helperbuckets[whichbuckets[1]].length)];
         let hintstring = "Hint: Try drawing "+firsthint+".";
-        $.callstatechangeprivate('msg', 'You are the liar!', playerobj.socketid, hintstring);
+        $.callstatechangeprivate('msg', 'You are The Imposter!', playerobj.socketid, hintstring);
       }
       else{
         //assign secret place
-        $.callstatechangeprivate('msg', "Secret place: " + words[secretPlace], playerobj.socketid);
+        $.callstatechangeprivate('msg', "Secret Word: " + words[secretPlace], playerobj.socketid);
       }
       index++;
     }
