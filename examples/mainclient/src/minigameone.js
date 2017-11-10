@@ -698,7 +698,6 @@ class MiniGameOne extends React.Component {
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
         <div id="roundcounter">Round {this.props.loopcounter} </div>
-        <div>{this.props.winner}</div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
@@ -765,8 +764,8 @@ export class MiniGameOneLayout extends React.Component {
     const canvasitems = playernames.map((playername, index) =>
     <div className="col-sm-3 text-center">
       <div id="cf">
-        <img className="bottom" src={playersave[index][1]}/>
-        <img className="top" src={playersave[index][2]}/>
+        <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
+        <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
       </div>
       <br/>
       {playernames[index]} ({playerpoints[index]})

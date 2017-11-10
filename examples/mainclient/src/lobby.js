@@ -541,6 +541,7 @@ $(function() {
         playernumToUser[canvasnum] = data.username;
         playerUserToNum[data.username] = canvasnum;
         if (canvasnum == 0){
+          clientdict[data.id].isadmin = true;
           //make admin
           socket.emit('makeadmin',{
             message: 'you are admin',
@@ -605,6 +606,14 @@ $(function() {
       //update playernum to id map
       playernumToUser[recoveredplayerObj.playernum] = data.username;
       playerUserToNum[data.username] = recoveredplayerObj.playernum;
+      //make admin
+      if (clientdict[data.id].isadmin){
+        //make admin
+        socket.emit('makeadmin',{
+          message: 'you are now admin',
+          client: data.id
+        })
+      }
       //delete old obj
       delete clients[oldSocketid];
       delete cursors[oldSocketid];
