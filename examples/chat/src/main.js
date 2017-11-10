@@ -41,51 +41,32 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     }
 
     //prevent pull to refresh
-
-    var preventPullToRefresh = (function preventPullToRefresh(lastTouchY) {
-      lastTouchY = lastTouchY || 0;
-      var maybePrevent = false;
-
-      function setTouchStartPoint(event) {
-        lastTouchY = event.touches[0].clientY;
-        // console.log('[setTouchStartPoint]TouchPoint is ' + lastTouchY);
-      }
-      function isScrollingUp(event) {
-        var touchY = event.touches[0].clientY,
-            touchYDelta = touchY - lastTouchY;
-
-        // console.log('[isScrollingUp]touchYDelta: ' + touchYDelta);
-        lastTouchY = touchY;
-
-        // if touchYDelta is positive -> scroll up
-        if(touchYDelta > 0){
-          return true;
-        }else{
-          return false;
-        }
+    var maybePreventPullToRefresh = false;
+    var lastTouchY = 0;
+    var touchstartHandler = function(e) {
+        if (e.touches.length != 1) return;
+        lastTouchY = e.touches[0].clientY;
+        // Pull-to-refresh will only trigger if the scroll begins when the
+        // document's Y offset is zero.
+        maybePreventPullToRefresh =  window.pageYOffset == 0;
       }
 
-    return {
-      // set touch start point and check whether here is offset top 0
-      touchstartHandler: function(event) {
-        if(event.touches.length != 1) return;
-        setTouchStartPoint(event);
-        maybePrevent = window.pageYOffset === 0;
-        // console.log('[touchstartHandler]' + maybePrevent);
-      },
-      // reset maybePrevent frag and do prevent
-      touchmoveHandler: function(event) {
-        if(maybePrevent) {
-          maybePrevent = false;
-          if(isScrollingUp(event)) {
-            // console.log('======Done preventDefault!======');
-            event.preventDefault();
-            return;
-          }
+    var touchmoveHandler = function(e) {
+      var touchY = e.touches[0].clientY;
+      var touchYDelta = touchY - lastTouchY;
+      lastTouchY = touchY;
+
+      if (maybePreventPullToRefresh) {
+        // To suppress pull-to-refresh it is sufficient to preventDefault the
+        // first overscrolling touchmove.
+        maybePreventPullToRefresh = false;
+        if (touchYDelta > 0) {
+          console.log("prevent overscroll");
+          e.preventDefault();
+          return;
         }
       }
     }
-  })();
 
     let doc = $(document),
       drawcanvas = $('#paper'),
@@ -103,8 +84,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     let prev = {};
 
     /////////stuff to do when page loads/////////////
-    document.addEventListener('touchstart', preventPullToRefresh.touchstartHandler);
-    document.addEventListener('touchmove', preventPullToRefresh.touchmoveHandler);
+    document.addEventListener('touchstart', touchstartHandler, false);
+    document.addEventListener('touchmove', touchmoveHandler, false);
     //check session
     checkSession();
     //init canvas bindings
