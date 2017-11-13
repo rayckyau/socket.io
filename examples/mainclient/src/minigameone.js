@@ -517,6 +517,8 @@ function startIdle() {
   };
 }
 function startBegin() {
+  //close rules nav
+  closeNav();
   return {
     type: "BEGIN",
     gamestate: "BEGIN",
@@ -740,7 +742,7 @@ function WordList(props) {
 export class MiniGameOneLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {gamestate: null};
+    this.state = {gamestate: "IDLE"};
   }
 
   componentDidMount() {
@@ -760,6 +762,7 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   displayPage(gamestate){
+    console.log(gamestate);
     const canvasitems = playernames.map((playername, index) =>
     <div className="col-sm-3 text-center">
       <div id="cf">
@@ -803,6 +806,16 @@ export class MiniGameOneLayout extends React.Component {
           {listItems}
         </div>
         </div>
+      )
+    }
+    else if (gamestate == 'IDLE'){
+      openNav();
+      setTimeout(function () {
+        closeNav();
+      }, 30000);
+
+      return (
+        <CanvasLayout />
       )
     }
     else{
@@ -915,6 +928,13 @@ let secretPlace;
 let socketLiar;
 let winner;
 let liarnum;
+
+function openNav() {
+    document.getElementById("rules").style.height = "100%";
+}
+function closeNav() {
+    document.getElementById("rules").style.height = "0%";
+}
 
 export function handleReconnect(){
   console.log("handle reconnect minigameone");

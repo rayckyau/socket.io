@@ -9,16 +9,17 @@ import {
   Link,
   Switch,
   withRouter
-} from 'react-router-dom'
+} from 'react-router-dom';
 import {
   Shake,
   ShakeLittle,
   ShakeSlow
-} from 'reshake'
-import {MiniGameOneLayout} from './minigameone'
+} from 'reshake';
+import Slider from 'react-slick';
+import {MiniGameOneLayout} from './minigameone';
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
-import * as minigameone from './minigameone'
+import * as minigameone from './minigameone';
 import env from './env';
 
 let HOSTNAME = env.serverendpoint;
@@ -57,7 +58,7 @@ class LobbyScreen extends React.Component {
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
-        minigameone.storeTimer.dispatch(minigameone.startTimer(10));
+        minigameone.storeTimer.dispatch(minigameone.startTimer(30));
       }
 
     }
@@ -187,12 +188,59 @@ class MainFrame extends React.Component {
   }
 }
 
+class Rules extends React.Component {
+  componentDidMount() {
+    this.interval = setInterval(() => this.onGameStart(), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  onGameStart(){
+    if (this.props.gamestate == "gameone"){
+      var settings = {
+        autoplaySpeed: 8000,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true
+      };
+      return (
+        <Slider {...settings}>
+         <div><h3>1</h3></div>
+         <div><h3>2</h3></div>
+         <div><h3>3</h3></div>
+         <div><h3>4</h3></div>
+       </Slider>
+      );
+    }
+    else {
+      return (
+        <div>{"No rules to display here"}</div>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {this.onGameStart()}
+      </div>
+    );
+  }
+}
+
 function mapStateToPropsMainFrame(state) {
+  return { gamestate: state.gamestate
+         };
+}
+function mapStateToPropsRules(state) {
   return { gamestate: state.gamestate
          };
 }
 MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame, startLobby })(MainFrame);
 LobbyScreen = withRouter(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
+Rules = ReactRedux.connect(mapStateToPropsRules)(Rules);
 
 const storeMainGame = Redux.createStore(maingamereducer);
 
@@ -215,6 +263,10 @@ ReactDOM.render(
     <div className="title">HappyDraw</div>
   </Shake>,  document.getElementById('happydrawtitle'));
 
+ReactDOM.render(
+    <ReactRedux.Provider store={storeMainGame}>
+      <Rules />
+    </ReactRedux.Provider>,  document.getElementById('rules'));
 
 $(function() {
   var FADE_TIME = 150; // ms

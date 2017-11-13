@@ -16,6 +16,10 @@ var _reactRouterDom = require('react-router-dom');
 
 var _reshake = require('reshake');
 
+var _reactSlick = require('react-slick');
+
+var _reactSlick2 = _interopRequireDefault(_reactSlick);
+
 var _minigameone = require('./minigameone');
 
 var minigameone = _interopRequireWildcard(_minigameone);
@@ -89,7 +93,7 @@ var LobbyScreen = function (_React$Component) {
         if (this.props.history.location.pathname != '/minigameone') {
           $.callstatechangeall('msg', 'start rules');
           this.props.history.push('/minigameone');
-          minigameone.storeTimer.dispatch(minigameone.startTimer(10));
+          minigameone.storeTimer.dispatch(minigameone.startTimer(30));
         }
       } else if (this.props.gamestate == 'lobby') {
         if (this.props.history.location.pathname != '/') {
@@ -255,12 +259,112 @@ var MainFrame = function (_React$Component2) {
   return MainFrame;
 }(_react2.default.Component);
 
+var Rules = function (_React$Component3) {
+  _inherits(Rules, _React$Component3);
+
+  function Rules() {
+    _classCallCheck(this, Rules);
+
+    return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).apply(this, arguments));
+  }
+
+  _createClass(Rules, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this5 = this;
+
+      this.interval = setInterval(function () {
+        return _this5.onGameStart();
+      }, 1000);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      clearInterval(this.interval);
+    }
+  }, {
+    key: 'onGameStart',
+    value: function onGameStart() {
+      if (this.props.gamestate == "gameone") {
+        var settings = {
+          autoplaySpeed: 8000,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          autoplay: true
+        };
+        return _react2.default.createElement(
+          _reactSlick2.default,
+          settings,
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'h3',
+              null,
+              '1'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'h3',
+              null,
+              '2'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'h3',
+              null,
+              '3'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'h3',
+              null,
+              '4'
+            )
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          'div',
+          null,
+          "No rules to display here"
+        );
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        this.onGameStart()
+      );
+    }
+  }]);
+
+  return Rules;
+}(_react2.default.Component);
+
 function mapStateToPropsMainFrame(state) {
+  return { gamestate: state.gamestate
+  };
+}
+function mapStateToPropsRules(state) {
   return { gamestate: state.gamestate
   };
 }
 MainFrame = ReactRedux.connect(mapStateToPropsMainFrame, { startGame: startGame, startLobby: startLobby })(MainFrame);
 LobbyScreen = (0, _reactRouterDom.withRouter)(ReactRedux.connect(mapStateToPropsMainFrame)(LobbyScreen));
+Rules = ReactRedux.connect(mapStateToPropsRules)(Rules);
 
 var storeMainGame = Redux.createStore(maingamereducer);
 
@@ -288,6 +392,12 @@ _reactDom2.default.render(_react2.default.createElement(
     'HappyDraw'
   )
 ), document.getElementById('happydrawtitle'));
+
+_reactDom2.default.render(_react2.default.createElement(
+  ReactRedux.Provider,
+  { store: storeMainGame },
+  _react2.default.createElement(Rules, null)
+), document.getElementById('rules'));
 
 $(function () {
   var FADE_TIME = 150; // ms
