@@ -16,7 +16,7 @@ import CountUp, { startAnimation } from 'react-countup';
 const TIMELIMIT_DRAW = 90;
 const TIMELIMIT_VOTE = 60;
 const TIMELIMIT_DISCUSS = 30;
-const TIMELIMIT_BEGIN = 10;
+const TIMELIMIT_BEGIN = 20;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
 
@@ -420,7 +420,7 @@ class Timer extends React.Component {
             $.resetVotes();
             $.resetLastVoteData();
             //if spy is chosen move into new mode only for spy
-            $.callstatechangeprivate("vote", "Choose the secret word.", socketLiar , words.join())
+            $.callstatechangeprivate("vote", "Choose the Secret Word.", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
           else{
@@ -466,7 +466,8 @@ class Timer extends React.Component {
     const { baseTime, startedAt, stoppedAt } = this.props;
     const elapsed = getElapsedTime(baseTime, startedAt, stoppedAt);
     let options = {
-                strokeWidth: 4
+                strokeWidth: 4,
+                color: '#000'
             };
     let containerStyle = {
         width: '100px',
@@ -890,7 +891,7 @@ export class CanvasLayout extends React.Component {
         <div className="col-sm-3 text-center">
           <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
           <br/>
-          {this.state.playerlabels[index]}
+          <div id="playerlabel">{this.state.playerlabels[index]}</div>
         </div>
 
     );

@@ -58,7 +58,7 @@ class LobbyScreen extends React.Component {
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
-        minigameone.storeTimer.dispatch(minigameone.startTimer(30));
+        minigameone.storeTimer.dispatch(minigameone.startTimer(31));
       }
 
     }

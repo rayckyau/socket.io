@@ -110,6 +110,18 @@ animation-direction: alternate-reverse;
     transition: 0.5s;
 }
 
+#mainframe{
+  border: 2px solid #000;
+}
+
+.minigameone{
+  background-color: #ef9a9a;
+
+  .col-sm-2{
+    border-right: 2px dashed #000;
+  }
+}
+
 .minigameone #gamestatelabel{
   text-align: center;
   color: black;
@@ -122,6 +134,13 @@ animation-direction: alternate-reverse;
   color: black;
   font-family: 'Open Sans', sans-serif;
   font-size: 30px;
+}
+
+.minigameone #playerlabel{
+  text-align: center;
+  color: black;
+  font-family: 'Patrick Hand', sans-serif;
+  font-size: 26px;
 }
 
 .minigameone .WordList{
@@ -342,8 +361,4 @@ animation-direction: alternate-reverse;
 
 [class*="col-"] {
   padding: 8px;
-  background-color: #eee;
-  //border: 1px solid #ddd;
-  //background-color: rgba(86,61,124,.15);
-  //border: 1px solid rgba(86,61,124,.2);
 }
