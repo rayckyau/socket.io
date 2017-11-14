@@ -287,7 +287,7 @@ var Rules = function (_React$Component3) {
     value: function onGameStart() {
       if (this.props.gamestate == "gameone") {
         var settings = {
-          autoplaySpeed: 8000,
+          autoplaySpeed: 10000,
           slidesToShow: 1,
           slidesToScroll: 1,
           autoplay: true
@@ -298,38 +298,17 @@ var Rules = function (_React$Component3) {
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              '1'
-            )
+            _react2.default.createElement('img', { src: 'ruleslides/illuminatiimposterslides1.png', height: '100%', width: '100%' })
           ),
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              '2'
-            )
+            _react2.default.createElement('img', { src: 'ruleslides/illuminatiimposterslides2.png', height: '100%', width: '100%' })
           ),
           _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              '3'
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              '4'
-            )
+            _react2.default.createElement('img', { src: 'ruleslides/illuminatiimposterslides3.png', height: '100%', width: '100%' })
           )
         );
       } else {

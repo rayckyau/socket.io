@@ -200,17 +200,16 @@ class Rules extends React.Component {
   onGameStart(){
     if (this.props.gamestate == "gameone"){
       var settings = {
-        autoplaySpeed: 8000,
+        autoplaySpeed: 10000,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true
       };
       return (
         <Slider {...settings}>
-         <div><h3>1</h3></div>
-         <div><h3>2</h3></div>
-         <div><h3>3</h3></div>
-         <div><h3>4</h3></div>
+         <div><img src="ruleslides/illuminatiimposterslides1.png" height="100%" width="100%"></img></div>
+         <div><img src="ruleslides/illuminatiimposterslides2.png" height="100%" width="100%"></img></div>
+         <div><img src="ruleslides/illuminatiimposterslides3.png" height="100%" width="100%"></img></div>
        </Slider>
       );
     }
