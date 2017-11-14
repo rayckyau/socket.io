@@ -691,6 +691,21 @@ class MiniGameOne extends React.Component {
     }
   }
 
+  returnRoundCounter(roundCounter){
+    if (roundCounter === 0){
+      return ""
+    }
+    else if (roundCounter === 1){
+      return "Round 1/2";
+    }
+    else if (roundCounter === 2){
+      return "Round 2/2";
+    }
+    else {
+      return "Round 0"
+    }
+  }
+
 
   render() {
     const gamestatelabel = this.props.gamestate;
@@ -699,7 +714,7 @@ class MiniGameOne extends React.Component {
     return (
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
-        <div id="roundcounter">Round {this.props.loopcounter} </div>
+        <div id="roundcounter">{this.returnRoundCounter(this.props.loopcounter)} </div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
