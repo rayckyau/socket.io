@@ -609,7 +609,7 @@ function minigameonereducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: action.loopcounter,
+        loopcounter: state.loopcounter,
         winner: state.winner,
         words: state.words
         //set to END state

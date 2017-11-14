@@ -51,6 +51,7 @@ class Vote extends React.Component {
       items: voteOptions,
       yourPick: voteOptions[0] || ''
     }
+    this.handleClick(voteOptions[0]);
   }
 
   handleClick(val) {
