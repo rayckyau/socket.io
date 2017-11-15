@@ -416,6 +416,29 @@ $(function() {
     return votes;
   };
 
+  /*this function will return the username if no duplicates exists
+  if a duplicate exists then it will return the username with a number appended
+  where the number is N+1 with N duplicate occurances found.
+  */
+  $.sanityReturnUsername = function(username){
+    let duplicateCount = 1;
+    for (let key in clientdict){
+      if (clientdict.hasOwnProperty(key)){
+        let playerobj = clientdict[key];
+        if ((username === playerobj.username) || (username === playerobj.username.slice(0,playerobj.username.length-1))){
+          duplicateCount++;
+        }
+      }
+    }
+    if (duplicateCount > 1){
+      return username+duplicateCount.toString();
+    }
+    else {
+      return username;
+    }
+
+  }
+
   function drawLine(fromx, fromy, tox, toy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
@@ -574,22 +597,27 @@ $(function() {
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', function (data) {
       //TODO: add a player canvas
-      console.log('user joined: '+data.username);
+      let username = $.sanityReturnUsername(data.username);
+      console.log('user joined: '+username);
       if (data.username != 'mainclient'){
         let canvasnum = Object.keys(clientdict).length;
         playercount++;
         const playerobj = {};
-        playerobj["username"] = data.username;
+        playerobj["username"] = username;
         playerobj["isadmin"] = false;
         playerobj["canvasid"] = 'canvas-p'+canvasnum;
         playerobj["playernum"] = canvasnum;
         playerobj["socketid"] = data.id;
         clientdict[data.id] = playerobj;
         //update username to socketid map
-        usernameToSocketid[data.username] = data.id;
+        usernameToSocketid[username] = data.id;
         //update playernum to id map
-        playernumToUser[canvasnum] = data.username;
-        playerUserToNum[data.username] = canvasnum;
+        playernumToUser[canvasnum] = username;
+        playerUserToNum[username] = canvasnum;
+        socket.emit('update username',{
+          username: username,
+          client: data.id
+        })
         if (canvasnum == 0){
           clientdict[data.id].isadmin = true;
           //make admin
@@ -598,9 +626,9 @@ $(function() {
             client: data.id
           })
         }
-        log(data.username + ' joined');
+        log(username + ' joined');
       }
-      else if (data.username == 'mainclient'){
+      else if (username == 'mainclient'){
         $loginPage.fadeOut();
         $chatPage.show();
         //go to lobby page
@@ -645,6 +673,9 @@ $(function() {
 
     socket.on('user reconnect', function (data) {
       log(data.username + ' reconnected');
+      //check if username is a dup/beginning of dup except for last char
+      //add N+1 as char ending if found N matches
+      //make this reusable function
       //get old socketid
       let oldSocketid = usernameToSocketid[data.username];
       let recoveredplayerObj = clientdict[oldSocketid];

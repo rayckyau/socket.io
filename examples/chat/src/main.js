@@ -464,6 +464,12 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
         navi.setAdmin();
       });
 
+      drawsocket.on('update username', function(data) {
+        console.log('update username');
+        username = data.username;
+        drawsocket.emit('update sessionusername', username);
+      });
+
       drawsocket.on('changegame', function(data) {
         console.log('changegame to ' + data.game);
         navi.setGame(data.game);

@@ -79,6 +79,18 @@ function initRoomNS(roomCode){
         socket.to(client).emit('makeadmin', data);
     });
 
+    socket.on('update username', function (data) {
+        let client = data.client;
+        console.log('update username : '+ client);
+        socket.to(client).emit('update username', data);
+    });
+
+    socket.on('update sessionusername', function (username) {
+        console.log('update sessionusername : '+ username);
+        socket.handshake.session.username = username;
+        socket.handshake.session.save();
+    });
+
     socket.on('changegame', function (data) {
         console.log('changegame : '+ data.game);
         socket.broadcast.emit('changegame', data);
@@ -177,6 +189,8 @@ function initRoomNS(roomCode){
           numUsers: numUsers,
           id: socket.id
         });
+        // if mainclient disconnected
+        //remove all sessions
     });
 
     socket.on('reconnect user', function (data) {
