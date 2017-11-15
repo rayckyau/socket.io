@@ -401,12 +401,8 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     $('#enterroom').click(function(){
       //add room check and cookie check here
       //if isRoomExists and isCookieExists
+      attemptRoomJoin();
 
-      if (username) {
-        typing = false;
-      } else {
-        attemptRoomJoin();
-      }
     });
 
     // Keyboard events
