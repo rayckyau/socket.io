@@ -380,6 +380,10 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     // Sets the client's username
     function attemptRoomJoin() {
       username = cleanInput($usernameInput.val().trim()).toUpperCase();
+      if (username.match(/\d+/g) != null){
+        navi.changePlayerMessage("No numbers in nickname!");
+        return false;
+      }
       let roomcodeclean = cleanInput($roomInput.val().trim()).toUpperCase();
       room = roomcodeclean;
       //check if room exists here
