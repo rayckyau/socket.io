@@ -451,6 +451,7 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
+          storeTimer.dispatch(resetTimer(99));
           storeGame.dispatch(startGameRecap());
           $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game.');
       }
@@ -484,8 +485,8 @@ class Timer extends React.Component {
     return (
       <div className="Timer">
       <Circle
-              progress={(elapsed-1)/mystate.baseTime}
-              text={(this.checkStop(roundedTime)-1).toString()}
+              progress={Math.max(0,(elapsed-1)/mystate.baseTime)}
+              text={Math.max(0,(parseInt((this.checkStop(roundedTime)-1)) || 0))}
               options={options}
               initialAnimate={true}
               containerStyle={containerStyle}
@@ -783,7 +784,6 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   displayPage(gamestate){
-    console.log(gamestate);
     const canvasitems = playernames.map((playername, index) =>
     <div className="col-sm-3 text-center">
       <div id="cf">
