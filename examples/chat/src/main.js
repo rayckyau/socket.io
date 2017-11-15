@@ -178,6 +178,11 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
 
                }
              }
+             else {
+                navi.changePlayerMessage("Wrong Room Code!");
+                return false;
+             }
+
              return true;
          })
          .catch(function (err) {

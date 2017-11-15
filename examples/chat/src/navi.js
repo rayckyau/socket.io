@@ -424,6 +424,10 @@ export function changePlayerState(mystate, msg, payload = ""){
   }
 }
 
+export function changePlayerMessage(msg){
+    storePlayer.dispatch(changeModeMsg(msg));
+}
+
 ReactDOM.render(
   <ReactRedux.Provider store={storePlayer}>
     <PlayerPage />
