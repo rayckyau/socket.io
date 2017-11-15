@@ -423,10 +423,15 @@ class Timer extends React.Component {
             $.callstatechangeprivate("vote", "Choose the Secret Word.", socketLiar , words.join())
             storeGame.dispatch(startVoteSpy());
           }
+          else if (majvote === -1){
+            winner = "The Imposter";
+            storeGame.dispatch(startEnd(winner));
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!", "There was no majority vote!");
+          }
           else{
             winner = "The Imposter";
             storeGame.dispatch(startEnd(winner));
-            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!");
+            $.callstatechangeall('msg', 'The winner is '+ playernames[liarnum] + " as The Imposter!", "The Illuminati did not find The Imposter!");
           }
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
@@ -447,7 +452,7 @@ class Timer extends React.Component {
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
           storeGame.dispatch(startGameRecap());
-          $.callstatechangeall('msg', 'recap game');
+          $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game.');
       }
       else{
         //error state
