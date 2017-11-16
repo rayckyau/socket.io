@@ -97,6 +97,7 @@ let HOSTNAME = process.env.HOSTNAME || 'localhost';
     } catch(err) {}
 
     //check session
+    //check session only if cookie is detected
     checkSession();
     //init canvas bindings
     setupDrawCanvasListeners();

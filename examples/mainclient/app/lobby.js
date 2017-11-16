@@ -57,7 +57,7 @@ var LobbyScreen = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (LobbyScreen.__proto__ || Object.getPrototypeOf(LobbyScreen)).call(this, props));
 
-    _this.state = { playerlabels: ['player1 join', 'player2 join', 'player3 join', 'player4 join', 'player5 join', 'player6 join', 'player7 join', 'player8 join', 'player9 join', 'player10 join'] };
+    _this.state = { playerlabels: ['Player1 Join', 'Player2 Join', 'Player3 Join', 'Player4 Join', 'Player5 Join', 'Player6 Join', 'Player7 Join', 'Player8 Join'] };
     return _this;
   }
 
@@ -106,73 +106,25 @@ var LobbyScreen = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
+      var canvasitems = this.state.playerlabels.map(function (playername, index) {
+        return _react2.default.createElement(
+          'div',
+          { className: 'col-sm-3 text-center' },
+          _react2.default.createElement('canvas', { id: "canvas-p" + index, width: "268", height: "340" }),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'div',
+            { id: "playerlabel" + index },
+            _this3.state.playerlabels[index]
+          )
+        );
+      });
       return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement(
-          'div',
-          { className: 'row' },
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p0', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[0]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p1', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[1]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p2', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[2]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p3', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[3]
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'row' },
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p4', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[4]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p5', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[5]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p6', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[6]
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-3 text-center' },
-            _react2.default.createElement('canvas', { id: 'canvas-p7', width: '268', height: '340' }),
-            _react2.default.createElement('br', null),
-            this.state.playerlabels[7]
-          )
-        )
+        { className: 'row' },
+        canvasitems
       );
     }
   }]);
@@ -271,10 +223,10 @@ var Rules = function (_React$Component3) {
   _createClass(Rules, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.interval = setInterval(function () {
-        return _this5.onGameStart();
+        return _this6.onGameStart();
       }, 1000);
     }
   }, {
@@ -354,22 +306,9 @@ _reactDom2.default.render(_react2.default.createElement(
 ), document.getElementById('mainframe'));
 
 _reactDom2.default.render(_react2.default.createElement(
-  _reshake.Shake,
-  {
-    h: 18,
-    v: 19,
-    r: 8,
-    dur: 1000,
-    int: 19.8,
-    max: 100,
-    fixed: true,
-    fixedStop: false,
-    freez: false },
-  _react2.default.createElement(
-    'div',
-    { className: 'title' },
-    'HappyDraw'
-  )
+  'div',
+  { className: 'title' },
+  'HappyDraw'
 ), document.getElementById('happydrawtitle'));
 
 _reactDom2.default.render(_react2.default.createElement(
@@ -381,7 +320,7 @@ _reactDom2.default.render(_react2.default.createElement(
 $(function () {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
-  var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
+  var COLORS = ['#DC4c46', '#4f84c4', '#d8ae47', '#ce3175', '#005960', '#e15d44', '#b565a7', '#000', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
 
   // Initialize variables
   var $window = $(window);
@@ -557,8 +496,9 @@ $(function () {
     ctxdrawcanvas.lineWidth = 4;
     ctxdrawcanvas.lineJoin = 'round';
     ctxdrawcanvas.lineCap = 'round';
-    ctxdrawcanvas.shadowBlur = 2;
-    ctxdrawcanvas.shadowColor = 'rgb(0, 0, 0)';
+    ctxdrawcanvas.shadowBlur = 4;
+    ctxdrawcanvas.shadowColor = COLORS[clientdict[playerid].playernum];
+    ctxdrawcanvas.strokeStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.moveTo(fromx, fromy);
     ctxdrawcanvas.lineTo(tox, toy);
@@ -568,6 +508,7 @@ $(function () {
   function drawDot(fromx, fromy, playerid) {
     var drawcanvas = $('#' + clientdict[playerid].canvasid);
     var ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.fillStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.arc(fromx, fromy, ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
     ctxdrawcanvas.fill();

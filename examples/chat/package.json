@@ -42,6 +42,7 @@
     "chai-http": "^3.0.0",
     "exorcist": "^1.0.0",
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
     "gulp-eslint": "^4.0.0",
     "gulp-if-else": "^1.0.3",
     "gulp-less": "^3.3.2",

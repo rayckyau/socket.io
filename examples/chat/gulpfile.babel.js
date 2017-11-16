@@ -10,6 +10,7 @@ import ifElse from 'gulp-if-else';
 import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
 import less from 'gulp-less';
+import cleanCSS from 'gulp-clean-css';
 import nodemon from 'gulp-nodemon';
 import mocha from 'gulp-mocha';
 
@@ -50,6 +51,7 @@ gulp.task('less', () => {
   return gulp.src('src/stylesheets/*.less')
   .pipe(plumber())
   .pipe(less())
+  .pipe(cleanCSS())
   .pipe(gulp.dest('public'));
 });
 

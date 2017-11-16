@@ -28,11 +28,10 @@ let PORT = env.serverport;
 class LobbyScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {playerlabels: ['player1 join', 'player2 join',
-                                'player3 join', 'player4 join',
-                                'player5 join', 'player6 join',
-                                'player7 join', 'player8 join',
-                                'player9 join', 'player10 join'
+    this.state = {playerlabels: ['Player1 Join', 'Player2 Join',
+                                'Player3 Join', 'Player4 Join',
+                                'Player5 Join', 'Player6 Join',
+                                'Player7 Join', 'Player8 Join'
                               ]};
   }
 
@@ -74,53 +73,17 @@ class LobbyScreen extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-      <div className="row">
+    const canvasitems = this.state.playerlabels.map((playername, index) =>
         <div className="col-sm-3 text-center">
-          <canvas id="canvas-p0" width="268" height="340"></canvas>
+          <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
           <br/>
-          {this.state.playerlabels[0]}
+          <div id={"playerlabel"+index}>{this.state.playerlabels[index]}</div>
         </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p1" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[1]}
-        </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p2" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[2]}
-        </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p3" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[3]}
-        </div>
-      </div>
 
+    );
+    return (
       <div className="row">
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p4" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[4]}
-        </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p5" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[5]}
-        </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p6" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[6]}
-        </div>
-        <div className="col-sm-3 text-center">
-          <canvas id="canvas-p7" width="268" height="340"></canvas>
-          <br/>
-          {this.state.playerlabels[7]}
-        </div>
-      </div>
+        {canvasitems}
       </div>
     );
   }
@@ -249,18 +212,8 @@ ReactDOM.render(
     </ReactRedux.Provider>,  document.getElementById('mainframe'));
 
 ReactDOM.render(
-  <Shake
-  h={18}
-  v={19}
-  r={8}
-  dur={1000}
-  int={19.8}
-  max={100}
-  fixed={true}
-  fixedStop={false}
-  freez={false}>
     <div className="title">HappyDraw</div>
-  </Shake>,  document.getElementById('happydrawtitle'));
+,  document.getElementById('happydrawtitle'));
 
 ReactDOM.render(
     <ReactRedux.Provider store={storeMainGame}>
@@ -271,8 +224,8 @@ $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
   var COLORS = [
-    '#e21400', '#91580f', '#f8a700', '#f78b00',
-    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
+    '#DC4c46', '#4f84c4', '#d8ae47', '#ce3175',
+    '#005960', '#e15d44', '#b565a7', '#000',
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
 
@@ -446,8 +399,9 @@ $(function() {
     ctxdrawcanvas.lineWidth = 4;
     ctxdrawcanvas.lineJoin = 'round';
     ctxdrawcanvas.lineCap = 'round';
-    ctxdrawcanvas.shadowBlur = 2;
-    ctxdrawcanvas.shadowColor = 'rgb(0, 0, 0)';
+    ctxdrawcanvas.shadowBlur = 4;
+    ctxdrawcanvas.shadowColor = COLORS[clientdict[playerid].playernum];
+    ctxdrawcanvas.strokeStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.moveTo(fromx, fromy);
     ctxdrawcanvas.lineTo(tox, toy);
@@ -457,6 +411,7 @@ $(function() {
   function drawDot(fromx, fromy, playerid){
     const drawcanvas = $('#'+clientdict[playerid].canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    ctxdrawcanvas.fillStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
     ctxdrawcanvas.arc(fromx, fromy, ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
     ctxdrawcanvas.fill();
