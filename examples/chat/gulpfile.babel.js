@@ -14,10 +14,9 @@ import cleanCSS from 'gulp-clean-css';
 import nodemon from 'gulp-nodemon';
 import mocha from 'gulp-mocha';
 
-//watchify.args.debug = true;
-
+let envfile = process.env.NODE_ENV == 'production' ? 'src/prodenv.js' : 'src/devenv.js';
 // Input file.
-var bundler = browserify(['src/main.js', 'src/navi.js'], {
+var bundler = browserify(['src/main.js', 'src/navi.js', envfile], {
     extensions: ['.js', '.jsx'],
     debug: true
 });
@@ -76,7 +75,6 @@ function bundle() {
         .pipe(source('bundle.js'))
         .pipe(buffer())
         .pipe(ifElse(process.env.NODE_ENV == 'production', uglify))
-        //.pipe(uglify())
         .pipe(gulp.dest('public'))
     ;
 }

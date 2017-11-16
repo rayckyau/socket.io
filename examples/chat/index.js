@@ -5,7 +5,7 @@ var express = require('express');
 //var app = express();
 //var server = require('http').createServer(app);
 //var io = require('../..')(server);
-var port = process.env.PORT || 3000;
+var serverport = process.env.SERVERPORT || 3000;
 var roomList = new ArrayList();
 var namespaces = {};
 
@@ -23,8 +23,8 @@ var app = require('express')(),
 
 
 
-server.listen(port, function () {
-  console.log('Server listening at port %d', port);
+server.listen(serverport, function () {
+  console.log('Server listening at port %d', serverport);
 });
 
 // Attach session

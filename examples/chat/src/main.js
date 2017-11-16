@@ -2,12 +2,7 @@
 import io from 'socket.io-client';
 import * as navi from './navi';
 
-let PORT = process.env.PORT || 3000;
-let HOSTNAME = process.env.HOSTNAME || 'localhost';
-
   $(function () {
-    const FADE_TIME = 150; // ms
-    const TYPING_TIMER_LENGTH = 400; // ms
     const COLORS = [
       '#e21400', '#91580f', '#f8a700', '#f78b00',
       '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
