@@ -75,7 +75,7 @@ function bundle() {
         .pipe(exorcist('.bundle.js.map'))
         .pipe(source('bundle.js'))
         .pipe(buffer())
-        //.pipe(ifElse(process.env.NODE_ENV === 'production', uglify))
+        .pipe(ifElse(process.env.NODE_ENV == 'production', uglify))
         //.pipe(uglify())
         .pipe(gulp.dest('public'))
     ;

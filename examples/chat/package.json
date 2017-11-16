@@ -26,7 +26,8 @@
   },
   "scripts": {
     "test": "gulp test",
-    "start": "gulp build && node index.js"
+    "start": "export NODE_ENV=development && gulp build && node index.js",
+    "startprod": "export NODE_ENV=production && gulp build && PORT=80 node index.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
