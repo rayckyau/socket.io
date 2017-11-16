@@ -27,7 +27,7 @@
   "scripts": {
     "test": "gulp test",
     "start": "export NODE_ENV=development && gulp build && node index.js",
-    "startprod": "export NODE_ENV=production && gulp build && PORT=80 node index.js"
+    "startprod": "export NODE_ENV=production && gulp build && node index.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -39,8 +39,10 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.13",
     "browserify": "^14.4.0",
+    "bundle": "^0.2.3",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
+    "del": "^3.0.0",
     "exorcist": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.9.0",
@@ -50,6 +52,7 @@
     "gulp-mocha": "^4.3.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^3.0.0",
     "mocha": "^3.5.3",
     "shelljs": "^0.7.8",

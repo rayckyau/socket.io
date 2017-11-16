@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 import io from 'socket.io-client';
 import * as navi from './navi';
+import * as env from './env';
 
   $(function () {
     const COLORS = [
@@ -99,7 +100,7 @@ import * as navi from './navi';
 
     function checkSession(){
       let rp = require('request-promise');
-      let url = 'http://' + window.location.hostname + ':' + PORT;
+      let url = 'http://' + window.location.hostname + ':' + env.PORT;
       console.log('request to : '+ url+'/checkSession');
       let options = {
           method: 'GET',
@@ -136,7 +137,7 @@ import * as navi from './navi';
 
    function checkRoomCode(roomcode, session=false){
      let rp = require('request-promise');
-     let url = 'http://' + window.location.hostname + ':' + PORT;
+     let url = 'http://' + window.location.hostname + ':' + env.PORT;
      console.log('request to : '+ url+'/checkRoom/'+roomcode+'?username='+username)
      let options = {
          method: 'GET',
@@ -154,7 +155,7 @@ import * as navi from './navi';
                  $loginPage.fadeOut();
                  $drawPage.show();
                  $loginPage.off('click');
-                 var url = 'http://' + window.location.hostname + ':' + PORT +'/';
+                 var url = 'http://' + window.location.hostname + ':' + env.PORT +'/';
                  console.log('User try socket: %s', url + roomcode);
                  drawsocket = io(url + roomcode);
                  defineSocket();

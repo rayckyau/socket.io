@@ -13,10 +13,13 @@ import less from 'gulp-less';
 import cleanCSS from 'gulp-clean-css';
 import nodemon from 'gulp-nodemon';
 import mocha from 'gulp-mocha';
+import del from 'del';
+import rename from 'gulp-rename';
 
-let envfile = process.env.NODE_ENV == 'production' ? 'src/prodenv.js' : 'src/devenv.js';
+let envfile = process.env.NODE_ENV == 'production' ? 'prodenv.js' : 'devenv.js';
+
 // Input file.
-var bundler = browserify(['src/main.js', 'src/navi.js', envfile], {
+var bundler = browserify(['src/main.js', 'src/navi.js', 'src/env.js'], {
     extensions: ['.js', '.jsx'],
     debug: true
 });
@@ -44,6 +47,12 @@ gulp.task('test', ['build'],   function () {
           }, 1500);
         });
   });
+});
+
+gulp.task('moveenv', () => {
+  gulp.src(envfile)
+  .pipe(rename('env.js'))
+  .pipe(gulp.dest('src'));
 });
 
 gulp.task('less', () => {
@@ -81,7 +90,7 @@ function bundle() {
 
 gulp.task('default', ['transpile']);
 
-gulp.task('transpile', ['lint'], () => bundle());
+gulp.task('transpile', ['lint', 'moveenv'], () => bundle());
 
 gulp.task('lint', () => {
     return gulp.src([
