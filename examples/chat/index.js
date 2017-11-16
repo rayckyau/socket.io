@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 // Setup basic express server
 var ArrayList = require('arraylist');
+var compression = require('compression');
 var express = require('express');
 //var app = express();
 //var server = require('http').createServer(app);
@@ -27,6 +28,8 @@ server.listen(serverport, function () {
   console.log('Server listening at port %d', serverport);
 });
 
+//use compression
+app.use(compression());
 // Attach session
 app.use(session);
 
