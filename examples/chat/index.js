@@ -29,7 +29,10 @@ server.listen(serverport, function () {
 });
 
 //use compression
-app.use(compression());
+if (process.env.NODE_ENV == 'production'){
+  app.use(compression());
+}
+
 // Attach session
 app.use(session);
 
