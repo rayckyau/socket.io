@@ -790,8 +790,7 @@ export class MiniGameOneLayout extends React.Component {
         <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
         <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
       </div>
-      <br/>
-      {playernames[index]} ({playerpoints[index]})
+      <div id="playerlabel" style="position: absolute">{playernames[index]}</div>
     </div>
     );
     if (gamestate == 'GAMERECAP'){
