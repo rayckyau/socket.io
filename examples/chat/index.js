@@ -151,6 +151,8 @@ function initRoomNS(roomCode){
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
+        socket.handshake.session.username = username;
+        socket.handshake.session.save();
         //register roomcode with socketid, tuple pair for redis/db
       }
       // we store the username in the socket session for this client
@@ -195,8 +197,20 @@ function initRoomNS(roomCode){
           numUsers: numUsers,
           id: socket.id
         });
+        console.log("user left: " + socket.handshake.session.username);
         // if mainclient disconnected
-        //remove all sessions
+        if (socket.handshake.session.username == 'mainclient'){
+          console.log("kill all connections");
+          const connectedNameSpaceSockets = Object.keys(room.connected); // Get Object with Connected SocketIds as properties
+          connectedNameSpaceSockets.forEach(socketId => {
+              room.connected[socketId].disconnect(); // Disconnect Each socket
+          });
+          room.removeAllListeners(); // Remove all Listeners for the event emitter
+          delete io.nsps['/'+roomCode]; // Remove from the server namespaces
+          delete namespaces[roomCode]; //remove room from storage
+
+          //remove socket session from storage or let cookies expire
+        }
     });
 
     socket.on('reconnect user', function (data) {
