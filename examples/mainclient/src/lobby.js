@@ -17,6 +17,7 @@ import {
 } from 'reshake';
 import Slider from 'react-slick';
 import {MiniGameOneLayout} from './minigameone';
+import {GameSelectScreen} from './gameselect';
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as minigameone from './minigameone';
@@ -53,19 +54,23 @@ class LobbyScreen extends React.Component {
       }
     }
     this.setState({playerlabels: this.state.playerlabels});
-    if (this.props.gamestate == 'gameone'){
+    console.log("in startgame: "+this.props.gamestate);
+    if (this.props.gamestate == 'minigameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
         this.props.history.push('/minigameone');
         minigameone.storeTimer.dispatch(minigameone.startTimer(31));
       }
-
     }
     else if (this.props.gamestate == 'lobby'){
       if (this.props.history.location.pathname != '/'){
         this.props.history.push('/');
       }
-
+    }
+    else if (this.props.gamestate == 'gameselect'){
+      if (this.props.history.location.pathname != '/gameselect'){
+        this.props.history.push('/gameselect');
+      }
     }
     else{
       //do nothing
@@ -96,10 +101,18 @@ const initialMainGameState = {
 //action creators
 // Action Creators
 function startGame(gamename) {
+  console.log("action creator startgame: "+gamename);
   $.sendGameState("minigameone");
   return {
     type: "MINIGAMEONE",
-    gamestate: gamename
+    gamestate: 'minigameone'
+  };
+}
+function startGameSelect() {
+  $.sendGameState("gameselect");
+  return {
+    type: "GAMESELECT",
+    gamestate: "gameselect"
   };
 }
 function startLobby() {
@@ -118,12 +131,17 @@ function maingamereducer(state = initialMainGameState, action) {
         //set new state
         gamestate: 'lobby'
       };
+    case "GAMESELECT":
+      return {
+        ...state,
+        gamestate: 'gameselect'
+      };
     case "MINIGAMEONE":
       //alert("discuss state");
       return {
         ...state,
         //set new state
-        gamestate: 'gameone'
+        gamestate: 'minigameone'
       };
     default:
       return state;
@@ -145,6 +163,7 @@ class MainFrame extends React.Component {
       <div>
           <Route exact path="/" component={LobbyScreen}/>
           <Route path="/minigameone" component={MiniGameOneLayout}/>
+          <Route path="/gameselect" component={GameSelectScreen}/>
       </div>
       </HashRouter>
     );
@@ -258,6 +277,16 @@ $(function() {
   let clientsDrawpoints = {};
   let lastVoteData;
   var socket;
+
+  //helper gamestate functions
+  $.changeGameState = function(gamename){
+    console.log("try to change game:" + gamename);
+    storeMainGame.dispatch(startGame(gamename));
+  }
+
+  $.changeToLobby = function(){
+    storeMainGame.dispatch(startLobby());
+  }
 
   //helper socket functions
   $.sendGameState = function(gamestate){
@@ -534,7 +563,7 @@ $(function() {
       console.log(isReady);
       //only if admin then start the game.
       if (data.data == "admin"){
-        storeMainGame.dispatch(startGame('gameone'));
+        storeMainGame.dispatch(startGameSelect());
       }
     });
 
@@ -657,7 +686,7 @@ $(function() {
       delete clientdict[oldSocketid];
 
       //check game then apply handleReconnect of minigame
-      if (storeMainGame.getState().gamestate == "gameone"){
+      if (storeMainGame.getState().gamestate == "minigameone"){
         minigameone.handleReconnect();
       }
     });
