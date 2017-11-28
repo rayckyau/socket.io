@@ -119,7 +119,7 @@ var LobbyScreen = function (_React$Component) {
       var canvasitems = this.state.playerlabels.map(function (playername, index) {
         return _react2.default.createElement(
           'div',
-          { className: 'col-sm-3 text-center' },
+          { className: 'col-sm-3 text-center', key: "canvas-p" + index },
           _react2.default.createElement('canvas', { id: "canvas-p" + index, width: "268", height: "340" }),
           _react2.default.createElement('br', null),
           _react2.default.createElement(

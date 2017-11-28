@@ -750,8 +750,8 @@ export const storeGame = Redux.createStore(minigameonereducer);
 //WORDLIST REACT
 function WordList(props) {
   let wordsInWordList = props.words;
-  const listItems = wordsInWordList.map((word) =>
-    <button type="button" className="word btn btn-secondary btn-lg" disabled>{word}</button>
+  const listItems = wordsInWordList.map((word, index) =>
+    <button type="button" key={"word"+index} className="word btn btn-secondary btn-lg" disabled>{word}</button>
   );
   return (
       <div className="WordList">{listItems}</div>
@@ -907,7 +907,7 @@ export class CanvasLayout extends React.Component {
   render() {
 
     const canvasitems = playernames.map((playername, index) =>
-        <div className="col-sm-3 text-center">
+        <div className="col-sm-3 text-center" key={"canvas-p"+index}>
           <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
           <br/>
           <div id="playerlabel">{this.state.playerlabels[index]}</div>

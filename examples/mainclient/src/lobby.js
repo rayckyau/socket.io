@@ -80,7 +80,7 @@ class LobbyScreen extends React.Component {
 
   render() {
     const canvasitems = this.state.playerlabels.map((playername, index) =>
-        <div className="col-sm-3 text-center">
+        <div className="col-sm-3 text-center" key={"canvas-p"+index}>
           <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
           <br/>
           <div id={"playerlabel"+index}>{this.state.playerlabels[index]}</div>
