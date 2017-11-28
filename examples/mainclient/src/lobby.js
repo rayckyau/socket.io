@@ -65,6 +65,7 @@ class LobbyScreen extends React.Component {
     else if (this.props.gamestate == 'lobby'){
       if (this.props.history.location.pathname != '/'){
         this.props.history.push('/');
+        $.callstatechangeall('draw', 'Draw something!');
       }
     }
     else if (this.props.gamestate == 'gameselect'){
@@ -180,7 +181,7 @@ class Rules extends React.Component {
   }
 
   onGameStart(){
-    if (this.props.gamestate == "gameone"){
+    if (this.props.gamestate == "minigameone"){
       var settings = {
         autoplaySpeed: 10000,
         slidesToShow: 1,

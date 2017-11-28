@@ -101,6 +101,7 @@ var LobbyScreen = function (_React$Component) {
       } else if (this.props.gamestate == 'lobby') {
         if (this.props.history.location.pathname != '/') {
           this.props.history.push('/');
+          $.callstatechangeall('draw', 'Draw something!');
         }
       } else if (this.props.gamestate == 'gameselect') {
         if (this.props.history.location.pathname != '/gameselect') {
@@ -257,7 +258,7 @@ var Rules = function (_React$Component3) {
   }, {
     key: 'onGameStart',
     value: function onGameStart() {
-      if (this.props.gamestate == "gameone") {
+      if (this.props.gamestate == "minigameone") {
         var settings = {
           autoplaySpeed: 10000,
           slidesToShow: 1,

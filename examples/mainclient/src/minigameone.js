@@ -975,6 +975,7 @@ export function handleReconnect(){
 }
 
 function setupGame(){
+  $.resetReadyPlayers();
   console.log("setup the game");
   words = populatewordarray();
   let clientsobj = $.returnAllPlayers();

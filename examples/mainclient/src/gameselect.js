@@ -6,6 +6,7 @@ export class GameSelectScreen extends React.Component {
   }
 
   componentDidMount() {
+    $.callstatechangeall('msg', "Admin is Choosing...", "Game admin is choosing a game to play!");
     let clientsobj = $.returnAllPlayers();
 
     for (let key in clientsobj){
@@ -29,7 +30,7 @@ export class GameSelectScreen extends React.Component {
   checkSelectedGame(){
     //check last vote for selection
     //$.retVoteData();
-    console.log($.retlastVote());
+    //console.log($.retlastVote());
     if ($.isReadyPlayerNum(this.state.adminnum)){
       //go to voted game
       if ($.retlastVote() == "minigameone"){
