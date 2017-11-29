@@ -21,6 +21,7 @@ export class GameSelectScreen extends React.Component {
       }
     }
     this.interval = setInterval(() => this.checkSelectedGame(), 1000);
+    $.resetReadyPlayers();
   }
 
   componentWillUnmount() {
@@ -29,8 +30,6 @@ export class GameSelectScreen extends React.Component {
 
   checkSelectedGame(){
     //check last vote for selection
-    //$.retVoteData();
-    //console.log($.retlastVote());
     if ($.isReadyPlayerNum(this.state.adminnum)){
       //go to voted game
       if ($.retlastVote() == "minigameone"){
@@ -39,12 +38,11 @@ export class GameSelectScreen extends React.Component {
       }
       else{
         $.changeToLobby();
+        $.callstatechangeall('draw', 'Draw something!');
         this.props.history.push('/');
       }
 
     }
-
-
   }
 
   render() {
