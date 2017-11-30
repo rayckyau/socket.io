@@ -58,8 +58,9 @@ class LobbyScreen extends React.Component {
     if (this.props.gamestate == 'minigameone'){
       if (this.props.history.location.pathname != '/minigameone'){
         $.callstatechangeall('msg', 'start rules');
-        this.props.history.push('/minigameone');
         minigameone.storeTimer.dispatch(minigameone.startTimer(31));
+        minigameone.storeGame.dispatch(minigameone.startIdle());
+        this.props.history.push('/minigameone');
       }
     }
     else if (this.props.gamestate == 'lobby'){
@@ -103,7 +104,8 @@ const initialMainGameState = {
 // Action Creators
 function startGame(gamename) {
   console.log("action creator startgame: "+gamename);
-  $.sendGameState("minigameone");
+  $.sendGameState('minigameone');
+
   return {
     type: "MINIGAMEONE",
     gamestate: 'minigameone'
@@ -292,7 +294,7 @@ $(function() {
   //helper socket functions
   $.sendGameState = function(gamestate){
     socket.emit('changegame',{
-      message: 'changeing gamestate of mainclient',
+      message: 'changing gamestate of mainclient',
       game: gamestate
     })
   }
@@ -554,14 +556,12 @@ $(function() {
 
     // Whenever the server emits 'sendbutton'
     socket.on('sendbutton', function (data) {
-      console.log('get sendbutton');
       if (data.data=="ready"){
         isReady[playerUserToNum[data.id]] = true;
       }
       else if (data.data=="notready"){
         isReady[playerUserToNum[data.id]] = false;
       }
-      console.log(isReady);
       //only if admin then start the game.
       if (data.data == "admin"){
         storeMainGame.dispatch(startGameSelect());

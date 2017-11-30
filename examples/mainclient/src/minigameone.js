@@ -435,9 +435,16 @@ class Timer extends React.Component {
           }
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
+        if ($.retlastVote() == "Back To Lobby"){
+          console.log("end of GAMERECAP state choose EXIT");
+          storeGame.dispatch(startExit());
+        }
+        else{
           setupGame();
           storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
           storeGame.dispatch(startBegin());
+        }
+
       }
       else if (mystate.gamestate ==  "IDLE"){
           setupGame();
@@ -454,6 +461,7 @@ class Timer extends React.Component {
           storeTimer.dispatch(resetTimer(99));
           storeGame.dispatch(startGameRecap());
           $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game.');
+          $.callstatechangeprivate("vote", "Keep playing?", socketLiar , "Keep playing,Back To Lobby")
       }
       else{
         //error state
@@ -516,7 +524,7 @@ const initialGameState = {
 };
 
 //action creators
-function startIdle() {
+export function startIdle() {
   return {
     type: "IDLE",
     gamestate: "IDLE",
@@ -575,6 +583,12 @@ function startEnd(winner) {
     type: "END",
     gamestate: "END",
     winner: winner
+  };
+}
+function startExit() {
+  return {
+    type: "EXIT",
+    gamestate: "EXIT"
   };
 }
 
@@ -657,7 +671,6 @@ function minigameonereducer(state = initialGameState, action) {
         loopcounter: 0,
         winner: action.winner,
         words: state.words
-        //set new state
       }
     case "BEGIN":
         //rules stuff
@@ -676,7 +689,14 @@ function minigameonereducer(state = initialGameState, action) {
         loopcounter: 0,
         winner: action.winner,
         words: state.words
-        //set new state
+    }
+    case "EXIT":
+      return {
+        state: undefined,
+        gamestate: 'EXIT',
+        loopcounter: 0,
+        winner: '',
+        words: []
     }
     default:
       return state;
@@ -777,20 +797,29 @@ export class MiniGameOneLayout extends React.Component {
 
   checkGameState(){
     //only change state if state is GAMERECAP/VOTERECAP
-    if ((storeGame.getState().gamestate == "GAMERECAP") || (storeGame.getState().gamestate == "VOTERECAP") || (storeGame.getState().gamestate == "BEGIN"))
+    if ((storeGame.getState().gamestate == "GAMERECAP") ||
+      (storeGame.getState().gamestate == "VOTERECAP") ||
+      (storeGame.getState().gamestate == "BEGIN") || (storeGame.getState().gamestate == "IDLE"))
     {
       this.setState({gamestate:storeGame.getState().gamestate});
+    }
+    else if (storeGame.getState().gamestate == "EXIT"){
+      $.resetVotes();
+      $.resetLastVoteData();
+      $.changeToLobby();
+      $.callstatechangeall('draw', 'Draw something!');
+      this.props.history.push('/');
     }
   }
 
   displayPage(gamestate){
     const canvasitems = playernames.map((playername, index) =>
-    <div className="col-sm-3 text-center">
+    <div className="col-sm-3 text-center" key={'canvasitem'+index}>
       <div id="cf">
         <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
         <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
       </div>
-      <div id="playerlabel" style="position: absolute">{playernames[index]}</div>
+      <div id="playerlabel" style={{position: 'absolute'}}>{playernames[index]}</div>
     </div>
     );
     if (gamestate == 'GAMERECAP'){
@@ -818,7 +847,7 @@ export class MiniGameOneLayout extends React.Component {
                          }
       }
       const listItems = votebardata.map((player) =>
-        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum}/>
+        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum} key={'votebar'+player.playername}/>
       );
       return (
         <div className="col-sm-10">
