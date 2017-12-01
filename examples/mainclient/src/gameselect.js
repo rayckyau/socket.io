@@ -2,7 +2,7 @@
 export class GameSelectScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {gamedescription: "description", adminnum: 0};
+    this.state = {gamedescription: "description", adminnum: 0, selection: "lobby"};
   }
 
   componentDidMount() {
@@ -20,7 +20,7 @@ export class GameSelectScreen extends React.Component {
         //if no admin found then go back to lobby
       }
     }
-    this.interval = setInterval(() => this.checkSelectedGame(), 1000);
+    this.interval = setInterval(() => this.checkSelectedGame(), 500);
     $.resetReadyPlayers();
   }
 
@@ -28,8 +28,22 @@ export class GameSelectScreen extends React.Component {
     clearInterval(this.interval);
   }
 
+  updateSelection(){
+    console.log("updateSelection" + $.retlastVote());
+    if ($.retlastVote() != this.state.selection ){
+      if ($.retlastVote() == 'minigameone'){
+        let descrip = "This is minigameone."
+        this.setState({gamedescription: descrip, adminnum: this.state.adminnum, selection: "minigameone"});
+      }
+      else{
+        this.setState({gamedescription: "Back To Lobby", adminnum: this.state.adminnum, selection: "lobby"})
+      }
+    }
+  }
+
   checkSelectedGame(){
-    //check last vote for selection
+    this.updateSelection();
+    //if ready then change the page
     if ($.isReadyPlayerNum(this.state.adminnum)){
       //go to voted game
       if ($.retlastVote() == "minigameone"){
@@ -52,11 +66,7 @@ export class GameSelectScreen extends React.Component {
        <div className="col-sm-6 gridcenter">
           <div id="selectgame">Select:
            <div id="gamelist">
-             <ul>
-               <li>Coffee</li>
-               <li>Tea</li>
-               <li>Milk</li>
-             </ul>
+               <GameSelection selection={this.state.selection} />
            </div>
           </div>
 
@@ -69,5 +79,35 @@ export class GameSelectScreen extends React.Component {
        </div>
      </div>
     );
+  }
+}
+
+class GameSelection extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    //check last vote for selection
+    if (this.props.selection == "minigameone"){
+      //make selection bold
+      return (
+        <ul>
+          <li><b>minigameone</b></li>
+          <li>minigametwo</li>
+          <li>back to lobby</li>
+        </ul>
+      )
+    }
+    else{
+      //make selection bold
+      return (
+        <ul>
+          <li>minigameone</li>
+          <li>minigametwo</li>
+          <li><b>back to lobby</b></li>
+        </ul>
+      )
+    }
   }
 }
