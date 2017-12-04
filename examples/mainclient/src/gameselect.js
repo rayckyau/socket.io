@@ -15,7 +15,7 @@ export class GameSelectScreen extends React.Component {
         if (playerobj.isadmin == true){
           //set adminnum
           this.state.adminnum = playerobj.playernum;
-          $.callstatechangeprivate('vote', "Choose the game to play!", playerobj.socketid, "minigameone,minigametwo,Lobby");
+          $.callstatechangeprivate('vote', "Choose the game to play!", playerobj.socketid, "Illuminati Imposter,Assembly Line,Lobby");
         }
         //if no admin found then go back to lobby
       }
@@ -31,9 +31,25 @@ export class GameSelectScreen extends React.Component {
   updateSelection(){
     console.log("updateSelection" + $.retlastVote());
     if ($.retlastVote() != this.state.selection ){
-      if ($.retlastVote() == 'minigameone'){
-        let descrip = "This is minigameone."
-        this.setState({gamedescription: descrip, adminnum: this.state.adminnum, selection: "minigameone"});
+      if ($.retlastVote() == 'Illuminati Imposter'){
+        let descrip = 'Welcome to Illuminati Imposter. In this game, you all ' +
+        'belong to the Illuminati except for one player who is the Imposter.' +
+        ' All of the Illuminati will receive the secret word. On the main ' +
+        'screen, 4 words will be shown but only one of them will be the ' +
+        'secret word. Players will have two rounds to draw pictures related ' +
+        'to the secret word. Players will then vote on the Imposter. If the '+
+        'Imposter is found out, they will have a final chance to win by '+
+        'correctly choosing the secret word!'
+        this.setState({gamedescription: descrip, adminnum: this.state.adminnum, selection: "Illuminati Imposter"});
+      }
+      else if ($.retlastVote() == 'Assembly Line'){
+        let descrip = 'Welcome to Assembly Line. You belong to a team of ' +
+        ' robo-artists and your company manufactures paintings. Each member ' +
+        'of your team will be drawing a part of the picture. Each robot will ' +
+        'have a limited time to draw their part of the picture. The final ' +
+        'robo-manager will have to guess the correct word being drawn. The ' +
+        'more points the better!'
+        this.setState({gamedescription: descrip, adminnum: this.state.adminnum, selection: "Assembly Line"});
       }
       else{
         this.setState({gamedescription: "Back To Lobby", adminnum: this.state.adminnum, selection: "lobby"})
@@ -46,7 +62,7 @@ export class GameSelectScreen extends React.Component {
     //if ready then change the page
     if ($.isReadyPlayerNum(this.state.adminnum)){
       //go to voted game
-      if ($.retlastVote() == "minigameone"){
+      if ($.retlastVote() == "Illuminati Imposter"){
         $.changeGameState($.retlastVote());
         this.props.history.push('/');
       }
@@ -61,10 +77,10 @@ export class GameSelectScreen extends React.Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container-fluid gameselect">
       <div className="row justify-content-md-center">
        <div className="col-sm-6 gridcenter">
-          <div id="selectgame">Select:
+          <div id="selectgame">Select Game:
            <div id="gamelist">
                <GameSelection selection={this.state.selection} />
            </div>
@@ -89,13 +105,23 @@ class GameSelection extends React.Component {
 
   render() {
     //check last vote for selection
-    if (this.props.selection == "minigameone"){
+    if (this.props.selection == "Illuminati Imposter"){
       //make selection bold
       return (
         <ul>
-          <li><b>minigameone</b></li>
-          <li>minigametwo</li>
-          <li>back to lobby</li>
+          <li><b>Illuminati Imposter</b></li>
+          <li>Assembly Line</li>
+          <li>Lobby</li>
+        </ul>
+      )
+    }
+    else if (this.props.selection == "Assembly Line"){
+      //make selection bold
+      return (
+        <ul>
+          <li>Illuminati Imposter</li>
+          <li><b>Assembly Line</b></li>
+          <li>Lobby</li>
         </ul>
       )
     }
@@ -103,9 +129,9 @@ class GameSelection extends React.Component {
       //make selection bold
       return (
         <ul>
-          <li>minigameone</li>
-          <li>minigametwo</li>
-          <li><b>back to lobby</b></li>
+          <li>Illuminati Imposter</li>
+          <li>Assembly Line</li>
+          <li><b>Lobby</b></li>
         </ul>
       )
     }
