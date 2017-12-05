@@ -851,9 +851,9 @@ export class MiniGameOneLayout extends React.Component {
       );
       return (
         <div className="col-sm-10">
-        <div className="row">
-          {listItems}
-        </div>
+          <div className="row">
+            {listItems}
+          </div>
         </div>
       )
     }
@@ -916,7 +916,7 @@ class VoteBar extends React.Component {
 export class CanvasLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {playerlabels: playernames};
+    this.state = {playerlabels: playernames, playerreadylabels: playerready};
   }
 
   componentDidMount() {
@@ -930,19 +930,35 @@ export class CanvasLayout extends React.Component {
 
   updateNames() {
     //TODO: optimize by checking if state has changed first
-    this.setState({playerlabels: playernames});
+    for (let i=0;i<8;i++){
+      playerready[i] = $.isReadyPlayerNum(i);
+    }
+
+    this.setState({playerlabels: playernames, playerreadylabels: playerready});
   }
 
   render() {
 
-    const canvasitems = playernames.map((playername, index) =>
-        <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-          <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
-          <br/>
-          <div id="playerlabel">{this.state.playerlabels[index]}</div>
-        </div>
-
-    );
+    const canvasitems = playernames.map((playername, index) => {
+        if (this.state.playerreadylabels[index] == true){
+          return(
+            <div className="col-sm-3 text-center" key={"canvas-p"+index}>
+              <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+              <br/>
+              <div id="playerlabel" style={{color:'green'}}>{this.state.playerlabels[index]}</div>
+            </div>
+          );
+        }
+        else if (this.state.playerreadylabels[index] == false){
+          return(
+            <div className="col-sm-3 text-center" key={"canvas-p"+index}>
+              <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+              <br/>
+              <div id="playerlabel">{this.state.playerlabels[index]}</div>
+            </div>
+          );
+      }
+    });
     return (
       <div className="col-sm-10 rightpanel">
         <div>
@@ -959,6 +975,7 @@ export class CanvasLayout extends React.Component {
 
 let words = [];
 let playernames = [];
+let playerready = [];
 let playerpoints = [0,0,0,0,0,0,0,0];
 let playervotedata = [];
 let playervotes = [];
