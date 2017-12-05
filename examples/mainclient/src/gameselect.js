@@ -47,7 +47,7 @@ export class GameSelectScreen extends React.Component {
         ' robo-artists and your company manufactures paintings. Each member ' +
         'of your team will be drawing a part of the picture. Each robot will ' +
         'have a limited time to draw their part of the picture. The final ' +
-        'robo-manager will have to guess the correct word being drawn. The ' +
+        'robot manager will have to guess the correct word being drawn. The ' +
         'more points the better!'
         this.setState({gamedescription: descrip, adminnum: this.state.adminnum, selection: "Assembly Line"});
       }
@@ -65,6 +65,9 @@ export class GameSelectScreen extends React.Component {
       if ($.retlastVote() == "Illuminati Imposter"){
         $.changeGameState($.retlastVote());
         this.props.history.push('/');
+      }
+      else if ($.retlastVote() == "Assembly Line"){
+        //do nothing
       }
       else{
         $.changeToLobby();
@@ -87,7 +90,7 @@ export class GameSelectScreen extends React.Component {
           </div>
 
        </div>
-       <div className="col-sm-6">
+       <div className="col-sm-6 gridcenter">
           <div id="gamethumbnail">
           </div>
           <div id="gamedescription">{this.state.gamedescription}</div>
@@ -109,8 +112,8 @@ class GameSelection extends React.Component {
       //make selection bold
       return (
         <ul>
-          <li><b>Illuminati Imposter</b></li>
-          <li>Assembly Line</li>
+          <li><b>Illuminati Imposter (Beta)</b></li>
+          <li>Assembly Line (In development)</li>
           <li>Lobby</li>
         </ul>
       )
@@ -119,8 +122,8 @@ class GameSelection extends React.Component {
       //make selection bold
       return (
         <ul>
-          <li>Illuminati Imposter</li>
-          <li><b>Assembly Line</b></li>
+          <li>Illuminati Imposter (Beta)</li>
+          <li><b>Assembly Line (In development)</b></li>
           <li>Lobby</li>
         </ul>
       )
@@ -129,8 +132,8 @@ class GameSelection extends React.Component {
       //make selection bold
       return (
         <ul>
-          <li>Illuminati Imposter</li>
-          <li>Assembly Line</li>
+          <li>Illuminati Imposter (Beta)</li>
+          <li>Assembly Line (In development)</li>
           <li><b>Lobby</b></li>
         </ul>
       )
