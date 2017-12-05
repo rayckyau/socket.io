@@ -60,6 +60,10 @@ import * as env from './env';
           e.preventDefault();
           return;
         }
+        if (touchYDelta < 0) {
+          e.preventDefault();
+          return;
+        }
       }
     }
 
