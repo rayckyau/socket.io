@@ -11,7 +11,7 @@ var roomList = new ArrayList();
 var namespaces = {};
 
 let roommainclientdict = {};
-
+var helmet = require('helmet');
 var app = require('express')(),
   server  = require("http").createServer(app),
   io = require("socket.io")(server),
@@ -38,7 +38,8 @@ app.use(session);
 
 // Routing
 app.use(express.static(__dirname + '/public'));
-
+//security
+app.use(helmet());
 
 function createRoomCode (){
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
