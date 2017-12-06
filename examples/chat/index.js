@@ -9,7 +9,7 @@ var express = require('express');
 var serverport = process.env.SERVERPORT || 3000;
 var roomList = new ArrayList();
 var namespaces = {};
-
+var expiryDate = new Date(Date.now() + 60 * 60 * 1000 * 10); //10 hour
 let roommainclientdict = {};
 var helmet = require('helmet');
 var app = require('express')(),
@@ -17,12 +17,16 @@ var app = require('express')(),
   io = require("socket.io")(server),
   session = require("express-session")({
     secret: "my-secret",
+    name: 'sessionId',
+    httpOnly: true,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    expires: expiryDate
   }),
   sharedsession = require("express-socket.io-session");
 
-
+//special reverse proxy headers settings
+app.set('trust proxy', 1);
 
 server.listen(serverport, function () {
   console.log('Server listening at port %d', serverport);
