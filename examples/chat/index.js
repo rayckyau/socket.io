@@ -3,17 +3,29 @@
 var ArrayList = require('arraylist');
 var compression = require('compression');
 var express = require('express');
-//var app = express();
-//var server = require('http').createServer(app);
-//var io = require('../..')(server);
+const fs = require('fs');
+
 var serverport = process.env.SERVERPORT || 3000;
 var roomList = new ArrayList();
 var namespaces = {};
 var expiryDate = new Date(Date.now() + 60 * 60 * 1000 * 10); //10 hour
 let roommainclientdict = {};
 var helmet = require('helmet');
+let sslOptions = {
+    cert: fs.readFileSync('./sslcert/fullchain.pem'),
+    key: fs.readFileSync('./sslcert/privkey.pem')
+};
+
+if (process.env.NODE_ENV != 'production'){
+  sslOptions = {
+      cert: fs.readFileSync('./sslcert/server-crt.pem'),
+      key: fs.readFileSync('./sslcert/server-key.pem'),
+      ca: fs.readFileSync('./sslcert/ca-cert.pem')
+  };
+}
+
 var app = require('express')(),
-  server  = require("http").createServer(app),
+  server  = require("https").createServer(sslOptions, app),
   io = require("socket.io")(server),
   session = require("express-session")({
     secret: "my-secret",
@@ -35,6 +47,8 @@ server.listen(serverport, function () {
 //use compression
 if (process.env.NODE_ENV == 'production'){
   app.use(compression());
+  //security
+  app.use(helmet());
 }
 
 // Attach session
@@ -42,8 +56,7 @@ app.use(session);
 
 // Routing
 app.use(express.static(__dirname + '/public'));
-//security
-app.use(helmet());
+
 
 function createRoomCode (){
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

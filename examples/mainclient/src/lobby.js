@@ -1,5 +1,10 @@
 /*jshint esversion: 6 */
-
+const fs = require('fs')
+    , path = require('path')
+    , certFile = path.resolve(__dirname, 'sslcert/client1-crt.pem')
+    , keyFile = path.resolve(__dirname, 'sslcert/client1-key.pem')
+    , caFile = path.resolve(__dirname, 'sslcert/ca-crt.pem')
+var https = require('https');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -474,8 +479,10 @@ $(function() {
   }
 
   function connectToSocket(roomCode){
-     socket = require('socket.io-client')('http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
-     console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
+     //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+     https.globalAgent.options.rejectUnauthorized = false;
+     socket = require('socket.io-client')('https://' + HOSTNAME + ':'+ PORT +'/'+roomCode, {agent: https.globalAgent});
+     console.log('try: %s', 'https://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      defineSocket();
      log('Room Code: '+roomCode, {
        prepend: true
@@ -699,14 +706,19 @@ $(function() {
 
   function getRoomCode(){
     var rp = require('request-promise');
-    console.log('request to : '+'http://' + HOSTNAME + ':'+ PORT +'/createRoom')
+    console.log('request to : '+'https://' + HOSTNAME + ':'+ PORT +'/createRoom')
     var options = {
         method: 'POST',
-        uri: 'http://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
+        uri: 'https://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
         body: {
             some: 'payload'
         },
+        cert: fs.readFileSync(certFile),
+        key: fs.readFileSync(keyFile),
+        passphrase: 'pass',
+        ca: fs.readFileSync(caFile),
         json: true // Automatically stringifies the body to JSON
+
     };
     console.log('getroomcode');
     rp(options)

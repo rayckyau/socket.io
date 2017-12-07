@@ -104,7 +104,7 @@ import * as env from './env';
 
     function checkSession(){
       let rp = require('request-promise');
-      let url = 'http://' + window.location.hostname + ':' + env.PORT;
+      let url = 'https://' + window.location.hostname + ':' + env.PORT;
       console.log('request to : '+ url+'/checkSession');
       let options = {
           method: 'GET',
@@ -141,7 +141,7 @@ import * as env from './env';
 
    function checkRoomCode(roomcode, session=false){
      let rp = require('request-promise');
-     let url = 'http://' + window.location.hostname + ':' + env.PORT;
+     let url = 'https://' + window.location.hostname + ':' + env.PORT;
      console.log('request to : '+ url+'/checkRoom/'+roomcode+'?username='+username)
      let options = {
          method: 'GET',
@@ -159,9 +159,9 @@ import * as env from './env';
                  $loginPage.fadeOut();
                  $drawPage.show();
                  $loginPage.off('click');
-                 var url = 'http://' + window.location.hostname + ':' + env.PORT +'/';
+                 var url = 'https://' + window.location.hostname + ':' + env.PORT +'/';
                  console.log('User try socket: %s', url + roomcode);
-                 drawsocket = io(url + roomcode);
+                 drawsocket = io(url + roomcode, {rejectUnauthorized: false});
                  defineSocket();
                  socketReady = true;
                  if (session){
