@@ -29,7 +29,7 @@
   },
   "scripts": {
     "test": "gulp test",
-    "start": "export NODE_ENV=development && gulp build && node index.js",
+    "start": "export NODE_ENV=development && gulp build && pm2 start devecosystem.config.js",
     "startprod": "export NODE_ENV=production && gulp build && node index.js"
   },
   "devDependencies": {

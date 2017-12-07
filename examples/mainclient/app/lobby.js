@@ -46,7 +46,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*jshint esversion: 6 */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*jshint esversion: 6 */
+var fs = require('fs'),
+    path = require('path'),
+    certFile = path.resolve(__dirname, 'sslcert/client1-crt.pem'),
+    keyFile = path.resolve(__dirname, 'sslcert/client1-key.pem'),
+    caFile = path.resolve(__dirname, 'sslcert/ca-crt.pem');
+var https = require('https');
+
 
 var HOSTNAME = _env2.default.serverendpoint;
 var PORT = _env2.default.serverport;
@@ -572,8 +581,10 @@ $(function () {
   }
 
   function connectToSocket(roomCode) {
-    socket = require('socket.io-client')('http://' + HOSTNAME + ':' + PORT + '/' + roomCode);
-    console.log('try: %s', 'http://' + HOSTNAME + ':' + PORT + '/' + roomCode);
+    //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    https.globalAgent.options.rejectUnauthorized = false;
+    socket = require('socket.io-client')('https://' + HOSTNAME + ':' + PORT + '/' + roomCode, { agent: https.globalAgent });
+    console.log('try: %s', 'https://' + HOSTNAME + ':' + PORT + '/' + roomCode);
     defineSocket();
     log('Room Code: ' + roomCode, {
       prepend: true
@@ -793,14 +804,19 @@ $(function () {
 
   function getRoomCode() {
     var rp = require('request-promise');
-    console.log('request to : ' + 'http://' + HOSTNAME + ':' + PORT + '/createRoom');
+    console.log('request to : ' + 'https://' + HOSTNAME + ':' + PORT + '/createRoom');
     var options = {
       method: 'POST',
-      uri: 'http://' + HOSTNAME + ':' + PORT + '/createRoom', //'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
+      uri: 'https://' + HOSTNAME + ':' + PORT + '/createRoom', //'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
       body: {
         some: 'payload'
       },
+      cert: fs.readFileSync(certFile),
+      key: fs.readFileSync(keyFile),
+      passphrase: 'pass',
+      ca: fs.readFileSync(caFile),
       json: true // Automatically stringifies the body to JSON
+
     };
     console.log('getroomcode');
     rp(options).then(function (parsedBody) {

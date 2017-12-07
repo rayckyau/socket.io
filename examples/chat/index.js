@@ -12,15 +12,15 @@ var expiryDate = new Date(Date.now() + 60 * 60 * 1000 * 10); //10 hour
 let roommainclientdict = {};
 var helmet = require('helmet');
 let sslOptions = {
-    cert: fs.readFileSync('./sslcert/fullchain.pem'),
-    key: fs.readFileSync('./sslcert/privkey.pem')
-};
-
-if (process.env.NODE_ENV != 'production'){
-  sslOptions = {
       cert: fs.readFileSync('./sslcert/server-crt.pem'),
       key: fs.readFileSync('./sslcert/server-key.pem'),
       ca: fs.readFileSync('./sslcert/ca-cert.pem')
+};
+
+if (process.env.NODE_ENV == 'production'){
+  sslOptions = {
+    cert: fs.readFileSync('./sslcert/fullchain.pem'),
+    key: fs.readFileSync('./sslcert/privkey.pem')
   };
 }
 
