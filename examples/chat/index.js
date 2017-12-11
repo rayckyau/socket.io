@@ -17,17 +17,22 @@ let sslOptions = {
       ca: fs.readFileSync('./sslcert/ca-cert.pem')
 };
 
-if (process.env.NODE_ENV == 'production'){
+var app = require('express')();
+
+if (process.env.NODE_ENV == 'sslproduction'){
   sslOptions = {
     cert: fs.readFileSync('./sslcert/fullchain.pem'),
     key: fs.readFileSync('./sslcert/privkey.pem')
   };
+  var server  = require("https").createServer(sslOptions, app),
+    io = require("socket.io")(server);
+}
+else {
+  var server  = require("http").createServer(app),
+    io = require("socket.io")(server);
 }
 
-var app = require('express')(),
-  server  = require("https").createServer(sslOptions, app),
-  io = require("socket.io")(server),
-  session = require("express-session")({
+var session = require("express-session")({
     secret: "my-secret",
     name: 'sessionId',
     httpOnly: true,
@@ -36,6 +41,9 @@ var app = require('express')(),
     expires: expiryDate
   }),
   sharedsession = require("express-socket.io-session");
+
+
+
 
 //special reverse proxy headers settings
 app.set('trust proxy', 1);

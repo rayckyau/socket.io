@@ -481,8 +481,8 @@ $(function() {
   function connectToSocket(roomCode){
      //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
      https.globalAgent.options.rejectUnauthorized = false;
-     socket = require('socket.io-client')('https://' + HOSTNAME + ':'+ PORT +'/'+roomCode, {agent: https.globalAgent});
-     console.log('try: %s', 'https://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
+     socket = require('socket.io-client')('http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
+     console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      defineSocket();
      log('Room Code: '+roomCode, {
        prepend: true
@@ -706,10 +706,10 @@ $(function() {
 
   function getRoomCode(){
     var rp = require('request-promise');
-    console.log('request to : '+'https://' + HOSTNAME + ':'+ PORT +'/createRoom')
+    console.log('request to : '+'http://' + HOSTNAME + ':'+ PORT +'/createRoom')
     var options = {
         method: 'POST',
-        uri: 'https://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
+        uri: 'http://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
         body: {
             some: 'payload'
         },
