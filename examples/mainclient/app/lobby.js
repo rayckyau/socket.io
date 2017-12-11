@@ -103,7 +103,8 @@ var LobbyScreen = function (_React$Component) {
       console.log("in startgame: " + this.props.gamestate);
       if (this.props.gamestate == 'minigameone') {
         if (this.props.history.location.pathname != '/minigameone') {
-          $.callstatechangeall('msg', 'start rules');
+          $.resetReadyPlayers();
+          $.callstatechangeall('msg', 'start rules', 'Press OK to skip rules.');
           minigameone.storeTimer.dispatch(minigameone.startTimer(31));
           minigameone.storeGame.dispatch(minigameone.startIdle());
           this.props.history.push('/minigameone');
