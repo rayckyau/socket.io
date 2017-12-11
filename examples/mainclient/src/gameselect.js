@@ -66,9 +66,6 @@ export class GameSelectScreen extends React.Component {
         $.changeGameState($.retlastVote());
         this.props.history.push('/');
       }
-      else if ($.retlastVote() == "Assembly Line"){
-        //do nothing
-      }
       else{
         $.changeToLobby();
         $.callstatechangeall('draw', 'Draw something!');
