@@ -1,0 +1,87 @@
+{
+  "name": "electron-boilerplate",
+  "productName": "Electron Boilerplate",
+  "description": "Starter for your Electron application",
+  "version": "0.0.0",
+  "author": "Mr. Gumby <mr.gumby@example.com>",
+  "copyright": "© 2017, Gumby inc.",
+  "homepage": "http://example.com",
+  "license": "MIT",
+  "main": "app/index.js",
+  "build": {
+    "appId": "com.example.electron-boilerplate",
+    "files": [
+      "app/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "publish": null
+  },
+  "scripts": {
+    "build": "gulp build",
+    "start": "export NODE_ENV=development && gulp build && node index"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ]
+  },
+  "dependencies": {
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "exorcist": "^1.0.0",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "fs-jetpack": "^1.0.0",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-eslint": "^4.0.0",
+    "gulp-if-else": "^1.0.3",
+    "gulp-mocha": "^4.3.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "http": "0.0.0",
+    "jquery": "^3.2.1",
+    "path": "^0.12.7",
+    "react": "^16.2.0",
+    "react-countup": "^3.0.2",
+    "react-dom": "^16.2.0",
+    "react-progressbar.js": "^0.2.0",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-slick": "^0.16.0",
+    "redux": "^3.7.2",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "reshake": "^1.0.7",
+    "socket.io": "^2.0.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-object-spread-inline": "0.0.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-batch": "^1.0.5",
+    "gulp-less": "^3.3.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-util": "^3.0.8",
+    "gulp-watch": "^4.3.11",
+    "istanbul": "^0.4.5",
+    "minimist": "^1.2.0",
+    "mocha": "^3.4.2",
+    "rollup": "^0.45.2",
+    "rollup-plugin-istanbul": "^1.1.0",
+    "source-map-support": "^0.4.15",
+    "spectron": "^3.7.2"
+  }
+}

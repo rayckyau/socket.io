@@ -43,7 +43,25 @@ var session = require("express-session")({
   sharedsession = require("express-socket.io-session");
 
 
+  // Add headers
+  app.use(function (req, res, next) {
 
+      // Website you wish to allow to connect
+      res.setHeader('Access-Control-Allow-Origin', '*');
+
+      // Request methods you wish to allow
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+      // Request headers you wish to allow
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+      // Set to true if you need the website to include cookies in the requests sent
+      // to the API (e.g. in case you use sessions)
+      res.setHeader('Access-Control-Allow-Credentials', true);
+
+      // Pass to next layer of middleware
+      next();
+  });
 
 //special reverse proxy headers settings
 app.set('trust proxy', 1);
@@ -64,6 +82,42 @@ app.use(session);
 
 // Routing
 app.use(express.static(__dirname + '/public'));
+
+var bodyParser = require('body-parser')
+var methodOverride = require('method-override')
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
+app.use(methodOverride());
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+
+
+function clientErrorHandler (err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' })
+  } else {
+    next(err)
+  }
+}
+
+
+function logErrors (err, req, res, next) {
+  console.error(err.stack)
+  next(err)
+}
+
+
+function errorHandler (err, req, res, next) {
+  if (res.headersSent) {
+    return next(err)
+  }
+  res.status(500)
+  res.render('error', { error: err })
+}
 
 
 function createRoomCode (){
@@ -274,7 +328,7 @@ app.post('/createRoom', function (req, res) {
    roomList.add(initRoomNS(roomCode));
    console.log('Room created %s', roomCode);
    res.setHeader('Content-Type', 'application/json');
-   res.end( JSON.stringify(roomCode));
+   res.end(JSON.stringify(roomCode));
    //else give error page
 
 });
