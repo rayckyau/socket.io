@@ -784,7 +784,7 @@ function WordList(props) {
 export class MiniGameOneLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {gamestate: "IDLE"};
+    this.state = {gamestate: "IDLE", playerreadylabels: playerready};
   }
 
   componentDidMount() {
@@ -796,14 +796,13 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   checkGameState(){
-    //only change state if state is GAMERECAP/VOTERECAP
-    if ((storeGame.getState().gamestate == "GAMERECAP") ||
-      (storeGame.getState().gamestate == "VOTERECAP") ||
-      (storeGame.getState().gamestate == "BEGIN") || (storeGame.getState().gamestate == "IDLE"))
-    {
-      this.setState({gamestate:storeGame.getState().gamestate});
+    for (let i=0;i<8;i++){
+      playerready[i] = $.isReadyPlayerNum(i);
     }
-    else if (storeGame.getState().gamestate == "EXIT"){
+
+    this.setState({gamestate:storeGame.getState().gamestate, playerreadylabels: playerready});
+
+    if (storeGame.getState().gamestate == "EXIT"){
       $.resetVotes();
       $.resetLastVoteData();
       $.changeToLobby();
@@ -813,15 +812,26 @@ export class MiniGameOneLayout extends React.Component {
   }
 
   displayPage(gamestate){
-    const canvasitems = playernames.map((playername, index) =>
-    <div className="col-sm-3 text-center" key={'canvasitem'+index}>
-      <div id="cf">
-        <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
-        <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
-      </div>
-      <div id="playerlabel" style={{position: 'absolute'}}>{playernames[index]}</div>
-    </div>
-    );
+
+    const canvasitems = playernames.map((playername, index) => {
+      let mystyle = {position: 'absolute'};
+      if (this.state.playerreadylabels[index] == true){
+        mystyle = {position: 'absolute', color: 'green'};
+      }else{
+        mystyle = {position: 'absolute'};
+      }
+      return(
+        <div className="col-sm-3 text-center" key={'canvasitem'+index}>
+          <div id="cf">
+            <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
+            <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
+          </div>
+          <div id="playerlabel" style={mystyle}>{playernames[index]}</div>
+        </div>
+      );
+    });
+
+
     if (gamestate == 'GAMERECAP'){
       return (
         <div className="col-sm-10">
@@ -846,8 +856,8 @@ export class MiniGameOneLayout extends React.Component {
 
                          }
       }
-      const listItems = votebardata.map((player) =>
-        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum} key={'votebar'+player.playername}/>
+      const listItems = votebardata.map((player, index) =>
+        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum} voteready={this.state.playerreadylabels[index]} key={'votebar'+player.playername}/>
       );
       return (
         <div className="col-sm-10">
@@ -899,10 +909,14 @@ class VoteBar extends React.Component {
   }
 
   render() {
+    let mystyle = {color: 'black'};
+    if (this.props.voteready == true){
+      mystyle = {color: 'green'};
+    }
     return (
       <div className="votebar">
         <div id="textdiv">
-          <h1 id="name">{this.props.name}</h1>
+          <h1 id="name" style={mystyle}>{this.props.name}</h1>
           <p id="votedfor">voted for <b>{this.props.votename}</b></p>
         </div>
         <div id="numdiv">
@@ -940,24 +954,17 @@ export class CanvasLayout extends React.Component {
   render() {
 
     const canvasitems = playernames.map((playername, index) => {
+        let mystyle = {position: 'absolute'};
         if (this.state.playerreadylabels[index] == true){
-          return(
-            <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-              <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
-              <br/>
-              <div id="playerlabel" style={{color:'green'}}>{this.state.playerlabels[index]}</div>
-            </div>
-          );
+          mystyle = {position: 'absolute', color: 'green'};
         }
-        else if (this.state.playerreadylabels[index] == false){
-          return(
-            <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-              <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
-              <br/>
-              <div id="playerlabel">{this.state.playerlabels[index]}</div>
-            </div>
-          );
-      }
+        return(
+          <div className="col-sm-3 text-center" key={"canvas-p"+index}>
+            <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+            <br/>
+            <div id="playerlabel" style={mystyle}>{this.state.playerlabels[index]}</div>
+          </div>
+        );
     });
     return (
       <div className="col-sm-10 rightpanel">
