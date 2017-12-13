@@ -1,3 +1,4 @@
+import * as env from './env';
 $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
@@ -23,7 +24,7 @@ $(function() {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
-  var socket = require('socket.io-client')('http://localhost:3000');
+  var socket = require('socket.io-client')('http://'+env.HOSTNAME+':'+env.PORT);
 
   function addParticipantsMessage (data) {
     var message = '';

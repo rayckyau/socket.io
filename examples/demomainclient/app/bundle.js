@@ -121268,6 +121268,12 @@ $(function () {
 },{"./env":766,"./gameselect":767,"./minigameone":770,"fs":106,"https":265,"react":581,"react-dom":380,"react-redux":516,"react-router-dom":533,"react-slick":548,"redux":587,"request-promise":592,"reshake":607,"socket.io-client":620}],769:[function(require,module,exports){
 'use strict';
 
+var _env = require('./env');
+
+var env = _interopRequireWildcard(_env);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 $(function () {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
@@ -121289,7 +121295,7 @@ $(function () {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
-  var socket = require('socket.io-client')('http://localhost:3000');
+  var socket = require('socket.io-client')('http://' + env.HOSTNAME + ':' + env.PORT);
 
   function addParticipantsMessage(data) {
     var message = '';
@@ -121540,7 +121546,7 @@ $(function () {
   });
 });
 
-},{"socket.io-client":620}],770:[function(require,module,exports){
+},{"./env":766,"socket.io-client":620}],770:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
