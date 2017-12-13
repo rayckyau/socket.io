@@ -15,4 +15,4 @@ server.listen(3001, function () {
 });
 
 // Routing
-app.use(express.static(__dirname + '/app'));
+app.use("/demo", express.static(__dirname + '/app'));
