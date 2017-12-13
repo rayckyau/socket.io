@@ -24,7 +24,7 @@ import * as Redux from 'redux';
 import * as minigameone from './minigameone';
 
 let HOSTNAME = 'localhost';
-let PORT = 3000;
+let PORT = 3001;
 
 
 
