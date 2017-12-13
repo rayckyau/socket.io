@@ -19,8 +19,8 @@
   },
   "scripts": {
     "build": "gulp build",
-    "start": "export NODE_ENV=development && gulp build && node index",
-    "startprod": "export NODE_ENV=production && gulp build && node index"
+    "start": "export NODE_ENV=development && gulp build && pm2 start devecosystem.config.js",
+    "startprod": "export NODE_ENV=production && gulp build && pm2 start prodecosystem.config.js"
   },
   "babel": {
     "presets": [
