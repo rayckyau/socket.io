@@ -120066,6 +120066,14 @@ module.exports = yeast;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var PORT = exports.PORT = 3000;
+
+},{}],767:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -120286,7 +120294,7 @@ var GameSelection = function (_React$Component2) {
   return GameSelection;
 }(React.Component);
 
-},{}],767:[function(require,module,exports){
+},{}],768:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -120323,6 +120331,10 @@ var _redux = require('redux');
 
 var Redux = _interopRequireWildcard(_redux);
 
+var _env = require('./env');
+
+var env = _interopRequireWildcard(_env);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -120339,7 +120351,7 @@ var https = require('https');
 
 
 var HOSTNAME = 'localhost';
-var PORT = 3000;
+var PORT = env.PORT;
 
 var LobbyScreen = function (_React$Component) {
   _inherits(LobbyScreen, _React$Component);
@@ -121252,7 +121264,7 @@ $(function () {
   getRoomCode();
 });
 
-},{"./gameselect":766,"./minigameone":769,"fs":106,"https":265,"react":581,"react-dom":380,"react-redux":516,"react-router-dom":533,"react-slick":548,"redux":587,"request-promise":592,"reshake":607,"socket.io-client":620}],768:[function(require,module,exports){
+},{"./env":766,"./gameselect":767,"./minigameone":770,"fs":106,"https":265,"react":581,"react-dom":380,"react-redux":516,"react-router-dom":533,"react-slick":548,"redux":587,"request-promise":592,"reshake":607,"socket.io-client":620}],769:[function(require,module,exports){
 'use strict';
 
 $(function () {
@@ -121527,7 +121539,7 @@ $(function () {
   });
 });
 
-},{"socket.io-client":620}],769:[function(require,module,exports){
+},{"socket.io-client":620}],770:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -122632,5 +122644,5 @@ function setupGame() {
   }
 }
 
-},{"react":581,"react-countup":379,"react-dom":380,"react-redux":516,"react-router-dom":533,"redux":587}]},{},[768,767,766,769])
+},{"react":581,"react-countup":379,"react-dom":380,"react-redux":516,"react-router-dom":533,"redux":587}]},{},[769,768,767,770])
 //# sourceMappingURL=.bundle.js.map

@@ -22,9 +22,10 @@ import {GameSelectScreen} from './gameselect';
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as minigameone from './minigameone';
+import * as env from './env';
 
 let HOSTNAME = 'localhost';
-let PORT = 3001;
+let PORT = env.PORT;
 
 
 
