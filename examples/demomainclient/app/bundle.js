@@ -120061,12 +120061,13 @@ yeast.decode = decode;
 module.exports = yeast;
 
 },{}],766:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var PORT = exports.PORT = 3000;
+var HOSTNAME = exports.HOSTNAME = 'localhost';
 
 },{}],767:[function(require,module,exports){
 "use strict";
@@ -120350,7 +120351,7 @@ var fs = require('fs');
 var https = require('https');
 
 
-var HOSTNAME = 'localhost';
+var HOSTNAME = env.HOSTNAME;
 var PORT = env.PORT;
 
 var LobbyScreen = function (_React$Component) {
