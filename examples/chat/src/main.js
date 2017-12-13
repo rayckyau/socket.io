@@ -175,7 +175,7 @@ import * as env from './env';
                  else {
                    drawsocket.emit('add user', username);
                  }
-                 navi.changePlayerState("draw", "draw random stuff in lobby");
+                 navi.changePlayerState("draw", "Try drawing in the Lobby!");
 
                }
              }

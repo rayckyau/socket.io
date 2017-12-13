@@ -276,7 +276,7 @@ function changeToAdmin(msg, vote="") {
     type: "ADMIN",
     admin: true,
     vote: vote,
-    message: msg,
+    message: 'You are now game admin! Wait for others to join and press OK',
   };
 }
 function changeMainclientState(state) {
