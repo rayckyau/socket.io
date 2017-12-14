@@ -358,44 +358,42 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
 .login.page {
 
+  .form {
+    height: 100px;
+    margin-top: -100px;
+    position: absolute;
+
+    text-align: center;
+    top: 50%;
+    width: 100%;
+
+    .usernameInput {
+      background-color: transparent;
+      border: none;
+      border-bottom: 2px solid #fff;
+      outline: none;
+      padding-bottom: 15px;
+      text-align: center;
+      width: 400px;
+    }
+  }
+
+  .title {
+    color: black;
+    font-family: 'Patrick Hand', sans-serif;
+    font-size: 60px;
+    font-weight: 100;
+  }
+
+  .usernameInput {
+    color: #fff;
+    font-weight: 100;
+    font-size: 200%;
+    letter-spacing: 3px;
+  }
+
 }
 
-.login.page .form {
-  height: 100px;
-  margin-top: -100px;
-  position: absolute;
-
-  text-align: center;
-  top: 50%;
-  width: 100%;
-}
-
-.login.page .form .usernameInput {
-  background-color: transparent;
-  border: none;
-  border-bottom: 2px solid #fff;
-  outline: none;
-  padding-bottom: 15px;
-  text-align: center;
-  width: 400px;
-}
-
-.login.page .title {
-  color: black;
-  font-family: 'Patrick Hand', sans-serif;
-  font-size: 60px;
-  font-weight: 100;
-}
-
-.login.page .usernameInput {
-  font-size: 200%;
-  letter-spacing: 3px;
-}
-
-.login.page .usernameInput {
-  color: #fff;
-  font-weight: 100;
-}
 
 /* Chat page */
 
@@ -426,6 +424,25 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   display: flex;
   justify-content: space-between;
   padding-bottom: 0px;
+
+  .title{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    color: black;
+    font-family: 'Patrick Hand', sans-serif;
+    font-size: 50px;
+  }
+
+  #happydrawtitle{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: black;
+    font-family: 'Patrick Hand', sans-serif;
+    font-size: 74px;
+  }
 }
 
 .roomcodeArea{
@@ -438,32 +455,13 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   color: black;
   font-family: 'Patrick Hand', sans-serif;
   font-size: 20px;
-}
 
-.roomcodeArea #roomcode{
-  text-align: center;
-  color: black;
-  font-family: 'Patrick Hand', sans-serif;
-  font-size: 42px;
-}
-
-.chatArea .title{
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  color: black;
-  font-family: 'Patrick Hand', sans-serif;
-  font-size: 50px;
-}
-
-.chatArea #happydrawtitle{
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  color: black;
-  font-family: 'Patrick Hand', sans-serif;
-  font-size: 74px;
+  #roomcode{
+    text-align: center;
+    color: black;
+    font-family: 'Patrick Hand', sans-serif;
+    font-size: 42px;
+  }
 }
 
 .messages {
