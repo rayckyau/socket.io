@@ -36,22 +36,6 @@ $(function() {
     log(message);
   }
 
-  // Sets the client's username
-  function setUsername () {
-    username = cleanInput($usernameInput.val().trim());
-
-    // If the username is valid
-    if (username) {
-      $loginPage.fadeOut();
-      $chatPage.show();
-      $loginPage.off('click');
-      $currentInput = $inputMessage.focus();
-
-      // Tell the server your username
-      socket.emit('add user', username);
-    }
-  }
-
   // Sends a chat message
   function sendMessage () {
     var message = $inputMessage.val();
@@ -188,25 +172,6 @@ $(function() {
     var index = Math.abs(hash % COLORS.length);
     return COLORS[index];
   }
-
-  // Keyboard events
-
-  $window.keydown(function (event) {
-    // Auto-focus the current input when a key is typed
-    if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-      $currentInput.focus();
-    }
-    // When the client hits ENTER on their keyboard
-    if (event.which === 13) {
-      if (username) {
-        sendMessage();
-        socket.emit('stop typing');
-        typing = false;
-      } else {
-        setUsername();
-      }
-    }
-  });
 
   $inputMessage.on('input', function() {
     updateTyping();

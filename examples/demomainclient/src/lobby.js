@@ -27,7 +27,18 @@ import * as env from './env';
 let HOSTNAME = env.HOSTNAME;
 let PORT = env.PORT;
 
-
+class StartButton extends React.Component {
+  handleClick(){
+    $.getroomcode();
+  }
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>START!</button>
+      </div>
+    );
+  }
+}
 
 class LobbyScreen extends React.Component {
   constructor(props) {
@@ -238,6 +249,10 @@ ReactDOM.render(
     </ReactRedux.Provider>,  document.getElementById('mainframe'));
 
 ReactDOM.render(
+    <StartButton />
+,  document.getElementById('startButton'));
+
+ReactDOM.render(
     <div className="title">HappyDraw</div>
 ,  document.getElementById('happydrawtitle'));
 
@@ -286,6 +301,10 @@ $(function() {
   var socket;
 
   //helper gamestate functions
+  $.getroomcode = function(){
+    getRoomCode();
+  }
+
   $.changeGameState = function(gamename){
     console.log("try to change game:" + gamename);
     storeMainGame.dispatch(startGame(gamename));
@@ -883,7 +902,7 @@ $(function() {
     return COLORS[index];
   }
 
-  getRoomCode();
+  //getRoomCode();
 
 
 });
