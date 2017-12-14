@@ -489,7 +489,7 @@ class Timer extends React.Component {
     let mystate = storeTimer.getState();
     return (
       <div className="Timer">
-      {Math.max(0,(parseInt((this.checkStop(roundedTime)-1)) || 0))}
+      <div className="timerbar">{Math.max(0,(parseInt((this.checkStop(roundedTime)-1)) || 0))}</div>
         <div className="debug">
           <button onClick={() => storeTimer.dispatch(startTimer(3))}>start</button>
           <button onClick={() => storeTimer.dispatch(stopTimer())}>stop</button>
@@ -762,7 +762,7 @@ export const storeGame = Redux.createStore(minigameonereducer);
 function WordList(props) {
   let wordsInWordList = props.words;
   const listItems = wordsInWordList.map((word, index) =>
-    <button type="button" key={"word"+index} className="word btn btn-secondary btn-lg" disabled>{word}</button>
+    <div key={"word"+index} className="wordminigameone" disabled>{word}</div>
   );
   return (
       <div className="WordList">{listItems}</div>
