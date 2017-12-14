@@ -814,8 +814,8 @@ export class MiniGameOneLayout extends React.Component {
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
           <div id="cf">
-            <img className="bottom" src={playersave[index][1]} width={"268"} height={"340"}/>
-            <img className="top" src={playersave[index][2]} width={"268"} height={"340"}/>
+            <img className="bottom" src={playersave[index][1]} width={"214"} height={"268"}/>
+            <img className="top" src={playersave[index][2]} width={"214"} height={"268"}/>
           </div>
           <div id="playerlabel" style={mystyle}>{playernames[index]}</div>
         </div>
@@ -951,7 +951,7 @@ export class CanvasLayout extends React.Component {
         }
         return(
           <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-            <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+            <canvas id={"canvas-p"+index} width={"214"} height={"268"}></canvas>
             <br/>
             <div id="playerlabel" style={mystyle}>{this.state.playerlabels[index]}</div>
           </div>

@@ -86,7 +86,7 @@ class LobbyScreen extends React.Component {
   render() {
     const canvasitems = this.state.playerlabels.map((playername, index) =>
         <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-          <canvas id={"canvas-p"+index} width={"268"} height={"340"}></canvas>
+          <canvas id={"canvas-p"+index} width={"214"} height={"268"}></canvas>
           <br/>
           <div id={"playerlabel"+index}>{this.state.playerlabels[index]}</div>
         </div>
@@ -439,8 +439,10 @@ $(function() {
     ctxdrawcanvas.shadowColor = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.strokeStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
-    ctxdrawcanvas.moveTo(fromx, fromy);
-    ctxdrawcanvas.lineTo(tox, toy);
+    let multiplierx = drawcanvas[0].width/268;
+    let multipliery = drawcanvas[0].height/340;
+    ctxdrawcanvas.moveTo(Math.round(multiplierx*fromx), Math.round(multipliery*fromy));
+    ctxdrawcanvas.lineTo(Math.round(multipliery*tox), Math.round(multipliery*toy));
     ctxdrawcanvas.stroke();
   }
 
@@ -449,7 +451,9 @@ $(function() {
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
     ctxdrawcanvas.fillStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
-    ctxdrawcanvas.arc(fromx, fromy, ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
+    let multiplierx = drawcanvas[0].width/268;
+    let multipliery = drawcanvas[0].height/340;
+    ctxdrawcanvas.arc(Math.round(multiplierx*fromx), Math.round(multipliery*fromy), ctxdrawcanvas.lineWidth / 2, 0, Math.PI * 2, !0);
     ctxdrawcanvas.fill();
     ctxdrawcanvas.closePath();
   }
