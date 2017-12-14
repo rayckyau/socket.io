@@ -862,7 +862,7 @@ export class MiniGameOneLayout extends React.Component {
       openNav();
       setTimeout(function () {
         closeNav();
-      }, 30000);
+      }, 40000);
 
       return (
         <CanvasLayout />

@@ -189,7 +189,7 @@ class Rules extends React.Component {
   onGameStart(){
     if (this.props.gamestate == "minigameone"){
       var settings = {
-        autoplaySpeed: 10000,
+        autoplaySpeed: 14000,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true
