@@ -92,8 +92,7 @@ export class GameSelectScreen extends React.Component {
        </div>
        <div className="col-sm-6 gridcenter">
         <div id="aligndescrip">
-          <div id="gamethumbnail">
-          </div>
+          <img id="gamethumbnail" src="ruleslides/illumimposterthumb.png" height="100%" width="100%"></img>
           <div id="gamename">{this.state.gamename}</div>
           <div id="allowedplayers">{this.state.playersallowed}</div>
           <div id="gamedescription">{this.state.gamedescription}</div>
