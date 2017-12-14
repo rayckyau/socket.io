@@ -965,15 +965,14 @@ export class CanvasLayout extends React.Component {
   render() {
 
     const canvasitems = playernames.map((playername, index) => {
-        let mystyle = {position: 'absolute'};
+        let mystyle = {color: 'black'};
         if (this.state.playerreadylabels[index] == true){
-          mystyle = {position: 'absolute', color: 'green'};
+          mystyle = {color: 'green'};
         }
         return(
-          <div className="col-sm-3 text-center" key={"canvas-p"+index}>
-            <canvas id={"canvas-p"+index} width={"214"} height={"268"}></canvas>
-            <br/>
-            <div id="playerlabel" style={mystyle}>{this.state.playerlabels[index]}</div>
+          <div className="col-sm-3 text-center canvasSection" key={"canvas-p"+index}>
+              <canvas id={"canvas-p"+index} width={"214"} height={"268"}></canvas>
+              <div id="playerlabel" style={mystyle}>{this.state.playerlabels[index]}</div>
           </div>
         );
     });
