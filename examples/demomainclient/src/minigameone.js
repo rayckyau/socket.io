@@ -713,10 +713,10 @@ class MiniGameOne extends React.Component {
       return ""
     }
     else if (roundCounter === 1){
-      return "Round 1/2";
+      return "Round 1";
     }
     else if (roundCounter === 2){
-      return "Round 2/2";
+      return "Round 2";
     }
     else {
       return "Round 0"
