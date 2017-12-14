@@ -17,8 +17,7 @@ import rename from 'gulp-rename';
 let envfile = process.env.NODE_ENV == 'production' ? 'prodenv.js' : 'devenv.js';
 
 // Input file.
-var bundler = browserify(['src/main.js',
-                          'src/lobby.js',
+var bundler = browserify(['src/lobby.js',
                           'src/gameselect.js',
                           'src/minigameone.js'], {
     extensions: ['.js', '.jsx'],
