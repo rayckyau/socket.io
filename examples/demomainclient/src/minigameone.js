@@ -20,7 +20,7 @@ const TIMELIMIT_CONT = 5;
 
 const PLACEBUCKETNUM = 2;
 const PLACEPERBUCKET = 4;
-const BUCKETS = 9;
+const BUCKETS = 13;
 
 const placebuckets = [];
 const helperbuckets = [];
@@ -30,143 +30,163 @@ let majorityVote = -1;
 
 //modern city
 placebuckets[0] = [
-"Paris",
-"New York City",
-"Toronto",
-"London",
-"California"];
-
+  "Paris",
+  "New York City",
+  "Toronto",
+  "London",
+  "California"
+];
 helperbuckets[0] = [
 "modern city",
 "roads",
 "subway"
 ];
-
-//exotic place
 placebuckets[1] = [
-"Iraq",
-"Mongolia",
-"Afghanistan",
-"Egypt",
-"Australia"];
-
+  "Iraq",
+  "Mongolia",
+  "Afghanistan",
+  "Egypt",
+  "Australia"
+];
 helperbuckets[1] = [
 "an exotic place",
 "a desert"
 ];
-
-//mountainous
 placebuckets[2] = [
-"Machu Picchu",
-"Mount Everest",
-"Middle Earth",
-"Hawaii",
-"Las Vegas"
-]
-
+  "Volcano",
+  "Mount Everest",
+  "Grand Canyon",
+  "Hawaii",
+  "Las Vegas"
+];
 helperbuckets[2] = [
 "mountain",
 "rocks"
 ];
-
-//water based
 placebuckets[3] = [
-"Beach",
-"Aquarium",
-"Deserted Island",
-"Atlantis"
-]
-
+  "Beach",
+  "Aquarium",
+  "Deserted Island",
+  "Atlantis"
+];
 helperbuckets[3] = [
 "water",
 "a life vest",
 "an aquatic animal"
 ];
-
-//sitting places
 placebuckets[4] = [
-"The Mall",
-"Conference Room",
-"Soccer Stadium",
-"Coffee Shop"
-]
-
+  "The Mall",
+  "Conference Room",
+  "Soccer Stadium",
+  "Coffee Shop"
+];
 helperbuckets[4] = [
 "a person sitting",
 "two people together"
 ];
-
-//standing
 placebuckets[5] = [
-"Art Gallery",
-"Museum",
-"Medieval Castle",
-"Ancient China",
-"Rome"
-]
-
+  "Art Gallery",
+  "Museum",
+  "Medieval Castle",
+  "Ancient China",
+  "Rome"
+];
 helperbuckets[5] = [
 "a person standing",
 "a picture frame",
 "a photographer"
 ];
-
 placebuckets[6] = [
   "Zombie Apocalypse",
   "Hiking Path",
-  "Race Track"
-]
-
+  "Race Track",
+  "Robber",
+  "Drift"
+];
 helperbuckets[6] = [
 "a person running"
 ];
-
 placebuckets[7] = [
   "Hangar",
   "Space Agency",
   "Mars",
   "Outer Space",
   "Science Center"
-]
-
+];
 helperbuckets[7] = [
 "a rocket"
 ];
-
 placebuckets[8] = [
   "Chemistry Class",
   "Emergency Room",
   "Doctor's Office",
   "Bathroom",
   "Hospital"
-]
-
+];
 helperbuckets[8] = [
 "a faucet",
 "hand sanitizer"
 ];
-
 placebuckets[9] = [
   "Horse Track",
   "Barn",
-  "Zoo"
-]
-
+  "Zoo",
+  "Pony",
+  "Farm Cat"
+];
 helperbuckets[9] = [
 "a horse"
-]
-
+];
 placebuckets[10] = [
   "Jungle",
   "Garden",
   "National Park",
   "Madagascar",
   "Forest"
-]
-
+];
 helperbuckets[10] = [
 "a tree",
 "a butterfly"
+];
+placebuckets[11] = [
+  "Boy Band",
+  "KPop",
+  "Music Video",
+  "Broadway",
+  "Ballet",
+  "Album",
+  "Guitar",
+  "Dj"
+];
+helperbuckets[11] = [
+"music notes",
+"an instrument"
+];
+placebuckets[12] = [
+  "Makeup Room",
+  "Cosmetics",
+  "Cosplay",
+  "Halloween",
+  "Clowns",
+  "Lipstick"
+];
+helperbuckets[12] = [
+"a mirror",
+"a face with makeup"
+];
+placebuckets[13] = [
+  "Kitchen",
+  "Bakery",
+  "Candy store",
+  "Food festival",
+  "Knives",
+  "Forks",
+  "Sugar",
+  "Siracha"
+];
+helperbuckets[13] = [
+"food",
+"a dinner table"
 ];
 
 function contains(a, obj) {
