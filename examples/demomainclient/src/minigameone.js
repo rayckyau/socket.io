@@ -20,7 +20,7 @@ const TIMELIMIT_CONT = 5;
 
 const PLACEBUCKETNUM = 2;
 const PLACEPERBUCKET = 4;
-const BUCKETS = 13;
+const BUCKETS = 15;
 
 const placebuckets = [];
 const helperbuckets = [];
