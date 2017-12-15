@@ -723,6 +723,27 @@ class MiniGameOne extends React.Component {
     if (gamestatelabel == "VOTESPY"){
       return "Imposter Chance"
     }
+    else if (gamestatelabel == "BEGIN"){
+      return "Begin"
+    }
+    else if (gamestatelabel == "END"){
+      return "End"
+    }
+    else if (gamestatelabel == "DRAW"){
+      return "Draw"
+    }
+    else if (gamestatelabel == "VOTE"){
+      return "Vote"
+    }
+    else if (gamestatelabel == "DISCUSS"){
+      return "Discuss"
+    }
+    else if (gamestatelabel == "GAMERECAP"){
+      return "Recap"
+    }
+    else if (gamestatelabel == "VOTERECAP"){
+      return "Recap"
+    }
     else {
       return gamestatelabel;
     }
