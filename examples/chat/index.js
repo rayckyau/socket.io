@@ -8,6 +8,7 @@ const fs = require('fs');
 var serverport = process.env.SERVERPORT || 3000;
 var roomList = new ArrayList();
 var namespaces = {};
+var playercount = {};
 var expiryDate = new Date(Date.now() + 60 * 60 * 1000 * 10); //10 hour
 let roommainclientdict = {};
 var helmet = require('helmet');
@@ -231,26 +232,27 @@ function initRoomNS(roomCode){
       if (username == 'mainclient'){
         console.log('mainclient joined with id: '+ socket.id);
         namespaces[roomCode] = socket.id;
+        playercount[roomCode] = 0;
         socket.handshake.session.username = username;
         socket.handshake.session.save();
         //register roomcode with socketid, tuple pair for redis/db
       }
       // we store the username in the socket session for this client
       socket.username = username;
-      ++numUsers;
+      playercount[roomCode]++;
       let socketid = socket.id;
       socket.emit('login', {
-        numUsers: numUsers,
+        numUsers: playercount[roomCode],
         id: socketid
       });
       socket.emit('user joined', {
         username: socket.username,
-        numUsers: numUsers,
+        numUsers: playercount[roomCode],
         id: socket.id,
       });
       socket.broadcast.emit('user joined', {
         username: socket.username,
-        numUsers: numUsers,
+        numUsers: playercount[roomCode],
         id: socket.id,
       });
     });
@@ -271,10 +273,11 @@ function initRoomNS(roomCode){
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
+        playercount[roomCode]--;
         // echo globally that this client has left
         socket.broadcast.emit('user left', {
           username: socket.handshake.session.username,
-          numUsers: numUsers,
+          numUsers: playercount[roomCode],
           id: socket.id
         });
         console.log("user left: " + socket.handshake.session.username);
@@ -298,7 +301,7 @@ function initRoomNS(roomCode){
         console.log('user: ' + socket.handshake.session.username);
         console.log('room: ' + socket.handshake.session.room);
         //find all session and replace the socketid
-
+        playercount[roomCode]++;
         let mainclient = namespaces[data.room];
         //say user reconnected
         socket.to(mainclient).emit('user reconnect', {
@@ -339,16 +342,21 @@ app.get('/checkRoom/:room', function (req, res) {
    let isRoomExists = queryRoomCode(req.params.room);
    console.log('Room check: ' + req.params.room + isRoomExists);
    if (isRoomExists){
-     if (req.session.views){
-       req.session.views++;
-       req.session.room = req.params.room;
-       req.session.username = req.query.username;
+     if (playercount[req.params.room] < 9){
+       if (req.session.views){
+         req.session.views++;
+         req.session.room = req.params.room;
+         req.session.username = req.query.username;
+       }
+       else{
+         //TODO: delete created session
+         console.log("room doesn't exist, don't make session");
+       }
+       res.send(isRoomExists);
      }
-     else{
-       //TODO: delete created session
-       console.log("room doesn't exist, don't make session");
+     else {
+       console.log("room is full, don't make session");
      }
-     res.send(isRoomExists);
    }
    else {
      res.send(isRoomExists);
