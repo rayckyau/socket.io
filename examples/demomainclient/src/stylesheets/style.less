@@ -358,41 +358,56 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
 .login.page {
 
-  .form {
-    height: 100px;
-    margin-top: -100px;
-    position: absolute;
-
-    text-align: center;
-    top: 50%;
-    width: 100%;
-
-    .usernameInput {
-      background-color: transparent;
-      border: none;
-      border-bottom: 2px solid #fff;
-      outline: none;
-      padding-bottom: 15px;
+    .form {
+      height: 100px;
+      margin-top: -100px;
+      position: absolute;
       text-align: center;
-      width: 400px;
+      top: 50%;
+      width: 100%;
     }
-  }
 
-  .title {
-    color: black;
-    font-family: 'Patrick Hand', sans-serif;
-    font-size: 60px;
-    font-weight: 100;
-  }
+    .title {
+      color: black;
+      font-family: 'Patrick Hand', sans-serif;
+      font-size: 60px;
+      font-weight: 100;
+    }
 
-  .usernameInput {
-    color: #fff;
-    font-weight: 100;
-    font-size: 200%;
-    letter-spacing: 3px;
-  }
+    #intro{
+      margin: 10px;
+    }
 
-}
+    a{
+      font-size: 25px;
+      color: #FFF;
+    	text-decoration: none;
+    }
+
+    #startButton{
+      border-radius: 8px;
+      padding: 10px 20px;
+      margin: 10px;
+      position: relative;
+      display: inline-block;
+      background-color: #55acee;
+      transition: all 0.1s;
+	    -webkit-transition: all 0.1s;
+	    border-bottom: 5px solid #2980B9;
+	    text-shadow: 0px -2px #6FC6FF;
+    }
+
+    #startButton:active {
+      transform: translate(0px, 5px);
+      -webkit-transform: translate(0px, 5px);
+      border-bottom: 1px solid;
+    }
+
+    #startButton:focus {
+      outline: none;
+    }
+
+  }
 
 
 /* Chat page */
