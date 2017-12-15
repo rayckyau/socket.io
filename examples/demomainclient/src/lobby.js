@@ -269,7 +269,7 @@ $(function() {
     '#005960', '#e15d44', '#b565a7', '#000',
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
-
+  var MAXPLAYERCOUNT = 8;
   // Initialize variables
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
@@ -289,6 +289,7 @@ $(function() {
   let clients = {};
   let cursors = {};
   let clientdict = {};
+  let playerslot = [false, false, false, false, false, false, false, false, false ,false];
   let votes = [0,0,0,0,0,0,0,0,0,0,0,0];
   let isReady = [false, false, false, false, false, false, false, false, false ,false];
   let voteData = ['','','','','','','','','','','',''];
@@ -615,7 +616,19 @@ $(function() {
       console.log('user joined: '+username);
       if (data.username != 'mainclient'){
         let canvasnum = Object.keys(clientdict).length;
+        //if player count is max, check for anyone who left and replace
+        //loop through playerslot then replace
+        if (playercount == MAXPLAYERCOUNT){
+          for (let i=0;i<MAXPLAYERCOUNT;i++){
+            if (playerslot[i] == false){
+              canvasnum = i;
+              playercount--;
+            }
+          }
+        }
+        //update playerslot
         playercount++;
+        playerslot[canvasnum] = true;
         const playerobj = {};
         playerobj["username"] = username;
         playerobj["isadmin"] = false;
@@ -628,6 +641,7 @@ $(function() {
         //update playernum to id map
         playernumToUser[canvasnum] = username;
         playerUserToNum[username] = canvasnum;
+
         socket.emit('update username',{
           username: username,
           client: data.id
@@ -663,6 +677,7 @@ $(function() {
       let canvasnum = playerUserToNum[data.username];
       delete playerUserToNum[data.username];
       playernumToUser[canvasnum] = data.username + " left";
+      playerslot[canvasnum] = false;
     });
 
     // Whenever the server emits 'typing', show the typing message
