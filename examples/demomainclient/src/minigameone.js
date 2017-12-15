@@ -68,7 +68,9 @@ placebuckets[3] = [
   "Beach",
   "Aquarium",
   "Deserted Island",
-  "Atlantis"
+  "Atlantis",
+  "Lighthouse",
+  "Pacific Ocean"
 ];
 helperbuckets[3] = [
 "water",
@@ -79,7 +81,9 @@ placebuckets[4] = [
   "The Mall",
   "Conference Room",
   "Soccer Stadium",
-  "Coffee Shop"
+  "Coffee Shop",
+  "Hot Date",
+  "Nail Salon"
 ];
 helperbuckets[4] = [
 "a person sitting",
@@ -178,8 +182,8 @@ helperbuckets[12] = [
 placebuckets[13] = [
   "Kitchen",
   "Bakery",
-  "Candy store",
-  "Food festival",
+  "Candy Store",
+  "Food Festival",
   "Knives",
   "Forks",
   "Sugar",
