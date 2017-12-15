@@ -46,7 +46,8 @@ placebuckets[1] = [
   "Mongolia",
   "Afghanistan",
   "Egypt",
-  "Australia"
+  "Australia",
+  "Alaska"
 ];
 helperbuckets[1] = [
 "an exotic place",
@@ -187,6 +188,30 @@ placebuckets[13] = [
 helperbuckets[13] = [
 "food",
 "a dinner table"
+];
+placebuckets[14] = [
+  "Palm Tree",
+  "Fire Ant",
+  "Cactus",
+  "Vietnam",
+  "Equator"
+];
+helperbuckets[14] = [
+"a rainforest",
+"a tropical place"
+];
+placebuckets[15] = [
+  "Bat",
+  "Vampire",
+  "Werewolf",
+  "Castle",
+  "Holy Water",
+  "Crossbow",
+  "Gargoyle"
+];
+helperbuckets[15] = [
+"a cross",
+"a scary animal"
 ];
 
 function contains(a, obj) {
