@@ -516,7 +516,7 @@ class Timer extends React.Component {
           $.clearAllCanvas();
           storeTimer.dispatch(resetTimer(99));
           storeGame.dispatch(startGameRecap());
-          $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game.');
+          $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game. Press OK to keep playing!');
           $.callstatechangeprivate("vote", "Keep playing?", socketLiar , "Keep playing,Back To Lobby")
       }
       else{
