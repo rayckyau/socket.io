@@ -18,8 +18,8 @@ const TIMELIMIT_BEGIN = 20;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
 
-const BUCKETS = 15;
-const REPEATLIMIT = 5;
+const BUCKETS = 16;
+const REPEATLIMIT = 10;
 
 const placebuckets = [];
 const helperbuckets = [];
