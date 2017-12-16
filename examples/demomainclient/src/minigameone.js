@@ -18,14 +18,11 @@ const TIMELIMIT_BEGIN = 20;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;
 
-const PLACEBUCKETNUM = 2;
-const PLACEPERBUCKET = 4;
 const BUCKETS = 15;
 const REPEATLIMIT = 5;
 
 const placebuckets = [];
 const helperbuckets = [];
-const whichbuckets = [];
 
 let fullbucketlist = [];
 let usedbucketlist = [];
