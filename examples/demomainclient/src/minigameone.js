@@ -21,10 +21,15 @@ const TIMELIMIT_CONT = 5;
 const PLACEBUCKETNUM = 2;
 const PLACEPERBUCKET = 4;
 const BUCKETS = 15;
+const REPEATLIMIT = 5;
 
 const placebuckets = [];
 const helperbuckets = [];
 const whichbuckets = [];
+
+let fullbucketlist = [];
+let usedbucketlist = [];
+let chosenBucket = 0;
 
 let majorityVote = -1;
 
@@ -260,34 +265,44 @@ function countVotes(arraydata){
   return retArray;
 }
 
-function populatewordarray(){
-  let retarraycount = 0;
-  let bucketcount = 0;
-  let retarray = [];
-  //choose a randombucket not in whichbuckets
-  let counter = 0;
-  let randobucket = 0;
-  whichbuckets.length = 0;
-
-  while (whichbuckets.length != 1){
-    console.log(whichbuckets.length);
-    randobucket = Math.floor(Math.random() * BUCKETS);
-    while (!contains(whichbuckets, randobucket)){
-      for (let i=0;i<PLACEPERBUCKET;i++){
-        let randword = placebuckets[randobucket][Math.floor(Math.random() * placebuckets[randobucket].length)];
-        while (contains(retarray, randword)){
-          randword = placebuckets[randobucket][Math.floor(Math.random() * placebuckets[randobucket].length)];
-        }
-        retarray[retarraycount] = randword;
-        retarraycount = retarraycount+1;
-
-      }
-      whichbuckets[bucketcount] = randobucket;
-      bucketcount++;
-    }
-
+function initWordList(){
+  //fill out buckets
+  for (let i=0;i<BUCKETS;i++){
+    fullbucketlist[i] = i;
   }
-  //returns array of words
+
+  for (let i=0;i<REPEATLIMIT;i++){
+    //choose random bucket and place in usedbucketlist, remove from fulllist
+    let randonum = Math.floor(Math.random() * fullbucketlist.length);
+    usedbucketlist.push(fullbucketlist[randonum]);
+    fullbucketlist.splice(randonum, 1);
+  }
+}
+
+function populatewordarraynew(){
+  let retarray = [];
+  if (usedbucketlist.length == 0){
+    initWordList();
+  }
+
+  //choose random bucket and place in usedbucketlist, remove from fulllist
+  let randonum = Math.floor(Math.random() * fullbucketlist.length);
+  usedbucketlist.push(fullbucketlist[randonum]);
+  fullbucketlist.splice(randonum, 1);
+
+  if (usedbucketlist.length > REPEATLIMIT){
+    fullbucketlist.push(usedbucketlist[0]);
+    usedbucketlist.shift(); //remove from front
+  }
+  chosenBucket = usedbucketlist[0];
+  //select 4 words
+  for (let i=0;i < 4;i++){
+    let randword = placebuckets[usedbucketlist[0]][Math.floor(Math.random() * placebuckets[usedbucketlist[0]].length)];
+    while (contains(retarray, randword)){
+      randword = placebuckets[usedbucketlist[0]][Math.floor(Math.random() * placebuckets[usedbucketlist[0]].length)];
+    }
+    retarray.push(randword);
+  }
   return retarray;
 }
 
@@ -442,7 +457,6 @@ class Timer extends React.Component {
           //call returnDataVote function to get result
           let votedLoc = $.retVoteData()[liarnum];
           winner = "";
-          console.log("voted: " + votedLoc + "secret: "+words[secretPlace])
           //if data is the same as target location spy wins, else spy loses
           if (votedLoc == words[secretPlace]){
             //spy wins
@@ -460,7 +474,6 @@ class Timer extends React.Component {
       else if (mystate.gamestate ==  "VOTERECAP"){
           //call returnMajorityVote function to get result
           let majvote = getMajorityVote();
-          console.log("MAJORITY: "+majvote + playernames[liarnum] + liarnum);
           if (majvote == liarnum){
             $.callstatechangeall('msg', "Waiting for The Imposter...",
               "The Imposter was found! There is still a chance for The Imposter to win if they choose the correct Secret Word.");
@@ -483,7 +496,6 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
         if ($.retlastVote() == "Back To Lobby"){
-          console.log("end of GAMERECAP state choose EXIT");
           storeGame.dispatch(startExit());
         }
         else{
@@ -1090,7 +1102,7 @@ export function handleReconnect(){
 function setupGame(){
   $.resetReadyPlayers();
   console.log("setup the game");
-  words = populatewordarray();
+  words = populatewordarraynew();
   let clientsobj = $.returnAllPlayers();
   let numplayers = Object.keys(clientsobj).length;
   //pick rand number, that num is liar
@@ -1106,7 +1118,7 @@ function setupGame(){
       if (playerobj.playernum == liarnum){
         socketLiar = playerobj.socketid;
         //set liar stuff
-        let firsthint = helperbuckets[whichbuckets[0]][Math.floor(Math.random()*helperbuckets[whichbuckets[0]].length)];
+        let firsthint = helperbuckets[chosenBucket][Math.floor(Math.random()*helperbuckets[chosenBucket].length)];
         let hintstring = "Hint: Try drawing "+firsthint+".";
         $.callstatechangeprivate('msg', 'You are The Imposter!', socketLiar, hintstring);
       }
