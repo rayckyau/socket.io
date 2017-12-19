@@ -131,7 +131,8 @@ class BotNav extends React.Component {
     this.state = {
       clientmode: "",
       buttonLabel: "OK",
-      data: 'payload'
+      data: 'payload',
+      drawtype: 'INK'
     }
   }
 
@@ -139,7 +140,8 @@ class BotNav extends React.Component {
     if (nextProps.mode !== this.state.clientmode){
       this.setState({clientmode: nextProps.mode,
                     buttonLabel: "OK",
-                    data: 'payload'}
+                    data: 'payload',
+                    drawtype: 'INK'}
       );
     }
   }
@@ -161,13 +163,15 @@ class BotNav extends React.Component {
         submitSend('ready');
         this.setState({clientmode: "draw",
                       buttonLabel: "Not Ready",
-                      data: 'payload'}
+                      data: 'payload',
+                      drawtype: 'INK'}
         );
       }else {
         submitSend('notready');
         this.setState({clientmode: "draw",
                       buttonLabel: "OK",
-                      data: 'payload'}
+                      data: 'payload',
+                      drawtype: 'INK'}
         );
       }
     }
@@ -177,10 +181,33 @@ class BotNav extends React.Component {
     }
   }
 
+  clickTypeButton(){
+    if (this.props.mode == "draw"){
+      if (this.state.drawtype == "ERASER"){
+        this.setState({clientmode: this.state.clientmode,
+                      buttonLabel: this.state.buttonLabel,
+                      data: this.state.data,
+                      drawtype: 'INK'
+                      }
+        );
+        $.setDrawType('INK');
+      }else {
+        this.setState({clientmode: this.state.clientmode,
+                      buttonLabel: this.state.buttonLabel,
+                      data: this.state.data,
+                      drawtype: 'ERASER'
+                      }
+        );
+        $.setDrawType('ERASER');
+      }
+    }
+  }
+
   render(){
     return (
         <nav className="navbar navbar-light sticky-bottom bg-faded ">
           <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
+          <button className="mybtn blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
         </nav>
     )
 

@@ -485,6 +485,24 @@ $(function() {
 
   }
 
+  function eraseLine(fromx, fromy, tox, toy, playerid) {
+    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+    const ctxdrawcanvas = drawcanvas[0].getContext('2d');
+    //define drawing settings
+    ctxdrawcanvas.lineWidth = 10;
+    ctxdrawcanvas.lineJoin = 'round';
+    ctxdrawcanvas.lineCap = 'round';
+    ctxdrawcanvas.shadowBlur = 4;
+    ctxdrawcanvas.shadowColor = '#FFFFFF';
+    ctxdrawcanvas.strokeStyle = '#FFFFFF';
+    ctxdrawcanvas.beginPath();
+    let multiplierx = drawcanvas[0].width/268;
+    let multipliery = drawcanvas[0].height/340;
+    ctxdrawcanvas.moveTo(Math.round(multiplierx*fromx), Math.round(multipliery*fromy));
+    ctxdrawcanvas.lineTo(Math.round(multipliery*tox), Math.round(multipliery*toy));
+    ctxdrawcanvas.stroke();
+  }
+
   function drawLine(fromx, fromy, tox, toy, playerid) {
     const drawcanvas = $('#'+clientdict[playerid].canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
@@ -580,7 +598,12 @@ $(function() {
         }
         clientsDrawpoints[data.id].push({x:data.x, y:data.y});
         //drawLineQuad(clientsDrawpoints[data.id], data.id);
-        drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+        if (data.type == 'ERASER'){
+          eraseLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+        }
+        else {
+          drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+        }
       }
       // Saving the current client state
       clients[data.id] = data;

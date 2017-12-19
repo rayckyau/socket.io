@@ -76,6 +76,7 @@ import * as env from './env';
 
     // A flag for drawing activity
     let drawing = false;
+    let type = "INK";
     let points = [];
     let clients = {};
     let cursors = {};
@@ -229,13 +230,22 @@ import * as env from './env';
       drawcanvas.on('mousedown', function(e) {
         e.preventDefault();
         ctx = $('#paper')[0].getContext('2d');
+        drawing = true;
         //define drawing settings
-        ctx.lineWidth = 4;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
-        ctx.shadowBlur = 1;
-        ctx.shadowColor = 'rgb(0, 0, 0)';
-        drawing = true;
+        if (type == 'ERASER'){
+          ctx.lineWidth = 10;
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.shadowBlur = 0;
+          ctx.shadowColor = '#FFFFFF';
+        }
+        else {
+          ctx.lineWidth = 4;
+          ctx.strokeStyle = 'rgb(0, 0, 0)';
+          ctx.shadowBlur = 1;
+          ctx.shadowColor = 'rgb(0, 0, 0)';
+        }
         let offset = drawcanvas[0].getBoundingClientRect();
         prev.x = e.pageX - offset.left;
         prev.y = e.pageY - offset.top;
@@ -247,13 +257,16 @@ import * as env from './env';
           'x': prev.x,
           'y': prev.y,
           'drawing': true,
+          'type': type,
           'id': socketid
         });
       });
 
       drawcanvas.bind('mouseup mouseleave', function(e) {
         drawing = false;
-        drawLineQuad(drawsocket.id);
+        if (type != 'ERASER'){
+          drawLineQuad(drawsocket.id);
+        }
         points.length = 0;
         drawsocket.emit('mouseup', {
           'drawing': false,
@@ -281,6 +294,7 @@ import * as env from './env';
               'x': xcord,
               'y': ycord,
               'drawing': drawing,
+              'type': type,
               'id': socketid
             });
             lastEmit = $.now();
@@ -380,6 +394,10 @@ import * as env from './env';
         'data': payload,
         'id': username
       });
+    };
+
+    $.setDrawType = function(drawtype){
+      type = drawtype;
     };
 
     // Sets the client's username
