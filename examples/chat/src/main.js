@@ -347,6 +347,10 @@ import * as env from './env';
 
     }
 
+    $.resetPage = function(){
+      window.location.href = "http://"+window.location.hostname+":"+env.PORT;
+    }
+
     $.mountCanvas = function(){
       drawcanvas = $('#paper');
       drawcanvas.width = drawcanvas.width;
@@ -505,6 +509,13 @@ import * as env from './env';
 
       drawsocket.on('reconnect_error', function() {
         console.log('attempt to reconnect has failed');
+      });
+
+      drawsocket.on('kicked', function(data) {
+        navi.changePlayerState('msg', 'You have been removed from lobby.');
+        //helper leave game function, go to main page
+        $.resetPage();
+        drawsocket.emit("disconnect");
       });
     }
 });

@@ -312,6 +312,14 @@ function initRoomNS(roomCode){
         socket.emit('changestateall', socket.handshake.session.statedata);
     });
 
+    socket.on('kick user', function (data) {
+        let client = data.client;
+        let mainclient = namespaces[roomCode];
+        console.log('kick: '+ client);
+        socket.to(mainclient).emit('user kick', {username: data.username});
+        socket.to(client).emit('kicked');
+    });
+
 
   }
 

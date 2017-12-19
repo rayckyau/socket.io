@@ -34,7 +34,25 @@ class StartButton extends React.Component {
   render() {
     return (
       <div>
-        <a href={"#"} onClick={this.handleClick}>START!</a>
+        <a href={"#"} onClick={() => {this.handleClick()}}>START!</a>
+      </div>
+    );
+  }
+}
+
+class PlayerLabel extends React.Component {
+  clickUser(){
+    if (this.props.here){
+      console.log("clicked on user: "+this.props.username);
+      //kick player
+      $.kickUser(this.props.username);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+      <a href="#" id={"playerlabel"+this.props.index} onClick={() => {this.clickUser()}}>{this.props.username}</a>
       </div>
     );
   }
@@ -47,7 +65,11 @@ class LobbyScreen extends React.Component {
                                 'Player3 Join', 'Player4 Join',
                                 'Player5 Join', 'Player6 Join',
                                 'Player7 Join', 'Player8 Join'
-                              ]};
+                              ],
+                  playerthere: [false, false, false, false, false,
+                                false, false, false,
+                                ]
+                  };
   }
 
   componentDidMount() {
@@ -65,9 +87,10 @@ class LobbyScreen extends React.Component {
     for (let key in $.getplayernumToUser()){
       if ($.getplayernumToUser().hasOwnProperty(key)){
         this.state.playerlabels[key] = $.getplayernumToUser()[key];
+        this.state.playerthere[key] = $.getPlayerSlot()[key];
       }
     }
-    this.setState({playerlabels: this.state.playerlabels});
+    this.setState({playerlabels: this.state.playerlabels, playerthere: this.state.playerthere});
     console.log("in startgame: "+this.props.gamestate);
     if (this.props.gamestate == 'minigameone'){
       if (this.props.history.location.pathname != '/minigameone'){
@@ -95,11 +118,12 @@ class LobbyScreen extends React.Component {
   }
 
   render() {
+
     const canvasitems = this.state.playerlabels.map((playername, index) =>
         <div className="col-sm-3 text-center" key={"canvas-p"+index}>
           <canvas id={"canvas-p"+index} width={"214"} height={"268"}></canvas>
           <br/>
-          <div id={"playerlabel"+index}>{this.state.playerlabels[index]}</div>
+          <PlayerLabel here={this.state.playerthere[index]} index={index} username={this.state.playerlabels[index]} />
         </div>
 
     );
@@ -316,6 +340,15 @@ $(function() {
   }
 
   //helper socket functions
+  $.kickUser = function(username){
+    console.log("helper function kick");
+    let socketid = usernameToSocketid[username];
+    socket.emit('kick user', {
+      client: socketid,
+      username: username
+    });
+  }
+
   $.sendGameState = function(gamestate){
     socket.emit('changegame',{
       message: 'changing gamestate of mainclient',
@@ -359,7 +392,7 @@ $(function() {
     let canvasarray = [];
     $.each( $('canvas'), function(index, canvas){
       canvasarray[index] = canvas;
-    })
+    });
     return canvasarray;
   };
 
@@ -374,6 +407,10 @@ $(function() {
   //return all players
   $.returnAllPlayers = function() {
     return clientdict;
+  };
+
+  $.getPlayerSlot = function(){
+    return playerslot;
   };
 
   //get sendbutton counter for num of palyers rdy
@@ -680,6 +717,14 @@ $(function() {
       playerslot[canvasnum] = false;
     });
 
+    socket.on('user kick', function (data) {
+      log(data.username + ' kicked');
+      let canvasnum = playerUserToNum[data.username];
+      delete playerUserToNum[data.username];
+      playernumToUser[canvasnum] = data.username + " kicked";
+      playerslot[canvasnum] = false;
+    });
+
     // Whenever the server emits 'typing', show the typing message
     socket.on('typing', function (data) {
       addChatTyping(data);
@@ -716,6 +761,7 @@ $(function() {
       //update playernum to id map
       playernumToUser[recoveredplayerObj.playernum] = data.username;
       playerUserToNum[data.username] = recoveredplayerObj.playernum;
+      playerslot[recoveredplayerObj.playernum] = true;
       //make admin
       if (clientdict[data.id].isadmin){
         //make admin

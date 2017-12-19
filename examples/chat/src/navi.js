@@ -114,6 +114,7 @@ function submitVote(payload){
   $.voteSend(payload);
 }
 
+
 function mountCanvas(){
   console.log("mount canvas");
   $.mountCanvas();
