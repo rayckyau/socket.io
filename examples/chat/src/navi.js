@@ -204,12 +204,21 @@ class BotNav extends React.Component {
   }
 
   render(){
-    return (
+    if (this.state.clientmode == "draw"){
+      return (
+          <nav className="navbar navbar-light sticky-bottom bg-faded ">
+            <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
+            <button className="mybtn blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
+          </nav>
+      );
+    }
+    else {
+      return (
         <nav className="navbar navbar-light sticky-bottom bg-faded ">
           <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
-          <button className="mybtn blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
         </nav>
-    )
+      );
+    }
 
   }
 }
