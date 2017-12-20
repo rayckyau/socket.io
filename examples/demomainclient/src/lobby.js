@@ -411,6 +411,10 @@ $(function() {
     return playerslot;
   };
 
+  $.getPlayerCount = function(){
+    return playercount;
+  };
+
   //get sendbutton counter for num of palyers rdy
   $.isReadyPlayers = function(){
     for (let i=0;i<playercount;i++){
@@ -735,6 +739,7 @@ $(function() {
       delete playerUserToNum[data.username];
       playernumToUser[canvasnum] = data.username + " left";
       playerslot[canvasnum] = false;
+      playercount--;
     });
 
     socket.on('user kick', function (data) {
