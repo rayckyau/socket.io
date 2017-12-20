@@ -1,11 +1,13 @@
 import * as env from './env';
 
-let ENVIRONMENT = env.ENVIRONMENT;
+const ENVIRONMENT = env.ENVIRONMENT;
+const GAMELISTSTRING = "Illuminati Imposter,Assembly Line,Lobby";
 //GAME SELECT SCREEN
 export class GameSelectScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {gamename: "gamename", gamedescription: "description", playersallowed: "Players:", adminnum: 0, selection: "lobby"};
+    this.state = {gamename: "gamename", gamedescription: "description",
+    playersallowed: "Players:", adminnum: 0, selection: "lobby", adminsocketid: null};
   }
 
   componentDidMount() {
@@ -16,9 +18,12 @@ export class GameSelectScreen extends React.Component {
       if (clientsobj.hasOwnProperty(key)){
         let playerobj = clientsobj[key];
         if (playerobj.isadmin == true){
-          //set adminnum
-          this.state.adminnum = playerobj.playernum;
-          $.callstatechangeprivate('vote', "Choose the game to play!", playerobj.socketid, "Illuminati Imposter,Assembly Line,Lobby");
+          //set adminnum/socketid
+          this.setState({gamename: "gamename", gamedescription: "description",
+          playersallowed: "Players:", adminnum: playerobj.playernum,
+          selection: "lobby", adminsocketid: playerobj.socketid});
+          $.callstatechangeprivate('vote', "Choose the game to play!",
+            playerobj.socketid, GAMELISTSTRING);
         }
         //if no admin found then go back to lobby
       }
@@ -44,7 +49,9 @@ export class GameSelectScreen extends React.Component {
         'Imposter is found out, they will have a final chance to win by '+
         'correctly choosing the secret word!';
         let players = 'Players: 4-8';
-        this.setState({gamename: "Illuminati Imposter", gamedescription: descrip, playersallowed: players, adminnum: this.state.adminnum, selection: "Illuminati Imposter"});
+        this.setState({gamename: "Illuminati Imposter", gamedescription: descrip,
+        playersallowed: players, adminnum: this.state.adminnum,
+        selection: "Illuminati Imposter", adminsocketid: this.state.adminsocketid});
       }
       else if ($.retlastVote() == 'Assembly Line'){
         let descrip = 'You belong to a team of ' +
@@ -54,10 +61,14 @@ export class GameSelectScreen extends React.Component {
         'robot manager will have to guess the correct word being drawn. The ' +
         'more points the better!';
         let players = 'Players: 2-10';
-        this.setState({gamename: "Assembly Line", gamedescription: descrip, playersallowed: players, adminnum: this.state.adminnum, selection: "Assembly Line"});
+        this.setState({gamename: "Assembly Line", gamedescription: descrip,
+        playersallowed: players, adminnum: this.state.adminnum,
+        selection: "Assembly Line", adminsocketid: this.state.adminsocketid});
       }
       else{
-        this.setState({gamename: "", gamedescription: "Back To Lobby", playersallowed: "", adminnum: this.state.adminnum, selection: "lobby"});
+        this.setState({gamename: "", gamedescription: "Back To Lobby",
+        playersallowed: "", adminnum: this.state.adminnum,
+        selection: "lobby", adminsocketid: this.state.adminsocketid});
       }
     }
   }
@@ -74,7 +85,9 @@ export class GameSelectScreen extends React.Component {
             this.props.history.push('/');
           }
           else {
-            $.callstatechangeprivate('vote', "Not enough players!", playerobj.socketid, "Illuminati Imposter,Assembly Line,Lobby");
+            $.callstatechangeprivate('vote', "Not enough players! Choose again!",
+              this.state.adminsocketid, GAMELISTSTRING);
+            $.resetReadyPlayers();
           }
         }
         else {

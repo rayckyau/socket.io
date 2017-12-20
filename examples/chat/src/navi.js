@@ -51,6 +51,9 @@ class Vote extends React.Component {
       items: voteOptions,
       yourPick: voteOptions[0] || ''
     }
+  }
+
+  componentDidMount() {
     this.handleClick(voteOptions[0]);
   }
 
@@ -279,7 +282,7 @@ function changeModeDraw(msg) {
   return {
     type: "DRAW",
     mode: 'draw',
-    message: msg,
+    message: msg
   };
 }
 function changeModeVote(msg) {
@@ -287,7 +290,7 @@ function changeModeVote(msg) {
     type: "VOTE",
     mode: 'vote',
     vote: '',
-    message: msg,
+    message: msg
   };
 }
 //if msg is null then do not change state
@@ -296,7 +299,7 @@ function changeModeMsg(msg, mainmsg="") {
     type: "MESSAGE",
     mode: 'msg',
     message: msg,
-    mainmsg: mainmsg,
+    mainmsg: mainmsg
   };
 }
 function setVote(vote) {
@@ -304,8 +307,7 @@ function setVote(vote) {
   return {
     type: "VOTE",
     mode: 'vote',
-    vote: vote,
-    message: '',
+    vote: vote
   };
 }
 function changeToAdmin(msg, vote="") {
@@ -313,7 +315,7 @@ function changeToAdmin(msg, vote="") {
     type: "ADMIN",
     admin: true,
     vote: vote,
-    message: 'You are now game admin! Wait for others to join and press OK',
+    message: 'You are now game admin! Wait for others to join and press OK'
   };
 }
 function changeMainclientState(state) {
@@ -447,9 +449,9 @@ export function changePlayerState(mystate, msg, payload = ""){
     //reset voteOptions
     voteOptions.length = 0;
     //take payload and add to votes array
-    let players = payload.split(",");
-    for (let i=0;i<players.length;i++){
-      voteOptions[i] = players[i];
+    let options = payload.split(",");
+    for (let i=0;i<options.length;i++){
+      voteOptions[i] = options[i];
     }
     storePlayer.dispatch(changeModeVote(msg));
   }
