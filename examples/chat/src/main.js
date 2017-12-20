@@ -97,11 +97,28 @@ import * as env from './env';
       document.addEventListener('touchmove', touchmoveHandler, { passive: false });
     } catch(err) {}
 
+    if (window.location.hash){
+      autoRoomCodeFromUrl();
+    }
     //check session
     //check session only if cookie is detected
     checkSession();
     //init canvas bindings
     setupDrawCanvasListeners();
+
+    function autoRoomCodeFromUrl(){
+      // substr(1) to remove the `#`
+      var hashParams = window.location.hash.substr(1).split('&', 2);
+      for(var i = 0; i < hashParams.length; i++){
+          var p = hashParams[i].split('=');
+          if (p[0] == "roomcodeInput"){
+            document.getElementById("roomcodeInput").value = decodeURIComponent(p[1]);
+          }
+          else {
+            console.log("Bad share hash detected.");
+          }
+      }
+    }
 
     function checkSession(){
       let rp = require('request-promise');
