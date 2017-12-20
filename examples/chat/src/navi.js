@@ -159,7 +159,7 @@ class BotNav extends React.Component {
 
     if (this.props.mode == "vote"){
       submitSend('ready');
-      storePlayer.dispatch(changeModeMsg(null, 'Voting completed!'));
+      storePlayer.dispatch(changeModeMsg(null, 'Selection chosen!'));
     }
     else if (this.props.mode == "draw"){
       if (this.state.buttonLabel == "OK"){
