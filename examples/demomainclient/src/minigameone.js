@@ -888,7 +888,7 @@ export class MiniGameOneLayout extends React.Component {
       if (this.state.playerreadylabels[index] == true){
         mystyle = {position: 'absolute', color: 'green'};
       }else{
-        mystyle = {position: 'absolute'};
+        mystyle = {position: 'absolute', color: 'black'};
       }
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
@@ -904,8 +904,8 @@ export class MiniGameOneLayout extends React.Component {
 
     if (gamestate == 'GAMERECAP'){
       return (
-        <div className="col-sm-10">
-          <div>
+        <div className="col-sm-10 rightpanel">
+          <div className="container">
           <div className="row justify-content-md-center">
             {canvasitems}
           </div>
@@ -931,9 +931,11 @@ export class MiniGameOneLayout extends React.Component {
       );
       return (
         <div className="col-sm-10">
+        <div className="container">
           <div className="row">
             {listItems}
           </div>
+        </div>
         </div>
       )
     }
@@ -1037,7 +1039,7 @@ export class CanvasLayout extends React.Component {
     });
     return (
       <div className="col-sm-10 rightpanel">
-        <div>
+        <div className="container">
         <div className="row justify-content-md-center">
           {canvasitems}
           </div>
