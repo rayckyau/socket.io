@@ -80,7 +80,8 @@ export class GameSelectScreen extends React.Component {
       //go to voted game
       if ($.retlastVote() == "Illuminati Imposter"){
         if (ENVIRONMENT == "production"){
-          if (($.returnAllPlayers().length >= 4) && ($.returnAllPlayers().length <= 8)){
+          let pcount = Object.keys($.returnAllPlayers()).length;
+          if ((pcount >= 4) && (pcount <= 8)){
             $.changeGameState($.retlastVote());
             this.props.history.push('/');
           }
