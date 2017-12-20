@@ -331,7 +331,6 @@ $(function() {
   }
 
   $.changeGameState = function(gamename){
-    console.log("try to change game:" + gamename);
     storeMainGame.dispatch(startGame(gamename));
   }
 
@@ -341,7 +340,6 @@ $(function() {
 
   //helper socket functions
   $.kickUser = function(username){
-    console.log("helper function kick");
     let socketid = usernameToSocketid[username];
     socket.emit('kick user', {
       client: socketid,
@@ -560,7 +558,7 @@ $(function() {
      //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
      //https.globalAgent.options.rejectUnauthorized = false;
      socket = require('socket.io-client')('http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
-     console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
+     //console.log('try: %s', 'http://' + HOSTNAME + ':'+ PORT +'/'+roomCode);
      defineSocket();
      log('Room Code: '+roomCode, {
        prepend: true
@@ -673,7 +671,6 @@ $(function() {
     socket.on('user joined', function (data) {
       //TODO: add a player canvas
       let username = $.sanityReturnUsername(data.username);
-      console.log('user joined: '+username);
       if (data.username != 'mainclient'){
         let canvasnum = Object.keys(clientdict).length;
         //if player count is max, check for anyone who left and replace
@@ -812,7 +809,7 @@ $(function() {
 
   function getRoomCode(){
     var rp = require('request-promise');
-    console.log('request to : '+'http://' + HOSTNAME + ':'+ PORT +'/createRoom')
+    //console.log('request to : '+'http://' + HOSTNAME + ':'+ PORT +'/createRoom')
     var options = {
         method: 'POST',
         uri: 'http://' + HOSTNAME + ':'+ PORT +'/createRoom',//'http://ec2-13-59-140-62.us-east-2.compute.amazonaws.com/createRoom',
@@ -822,11 +819,9 @@ $(function() {
         json: true // Automatically stringifies the body to JSON
 
     };
-    console.log('getroomcode');
     rp(options)
         .then(function (parsedBody) {
             // POST succeeded...
-            console.log('room code: %s', parsedBody);
             //update roomcode
             $('#roomcode span').text(parsedBody);
             connectToSocket(parsedBody);

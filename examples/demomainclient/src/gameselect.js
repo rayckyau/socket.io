@@ -37,7 +37,6 @@ export class GameSelectScreen extends React.Component {
   }
 
   updateSelection(){
-    console.log("updateSelection" + $.retlastVote());
     if ($.retlastVote() != this.state.selection ){
       if ($.retlastVote() == 'Illuminati Imposter'){
         let descrip = 'In this game, you all ' +

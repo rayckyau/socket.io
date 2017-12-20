@@ -119,12 +119,10 @@ function submitVote(payload){
 
 
 function mountCanvas(){
-  console.log("mount canvas");
   $.mountCanvas();
 }
 
 function clearMouseEvent(){
-  console.log("clear mouse event");
   $.clearMouseEvent();
 }
 
@@ -151,7 +149,6 @@ class BotNav extends React.Component {
 
   clickButton(){
     //if i'm admin and i'm in lobby, ok button should ready gamename
-    console.log("admin and gamestate: "+this.props.admin+" "+this.props.mainclientstate);
     if ((this.props.admin == true) && (this.props.mainclientstate == "lobby")){
       submitSend('admin');
       return;
@@ -303,7 +300,6 @@ function changeModeMsg(msg, mainmsg="") {
   };
 }
 function setVote(vote) {
-  console.log(vote);
   return {
     type: "VOTE",
     mode: 'vote',
