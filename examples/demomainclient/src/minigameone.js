@@ -13,7 +13,7 @@ import CountUp, { startAnimation } from 'react-countup';
 
 const TIMELIMIT_DRAW = 90;
 const TIMELIMIT_VOTE = 60;
-const TIMELIMIT_DISCUSS = 30;
+const TIMELIMIT_DISCUSS = 60;
 const TIMELIMIT_BEGIN = 20;
 const TIMELIMIT_END = 10;
 const TIMELIMIT_CONT = 5;

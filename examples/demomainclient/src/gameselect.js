@@ -1,4 +1,6 @@
+import * as env from './env';
 
+let ENVIRONMENT = env.ENVIRONMENT;
 //GAME SELECT SCREEN
 export class GameSelectScreen extends React.Component {
   constructor(props) {
@@ -66,8 +68,20 @@ export class GameSelectScreen extends React.Component {
     if ($.isReadyPlayerNum(this.state.adminnum)){
       //go to voted game
       if ($.retlastVote() == "Illuminati Imposter"){
-        $.changeGameState($.retlastVote());
-        this.props.history.push('/');
+        if (ENVIRONMENT == "production"){
+          if (($.returnAllPlayers().length >= 4) && ($.returnAllPlayers().length <= 8)){
+            $.changeGameState($.retlastVote());
+            this.props.history.push('/');
+          }
+          else {
+            $.callstatechangeprivate('vote', "Not enough players!", playerobj.socketid, "Illuminati Imposter,Assembly Line,Lobby");
+          }
+        }
+        else {
+          $.changeGameState($.retlastVote());
+          this.props.history.push('/');
+        }
+
       }
       else{
         $.changeToLobby();
