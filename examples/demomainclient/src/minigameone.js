@@ -932,11 +932,36 @@ export class MiniGameOneLayout extends React.Component {
       return (
         <div className="col-sm-10">
         <div className="container">
+          <div className="row justify-content-md-center announce">
+            The votes are in...
+          </div>
           <div className="row">
             {listItems}
           </div>
         </div>
         </div>
+      )
+    }
+    else if (gamestate == 'END'){
+      let winPhrase = "";
+      if (winner == "The Imposter"){
+        winPhrase = playernames[liarnum] + " as The Imposter!";
+      }
+      else {
+        winPhrase = "The Illuminati! " + playernames[liarnum] + " was The Imposter!";
+      }
+      return (
+        <div className="col-sm-10 rightpanel">
+          <div className="container">
+          <div className="row justify-content-md-center announce">
+            The winner is...
+          </div>
+          <div className="row justify-content-md-center winner">
+            {winPhrase}
+          </div>
+          </div>
+        </div>
+
       )
     }
     else if (gamestate == 'IDLE'){
