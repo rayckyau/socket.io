@@ -24,6 +24,9 @@ const REPEATLIMIT = 10;
 const placebuckets = [];
 const helperbuckets = [];
 
+let ISNAVOPEN = false;
+let NAVTIMER;
+
 let fullbucketlist = [];
 let usedbucketlist = [];
 let chosenBucket = 0;
@@ -581,8 +584,6 @@ export function startIdle() {
   };
 }
 function startBegin() {
-  //close rules nav
-  closeNav();
   return {
     type: "BEGIN",
     gamestate: "BEGIN",
@@ -964,12 +965,25 @@ export class MiniGameOneLayout extends React.Component {
 
       )
     }
-    else if (gamestate == 'IDLE'){
-      openNav();
-      setTimeout(function () {
+    else if (gamestate == 'BEGIN'){
+      if (ISNAVOPEN == true){
         closeNav();
-      }, 40000);
+      }
+      return (
+        <div className="col-sm-10 rightpanel">
+          <div className="container">
+            <div className="row justify-content-md-center announce">
+              The roles have been given out. Look at your device!
+            </div>
+          </div>
+        </div>
 
+      )
+    }
+    else if (gamestate == 'IDLE'){
+      if (ISNAVOPEN == false){
+        openNav();
+      }
       return (
         <CanvasLayout />
       )
@@ -1099,10 +1113,15 @@ let winner;
 let liarnum;
 
 function openNav() {
+    console.log("opennav ");
+    ISNAVOPEN = true;
     document.getElementById("rules").style.height = "100%";
 }
 function closeNav() {
+    console.log("closenav");
+    ISNAVOPEN = false;
     document.getElementById("rules").style.height = "0%";
+    clearTimeout(NAVTIMER);
 }
 
 export function handleReconnect(){
