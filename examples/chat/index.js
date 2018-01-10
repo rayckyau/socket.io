@@ -122,9 +122,10 @@ function errorHandler (err, req, res, next) {
 
 
 function createRoomCode (){
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var possible = "ABCDEFGHIJKLMNPQRSTUVWXYZ";
   var text = "";
-  for (var i=0;i<5;i++){
+  var ROOMCODELENGTH = 4;
+  for (var i=0;i<ROOMCODELENGTH;i++){
     text += possible.charAt(Math.floor(Math.random()*possible.length));
   }
 
