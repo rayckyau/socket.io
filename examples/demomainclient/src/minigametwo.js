@@ -707,7 +707,7 @@ function closeNav() {
 }
 
 export function handleReconnect(){
-  console.log("handle reconnect minigameone");
+  console.log("handle reconnect minigametwo");
   //liarnum is player canvas of liar
   //verify/update all playersockets
   let clientsobj = $.returnAllPlayers();

@@ -18,10 +18,12 @@ import {
 } from 'reshake';
 import Slider from 'react-slick';
 import {MiniGameOneLayout} from './minigameone';
+import {MiniGameTwoLayout} from './minigametwo';
 import {GameSelectScreen} from './gameselect';
 import * as ReactRedux from 'react-redux';
 import * as Redux from 'redux';
 import * as minigameone from './minigameone';
+import * as minigametwo from './minigametwo';
 import * as env from './env';
 
 let HOSTNAME = env.HOSTNAME;
@@ -143,12 +145,20 @@ const initialMainGameState = {
 // Action Creators
 function startGame(gamename) {
   console.log("action creator startgame: "+gamename);
-  $.sendGameState('minigameone');
+  $.sendGameState(gamename);
+  if (gamename == 'minigameone'){
+    return {
+      type: "MINIGAMEONE",
+      gamestate: 'minigameone'
+    };
+  }
+  else if (gamename == 'minigametwo'){
+    return {
+      type: "MINIGAMETWO",
+      gamestate: 'minigametwo'
+    };
+  }
 
-  return {
-    type: "MINIGAMEONE",
-    gamestate: 'minigameone'
-  };
 }
 function startGameSelect() {
   $.sendGameState("gameselect");
@@ -179,11 +189,16 @@ function maingamereducer(state = initialMainGameState, action) {
         gamestate: 'gameselect'
       };
     case "MINIGAMEONE":
-      //alert("discuss state");
       return {
         ...state,
         //set new state
         gamestate: 'minigameone'
+      };
+    case "MINIGAMETWO":
+      return {
+        ...state,
+        //set new state
+        gamestate: 'minigametwo'
       };
     default:
       return state;
@@ -205,6 +220,7 @@ class MainFrame extends React.Component {
       <div>
           <Route exact path="/" component={LobbyScreen}/>
           <Route path="/minigameone" component={MiniGameOneLayout}/>
+          <Route path="/minigametwo" component={MiniGameTwoLayout}/>
           <Route path="/gameselect" component={GameSelectScreen}/>
       </div>
       </HashRouter>
@@ -863,6 +879,9 @@ $(function() {
       //check game then apply handleReconnect of minigame
       if (storeMainGame.getState().gamestate == "minigameone"){
         minigameone.handleReconnect();
+      }
+      else if (storeMainGame.getState().gamestate == "minigametwo"){
+        minigametwo.handleReconnect();
       }
     });
 
