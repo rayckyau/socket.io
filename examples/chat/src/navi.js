@@ -144,6 +144,7 @@ class BotNav extends React.Component {
                     data: 'payload',
                     drawtype: 'INK'}
       );
+      $.setDrawType('INK');
     }
   }
 
