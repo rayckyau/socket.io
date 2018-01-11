@@ -1,5 +1,4 @@
 /* Fix user-agent */
-
 * {
   box-sizing: border-box;
 }
@@ -9,18 +8,13 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-html, input {
-  font-family:
-    "HelveticaNeue-Light",
-    "Helvetica Neue Light",
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Lucida Grande",
-    sans-serif;
+html,
+input {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-html, body {
+body,
+html {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -31,28 +25,118 @@ ul {
   word-wrap: break-word;
 }
 
-.debug{
+.debug {
   opacity: 0;
 }
 
-.gridcenter{
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh; /* These two lines are counted as one :-)       */
-
+.gridcenter {
+  min-height: 100%;
+  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh;
+  /* These two lines are counted as one :-)       */
   display: flex;
   align-items: center;
   justify-content: center;
 }
+/* Buttons */
+@color-grey: #666;
+@color-black: #000;
+@btn-color: #383838;
+@btn-background: #fff;
+@btn-color-hover: #fff;
+@btn-background-hover: @color-grey;
+@border-color: @color-grey;
+@border-color-hover: @color-black;
+@mixin reset-button {
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  border: 2px solid @border-color;
+  background: transparent;
+  font: inherit;
+  line-height: normal;
+  cursor: pointer;
+  -moz-user-select: text;
+
+  &::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+  }
+}
+
+.mybtn {
+  @include reset-button;
+  display: block;
+  text-decoration: none;
+  padding: 16px;
+  background-color: @btn-background;
+  color: @btn-color;
+  border: 2px solid @border-color;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px #666;
+  transition: all 0.2s ease;
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 0 white;
+    transform: translateY(8px);
+  }
+
+  &:hover {
+    background-color: @btn-background-hover;
+    color: @btn-color-hover;
+    border-color: @border-color-hover;
+  }
+
+  &--green {
+    background-color: #2ecc71;
+    color: @btn-color;
+    border: 2px solid @border-color;
+    box-shadow: 0 4px #666;
+
+    &:hover {
+      background-color: #48E68B;
+      color: black;
+      border-color: @border-color-hover;
+    }
+
+    &:active {
+      background-color: #219954;
+    }
+  }
+
+  &--blue {
+    background-color: #55acee;
+    color: @btn-color;
+    border: 2px solid @border-color;
+    box-shadow: 0 4px #666;
+
+    &:hover {
+      background-color: #6FC6FF;
+      color: black;
+      border-color: @border-color-hover;
+    }
+
+    &:active {
+      background-color: #346c96;
+    }
+  }
+
+  &--large {
+    width: 50%;
+  }
+}
 
 #cf {
-  position:relative;
-  margin:0 auto;
+  position: relative;
+  margin: 0 auto;
   border: 2px;
 }
 
 #cf img {
-  position:absolute;
-  left:0;
+  position: absolute;
+  left: 0;
   -webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
   -o-transition: opacity 1s ease-in-out;
@@ -60,42 +144,44 @@ ul {
 }
 
 #cf img.top:hover {
-  opacity:0;
+  opacity: 0;
 }
-
 @keyframes cf3FadeInOut {
-0% {
-opacity:1;
-}
-45% {
-opacity:1;
-}
-55% {
-opacity:0;
-}
-100% {
-opacity:0;
-}
+  0% {
+    opacity: 1;
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  55% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 #cf img.top {
-animation-name: cf3FadeInOut;
-animation-timing-function: ease-in-out;
-animation-iteration-count: infinite;
-animation-duration: 5s;
-animation-direction: alternate;
-background-color: white;
-box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  animation-name: cf3FadeInOut;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 5s;
+  animation-direction: alternate;
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 #cf img.bottom {
-animation-name: cf3FadeInOut;
-animation-timing-function: ease-in-out;
-animation-iteration-count: infinite;
-animation-duration: 5s;
-animation-direction: alternate-reverse;
-background-color: white;
-box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  animation-name: cf3FadeInOut;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 5s;
+  animation-direction: alternate-reverse;
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .vignette {
@@ -108,96 +194,102 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .rulesoverlay {
-    height: 0%;
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
-    overflow-y: hidden;
-    overflow-x: hidden;
-    transition: 0.5s;
+  height: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-y: hidden;
+  overflow-x: hidden;
+  transition: 0.5s;
 }
 
-#mainframe{
+#mainframe {
   border: 2px solid #000;
 }
 
-#playerlabel0{
+#playerlabel0 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #DC4c46;
 }
-#playerlabel1{
+
+#playerlabel1 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #4f84c4;
 }
-#playerlabel2{
+
+#playerlabel2 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #d8ae47;
 }
-#playerlabel3{
+
+#playerlabel3 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #ce3175;
 }
-#playerlabel4{
+
+#playerlabel4 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #005960;
 }
-#playerlabel5{
+
+#playerlabel5 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #e15d44;
 }
-#playerlabel6{
+
+#playerlabel6 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #b565a7;
 }
-#playerlabel7{
+
+#playerlabel7 {
   font-family: 'Patrick Hand', sans-serif;
   font-size: 24px;
   font-weight: bold;
   color: #000;
 }
 
-.gameselect #selectgame{
+.gameselect #selectgame {
   color: black;
   font-family: 'Patrick Hand', sans-serif;
   font-size: 30px;
   padding-bottom: 10px;
 }
 
-.gameselect #gamelist{
+.gameselect #gamelist {
   color: black;
   font-family: 'Patrick Hand', sans-serif;
   font-size: 30px;
 }
 
-.gameselect #gamelist li{
+.gameselect #gamelist li {
   padding-top: 16px;
 }
 
-
-.gameselect #aligndescrip{
+.gameselect #aligndescrip {
   flex-direction: column;
   display: flex;
 }
 
-.gameselect #gamethumbnail{
+.gameselect #gamethumbnail {
   display: flex;
   border: 14px;
   border-style: solid;
@@ -205,7 +297,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   height: auto;
 }
 
-.gameselect #gamename{
+.gameselect #gamename {
   padding-top: 10px;
   padding-bot: 28px;
   display: flex;
@@ -215,7 +307,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-size: 30px;
 }
 
-.gameselect #allowedplayers{
+.gameselect #allowedplayers {
   padding-top: 10px;
   padding-bot: 20px;
   display: flex;
@@ -224,7 +316,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-size: 28px;
 }
 
-.gameselect #gamedescription{
+.gameselect #gamedescription {
   display: flex;
   height: 100%;
   color: black;
@@ -232,33 +324,33 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-size: 1.2vw;
 }
 
-.minigameone{
+.minigameone {
   background-color: #ef9a9a;
 
-  .col-sm-2{
+  .col-sm-2 {
     border-right: 2px dashed #000;
   }
 
-  .canvasSection{
+  .canvasSection {
     justify-content: center;
     flex-direction: column;
   }
 
-  #gamestatelabel{
+  #gamestatelabel {
     text-align: center;
     color: black;
     font-family: 'Roboto', sans-serif;
     font-size: 40px;
   }
 
-  #roundcounter{
+  #roundcounter {
     text-align: center;
     color: black;
     font-family: 'Open Sans', sans-serif;
     font-size: 30px;
   }
 
-  #playerlabel{
+  #playerlabel {
     display: flex;
     text-align: center;
     justify-content: center;
@@ -267,20 +359,20 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size: 26px;
   }
 
-  #playerlabel{
+  #playerlabel {
     text-align: center;
     color: black;
     font-family: 'Patrick Hand', sans-serif;
     font-size: 26px;
   }
 
-  .WordList{
+  .WordList {
     margin: 10px;
     padding-top: 24px;
     color: black;
   }
 
-  .wordminigameone{
+  .wordminigameone {
     display: list-item;
     border-style: solid;
     text-align: center;
@@ -290,11 +382,11 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     background-color: #fcc;
   }
 
-  .Timer{
+  .Timer {
     padding-top: 80px;
   }
 
-  .timerbar{
+  .timerbar {
     justify-content: center;
     margin: auto;
     text-align: center;
@@ -303,7 +395,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size: 100px;
   }
 
-  .announce{
+  .announce {
     justify-content: center;
     margin: auto;
     padding-bottom: 20px;
@@ -313,7 +405,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size: 50px;
   }
 
-  .winner{
+  .winner {
     justify-content: center;
     margin: auto;
     text-align: center;
@@ -322,48 +414,43 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size: 40px;
   }
 
-  .votebar{
+  .votebar {
     display: flex;
     margin-left: 40px;
     margin-right: 40px;
     color: black;
 
-    #textdiv{
-      float:left;
+    #textdiv {
+      float: left;
     }
-    #numdiv{
-      float:right;
+
+    #numdiv {
+      float: right;
       font-size: 80px;
     }
-    #name{
 
-    }
-    #votedfor{
+    #name {}
 
-    }
-    #number{
+    #votedfor {}
+
+    #number {
       padding-left: 20px;
       font-size: 75px;
     }
   }
-
 }
 
-
-#restrictresolution{
+#restrictresolution {
   width: auto !important;
   width: 1024px;
   min-width: 1024px;
 }
-
 /* Pages */
-
 .pages {
   height: 100%;
   margin: 0;
   padding: 0;
   width: 100%;
-
   background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23384d83' fill-opacity='0.12'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
@@ -372,71 +459,47 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   position: absolute;
   width: 100%;
 }
-
 /* Login Page */
-
 .login.page {
-
-    .form {
-      height: 100px;
-      margin-top: -100px;
-      position: absolute;
-      text-align: center;
-      top: 50%;
-      width: 100%;
-    }
-
-    .title {
-      color: black;
-      font-family: 'Patrick Hand', sans-serif;
-      font-size: 60px;
-      font-weight: 100;
-    }
-
-    #intro{
-      margin: 10px;
-    }
-
-    a{
-      font-size: 25px;
-      color: #FFF;
-    	text-decoration: none;
-    }
-
-    #startButton{
-      border-radius: 8px;
-      padding: 10px 20px;
-      margin: 10px;
-      position: relative;
-      display: inline-block;
-      background-color: #55acee;
-      transition: all 0.1s;
-	    -webkit-transition: all 0.1s;
-	    border-bottom: 5px solid #2980B9;
-	    text-shadow: 0px -2px #6FC6FF;
-    }
-
-    #startButton:active {
-      transform: translate(0px, 5px);
-      -webkit-transform: translate(0px, 5px);
-      border-bottom: 1px solid;
-    }
-
-    #startButton:focus {
-      outline: none;
-    }
-
+  .form {
+    height: 100px;
+    margin-top: -100px;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 100%;
   }
 
+  .title {
+    color: black;
+    font-family: 'Patrick Hand', sans-serif;
+    font-size: 60px;
+    font-weight: 100;
+  }
 
+  #intro {
+    margin: 10px;
+  }
+
+  a {
+    font-size: 25px;
+    color: #FFF;
+    text-decoration: none;
+  }
+
+  #startButton {
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 10px;
+    position: relative;
+    display: inline-block;
+  }
+}
 /* Chat page */
-
 .chat.page {
   display: none;
 }
-
 /* Font */
-
 .messages {
   font-size: 150%;
 }
@@ -451,15 +514,13 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   margin: 10px;
   text-align: right;
 }
-
 /* Messages */
-
 .chatArea {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 
-  .title{
+  .title {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -469,7 +530,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size: 50px;
   }
 
-  #happydrawtitle{
+  #happydrawtitle {
     display: flex;
     justify-content: center;
     text-align: center;
@@ -479,7 +540,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   }
 }
 
-.roomcodeArea{
+.roomcodeArea {
   float: left;
   margin: 10px;
   display: flex;
@@ -490,7 +551,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-family: 'Patrick Hand', sans-serif;
   font-size: 20px;
 
-  #roomcode{
+  #roomcode {
     text-align: center;
     color: black;
     font-family: 'Patrick Hand', sans-serif;
@@ -515,9 +576,7 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   padding-right: 15px;
   text-align: right;
 }
-
 /* Input */
-
 .inputMessage {
   border: 10px solid #000;
   bottom: 0;
@@ -529,16 +588,17 @@ box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   right: 0;
   width: 100%;
 }
-
 /*canvas*/
 .container {
   padding: 5px;
 }
-[id^=canvas]{
+
+[id^=canvas] {
   background-color: white;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
-[id^=canvas]:hover{
+
+[id^=canvas]:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 

@@ -1,5 +1,4 @@
 /* Fix user-agent */
-
 * {
   box-sizing: border-box;
 }
@@ -9,18 +8,13 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-html, input {
-  font-family:
-    "HelveticaNeue-Light",
-    "Helvetica Neue Light",
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Lucida Grande",
-    sans-serif;
+html,
+input {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-html, body {
+body,
+html {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -31,105 +25,146 @@ ul {
   word-wrap: break-word;
 }
 
-.login.page #nickname{
-}
+.login.page #nickname {}
 
-.login.page #roomcode{
+.login.page #roomcode {
   padding-top: 40px;
 }
 
-.usernameInput{
-  text-transform:uppercase;
+.usernameInput {
+  text-transform: uppercase;
 }
 
-.roomInput{
-  text-transform:uppercase;
+.roomInput {
+  text-transform: uppercase;
 }
 
-.usernameInput{
-  text-transform:uppercase;
+.usernameInput {
+  text-transform: uppercase;
 }
 
-.roomInput{
-  text-transform:uppercase;
+.roomInput {
+  text-transform: uppercase;
 }
 
-.TopNav{
+.TopNav {
   text-align: center;
 }
 
-#pageBG{
+#pageBG {
   text-align: center;
   background-color: #c7c8c9;
 }
 
-#paper{
+#paper {
   margin: 5px;
   background-color: white;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
-#mainmsg{
+#mainmsg {
   margin: 5px;
 }
 
-.vote{
+.vote {
   visibility: hidden;
   display: none;
 }
 
-input[type=radio]:checked{
+input[type=radio]:checked {
   color: red;
   font-style: italic;
 }
+/* Buttons */
+@color-grey: #666;
+@color-black: #000;
+@btn-color: #383838;
+@btn-background: #fff;
+@btn-color-hover: #fff;
+@btn-background-hover: @color-grey;
+@border-color: @color-grey;
+@border-color-hover: @color-black;
+@mixin reset-button {
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  border: 2px solid @border-color;
+  background: transparent;
+  font: inherit;
+  line-height: normal;
+  cursor: pointer;
+  -moz-user-select: text;
+
+  &::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+  }
+}
 
 .mybtn {
-  border-radius: 8px;
-  padding: 4px 4px;
+  @include reset-button;
+  display: block;
   text-decoration: none;
-  margin: 4px;
-  color: #fff;
-  position: relative;
-  display: inline-block;
+  padding: 16px;
+  background-color: @btn-background;
+  color: @btn-color;
+  border: 2px solid @border-color;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px #666;
+  transition: all 0.2s ease;
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 0 white;
+    transform: translateY(8px);
+  }
+
+  &:hover {
+    background-color: @btn-background-hover;
+    color: @btn-color-hover;
+    border-color: @border-color-hover;
+  }
+
+  &--green {
+    background-color: #2ecc71;
+    color: @btn-color;
+    border: 2px solid @border-color;
+    box-shadow: 0 4px #666;
+
+    &:hover {
+      background-color: #48E68B;
+      color: black;
+      border-color: @border-color-hover;
+    }
+
+    &:active {
+      background-color: #219954;
+    }
+  }
+
+  &--blue {
+    background-color: #55acee;
+    color: @btn-color;
+    border: 2px solid @border-color;
+    box-shadow: 0 4px #666;
+
+    &:hover {
+      background-color: #6FC6FF;
+      color: black;
+      border-color: @border-color-hover;
+    }
+
+    &:active {
+      background-color: #346c96;
+    }
+  }
+
+  &--large {
+    width: 50%;
+  }
 }
-
-.mybtn:active {
-  transform: translate(0px, 5px);
-  -webkit-transform: translate(0px, 5px);
-  box-shadow: 0px 1px 0px 0px;
-}
-
-.mybtn:active:focus {
-  outline: none;
-}
-
-.mybtn:focus {
-  outline: none;
-}
-
-.blue {
-  background-color: #55acee;
-  box-shadow: 0px 5px 0px 0px #3C93D5;
-  border-color: #6FC6FF;
-}
-
-.blue:hover {
-  background-color: #6FC6FF;
-}
-
-.green {
-  background-color: #2ecc71;
-  box-shadow: 0px 5px 0px 0px #15B358;
-  border-color: #48E68B;
-}
-
-.green:hover {
-  background-color: #48E68B;
-}
-
-
 /* Pages */
-
 .pages {
   height: 100%;
   margin: 0;
@@ -143,9 +178,7 @@ input[type=radio]:checked{
   width: 100%;
   overflow-y: auto;
 }
-
 /* Login Page */
-
 .login.page {
   background-color: white;
   display: flex;
@@ -186,19 +219,16 @@ input[type=radio]:checked{
   letter-spacing: 3px;
 }
 
-.login.page .title, .login.page .usernameInput {
+.login.page .title,
+.login.page .usernameInput {
   color: black;
   //font-weight: 100;
 }
-
 /* Chat page */
-
 .chat.page {
   display: none;
 }
-
 /* Font */
-
 .messages {
   font-size: 150%;
 }
@@ -213,9 +243,7 @@ input[type=radio]:checked{
   margin: 5px;
   text-align: center;
 }
-
 /* Messages */
-
 .chatArea {
   height: 100%;
   padding-bottom: 60px;
@@ -225,7 +253,7 @@ input[type=radio]:checked{
   height: 100%;
   margin: 0;
   overflow-y: scroll;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px;
 }
 
 .message.typing .messageBody {
@@ -238,9 +266,7 @@ input[type=radio]:checked{
   padding-right: 15px;
   text-align: right;
 }
-
 /* Input */
-
 .inputMessage {
   border: 10px solid #000;
   bottom: 0;

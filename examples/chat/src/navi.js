@@ -37,7 +37,7 @@ class DrawCanvas extends React.Component {
 
 function VoteItem(props) {
     return (
-      <label className="mybtn blue">
+      <label className="mybtn mybtn--blue" onClick={props.onClick}>
         <input className="vote" type="radio" value={props.value} onClick={props.onClick}/>
         {props.value}
       </label>
@@ -207,15 +207,15 @@ class BotNav extends React.Component {
     if (this.state.clientmode == "draw"){
       return (
           <nav className="navbar navbar-light sticky-bottom bg-faded ">
-            <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
-            <button className="mybtn blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
+            <button className="mybtn mybtn--green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
+            <button className="mybtn mybtn--blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
           </nav>
       );
     }
     else {
       return (
         <nav className="navbar navbar-light sticky-bottom bg-faded ">
-          <button className="mybtn green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
+          <button className="mybtn mybtn--green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
         </nav>
       );
     }

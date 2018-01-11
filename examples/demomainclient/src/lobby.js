@@ -34,7 +34,7 @@ class StartButton extends React.Component {
   render() {
     return (
       <div>
-        <a href={"#"} onClick={() => {this.handleClick()}}>START!</a>
+        <button className="mybtn mybtn--green" onClick={() => {this.handleClick()}}>START!</button>
       </div>
     );
   }
