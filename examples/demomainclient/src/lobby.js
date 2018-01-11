@@ -145,14 +145,15 @@ const initialMainGameState = {
 // Action Creators
 function startGame(gamename) {
   console.log("action creator startgame: "+gamename);
-  $.sendGameState(gamename);
-  if (gamename == 'minigameone'){
+  if (gamename == 'Illuminati Imposter'){
+    $.sendGameState('minigameone');
     return {
       type: "MINIGAMEONE",
       gamestate: 'minigameone'
     };
   }
-  else if (gamename == 'minigametwo'){
+  else if (gamename == 'Assembly Line'){
+    $.sendGameState('minigametwo');
     return {
       type: "MINIGAMETWO",
       gamestate: 'minigametwo'

@@ -143,41 +143,19 @@ class Timer extends React.Component {
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
-          //save drawings
-          let canvases = $.getAllCanvas();
-          for (let i=0;i<canvases.length;i++){
-            playersave[i][mystate.loopcounter] = canvases[i].toDataURL();;
-          }
-          storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
-          storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing! Get ready for round 2!");
+
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
-        if ($.retlastVote() == "Back To Lobby"){
-          storeGame.dispatch(startExit());
-        }
-        else{
-          setupGame();
-          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
-          storeGame.dispatch(startBegin());
-        }
+
       }
       else if (mystate.gamestate ==  "IDLE"){
-          setupGame();
-          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
-          storeGame.dispatch(startBegin());
+
       }
       else if (mystate.gamestate ==  "BEGIN"){
-          storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
-          storeGame.dispatch(startDraw());
-          $.callstatechangeall('draw', null);
+
       }
       else if (mystate.gamestate ==  "END"){
           $.clearAllCanvas();
-          storeTimer.dispatch(resetTimer(99));
-          storeGame.dispatch(startGameRecap());
-          $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game. Press OK to keep playing!');
-          $.callstatechangeprivate("vote", "Keep playing?", socketLiar , "Keep playing,Back To Lobby")
       }
       else{
         //error state
@@ -413,7 +391,7 @@ function mapStateToPropsGameTwo(state) {
 
 //bind state to props
 Timer = ReactRedux.connect(mapStateToPropsTimer, { startTimer, stopTimer, resetTimer })(Timer);
-MiniGameTwo = ReactRedux.connect(mapStateToPropsGameTwo, { startDraw, startDiscuss, startVote, startVoteRecap, startBegin, startIdle, startVoteSpy })(MiniGameTwo);
+MiniGameTwo = ReactRedux.connect(mapStateToPropsGameTwo, { startDraw, startBegin, startIdle})(MiniGameTwo);
 
 //add reducers to stores
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});

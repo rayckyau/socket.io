@@ -94,7 +94,24 @@ export class GameSelectScreen extends React.Component {
           $.changeGameState($.retlastVote());
           this.props.history.push('/');
         }
-
+      }
+      else if ($.retlastVote() == "Assembly Line"){
+        if (ENVIRONMENT == "production"){
+          if (($.getPlayerCount() >= 2) && ($.getPlayerCount() <= 8)){
+            $.changeGameState($.retlastVote());
+            this.props.history.push('/');
+          }
+          else {
+            let numOfPlayers = $.getPlayerCount();
+            $.callstatechangeprivate('vote', numOfPlayers + " players in game! Choose again!",
+              this.state.adminsocketid, GAMELISTSTRING);
+            $.resetReadyPlayers();
+          }
+        }
+        else {
+          $.changeGameState($.retlastVote());
+          this.props.history.push('/');
+        }
       }
       else{
         $.changeToLobby();
