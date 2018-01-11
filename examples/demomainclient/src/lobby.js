@@ -725,6 +725,7 @@ $(function() {
         }
         //update playerslot
         playercount++;
+        log(playercount + ' players');
         playerslot[canvasnum] = true;
         const playerobj = {};
         playerobj["username"] = username;
@@ -776,6 +777,7 @@ $(function() {
       playernumToUser[canvasnum] = data.username + " left";
       playerslot[canvasnum] = false;
       playercount--;
+      log(playercount + ' players');
     });
 
     socket.on('user kick', function (data) {
@@ -837,6 +839,8 @@ $(function() {
       delete cursors[oldSocketid];
       delete clientdict[oldSocketid];
 
+      playercount++;
+      log(playercount + ' players');
       //check game then apply handleReconnect of minigame
       if (storeMainGame.getState().gamestate == "minigameone"){
         minigameone.handleReconnect();

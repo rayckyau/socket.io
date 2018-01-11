@@ -84,7 +84,8 @@ export class GameSelectScreen extends React.Component {
             this.props.history.push('/');
           }
           else {
-            $.callstatechangeprivate('vote', "Not enough players! Choose again!",
+            let numOfPlayers = $.getPlayerCount();
+            $.callstatechangeprivate('vote', numOfPlayers + " players in game! Choose again!",
               this.state.adminsocketid, GAMELISTSTRING);
             $.resetReadyPlayers();
           }
