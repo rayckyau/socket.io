@@ -625,9 +625,11 @@ $(function() {
         //TODO: cleanup if user leaves
       }
 
+
+      //default own canvasid
+      let targetCanvasId = '#'+clientdict[data.id].canvasid;
       //find out game mode here
       //figure out which player canvas to draw to
-
       /*
         ex. if assembly line teams. find player team.
         change data.id to main team canvas (canvas1/canvas2)
@@ -635,7 +637,10 @@ $(function() {
           minigameone.handleReconnect();
         }
       */
-
+      if (storeMainGame.getState().gamestate == "minigametwo"){
+        //always draw to canvas 1 in minigametwo
+        targetCanvasId = "canvas-p1";
+      }
 
       // Is the user drawing?
       if ((data.drawing == true) && (clients[data.id])) {
@@ -650,11 +655,11 @@ $(function() {
         //drawLineQuad(clientsDrawpoints[data.id], data.id);
         if (data.type == 'ERASER'){
           eraseLine(clients[data.id].x, clients[data.id].y, data.x, data.y,
-                  data.id, '#'+clientdict[data.id].canvasid);
+                  data.id, targetCanvasId);
         }
         else {
           drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y,
-                  data.id, '#'+clientdict[data.id].canvasid);
+                  data.id, targetCanvasId);
         }
       }
       // Saving the current client state
