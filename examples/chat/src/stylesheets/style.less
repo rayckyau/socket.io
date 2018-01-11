@@ -25,6 +25,17 @@ ul {
   word-wrap: break-word;
 }
 
+@media all and (max-height: 560px) {
+  body:before {
+    content: "HappyDraw minimum height required is 560px.";
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+}
+
 .login.page #nickname {}
 
 .login.page #roomcode {

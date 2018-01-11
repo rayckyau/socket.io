@@ -103,6 +103,15 @@ class LobbyScreen extends React.Component {
         this.props.history.push('/minigameone');
       }
     }
+    else if (this.props.gamestate == 'minigametwo'){
+      if (this.props.history.location.pathname != '/minigametwo'){
+        $.resetReadyPlayers();
+        $.callstatechangeall('msg', 'start rules', 'Press OK to skip rules.');
+        minigameone.storeTimer.dispatch(minigameone.startTimer(34));
+        minigameone.storeGame.dispatch(minigameone.startIdle());
+        this.props.history.push('/minigametwo');
+      }
+    }
     else if (this.props.gamestate == 'lobby'){
       if (this.props.history.location.pathname != '/'){
         this.props.history.push('/');
