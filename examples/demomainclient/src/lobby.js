@@ -523,8 +523,8 @@ $(function() {
     copyTextToClipboard(sharelink);
   });
 
-  function eraseLine(fromx, fromy, tox, toy, playerid) {
-    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+  function eraseLine(fromx, fromy, tox, toy, playerid, canvasid) {
+    const drawcanvas = $(canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
     //define drawing settings
     ctxdrawcanvas.lineWidth = 10;
@@ -541,8 +541,8 @@ $(function() {
     ctxdrawcanvas.stroke();
   }
 
-  function drawLine(fromx, fromy, tox, toy, playerid) {
-    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+  function drawLine(fromx, fromy, tox, toy, playerid, canvasid) {
+    const drawcanvas = $(canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
     //define drawing settings
     ctxdrawcanvas.lineWidth = 4;
@@ -625,6 +625,18 @@ $(function() {
         //TODO: cleanup if user leaves
       }
 
+      //find out game mode here
+      //figure out which player canvas to draw to
+
+      /*
+        ex. if assembly line teams. find player team.
+        change data.id to main team canvas (canvas1/canvas2)
+        if (storeMainGame.getState().gamestate == "minigameone"){
+          minigameone.handleReconnect();
+        }
+      */
+
+
       // Is the user drawing?
       if ((data.drawing == true) && (clients[data.id])) {
         // Draw a line on the canvas. clients[data.id] holds
@@ -637,10 +649,12 @@ $(function() {
         clientsDrawpoints[data.id].push({x:data.x, y:data.y});
         //drawLineQuad(clientsDrawpoints[data.id], data.id);
         if (data.type == 'ERASER'){
-          eraseLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+          eraseLine(clients[data.id].x, clients[data.id].y, data.x, data.y,
+                  data.id, '#'+clientdict[data.id].canvasid);
         }
         else {
-          drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y, data.id);
+          drawLine(clients[data.id].x, clients[data.id].y, data.x, data.y,
+                  data.id, '#'+clientdict[data.id].canvasid);
         }
       }
       // Saving the current client state
