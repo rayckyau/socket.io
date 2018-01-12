@@ -11,15 +11,14 @@ import {
 } from 'react-router-dom'
 import CountUp, { startAnimation } from 'react-countup';
 
-const TIMELIMIT_DRAW = 90;
-const TIMELIMIT_VOTE = 60;
-const TIMELIMIT_DISCUSS = 60;
+const TIMELIMIT_DRAW = 5;
 const TIMELIMIT_BEGIN = 20;
 const TIMELIMIT_END = 10;
-const TIMELIMIT_CONT = 5;
 
 let ISNAVOPEN = false;
 let NAVTIMER;
+
+let WORDLIST = ['dog','cat','cow','mouse','elephant'];
 
 function contains(a, obj) {
     for (var i = 0; i < a.length; i++) {
@@ -116,46 +115,42 @@ class Timer extends React.Component {
   checkStop(timeleft){
     let mystate = storeGame.getState();
 
-    //when counting if vote state is spyredeem and a vote is in
-    //we can skip straight to next state
-    if (mystate.gamestate == "VOTESPY"){
-      if ($.isReadyPlayerNum(liarnum)){
-        $.callstatechangeall('msg', null, "All votes are in!");
-        timeleft = 0;
-      }
-    }
-    else if (mystate.gamestate == "VOTE"){
-      //if the number of votes is equal to num of players
-      //we can skip to next state
-      if ($.isReadyPlayers()){
-        $.callstatechangeall('msg', null, "All votes are in!");
-        timeleft = 0;
-      }
-    }
-    else {
-      if ($.isReadyPlayers()){
-        $.callstatechangeall('msg', null, "Everyone is ready!");
-        timeleft = 0;
-      }
-    }
-
     if (timeleft <= 0){
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
+        //cut off previous player with msg state
 
+        //find next player from turn order
+        //give player draw and secret word
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
-
+        if ($.retlastVote() == "Back To Lobby"){
+          storeGame.dispatch(startExit());
+        }
+        else{
+          setupGame();
+          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
+          storeGame.dispatch(startBegin());
+        }
       }
       else if (mystate.gamestate ==  "IDLE"){
-
+        setupGame();
+        storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
+        storeGame.dispatch(startBegin());
+        //find starting player and give them secret word
       }
       else if (mystate.gamestate ==  "BEGIN"){
-
+        storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
+        storeGame.dispatch(startDraw());
+        //find starting player and give draw state
       }
       else if (mystate.gamestate ==  "END"){
-          $.clearAllCanvas();
+        $.clearAllCanvas();
+        storeTimer.dispatch(resetTimer(99));
+        storeGame.dispatch(startGameRecap());
+        $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game. Press OK to keep playing!');
+        $.callstatechangeprivate("vote", "Keep playing?", socketGuesser , "Keep playing,Back To Lobby")
       }
       else{
         //error state
@@ -232,6 +227,12 @@ function startDraw() {
     gamestate: "DRAW"
   };
 }
+function startGuess() {
+  return {
+    type: "GUESS",
+    gamestate: "GUESS"
+  };
+}
 function startGameRecap() {
   return {
     type: "GAMERECAP",
@@ -265,6 +266,15 @@ function minigametworeducer(state = initialGameState, action) {
         words: state.words
       };
     case "DRAW":
+      return {
+        ...state,
+        //set new state
+        gamestate: action.gamestate,
+        loopcounter: state.loopcounter+1,
+        winner: state.winner,
+        words: state.words
+      };
+    case "GUESS":
       return {
         ...state,
         //set new state
@@ -328,10 +338,7 @@ class MiniGameTwo extends React.Component {
   }
 
   returnGameState(gamestatelabel){
-    if (gamestatelabel == "VOTESPY"){
-      return "Imposter Chance"
-    }
-    else if (gamestatelabel == "BEGIN"){
+    if (gamestatelabel == "BEGIN"){
       return "Begin"
     }
     else if (gamestatelabel == "END"){
@@ -339,6 +346,9 @@ class MiniGameTwo extends React.Component {
     }
     else if (gamestatelabel == "DRAW"){
       return "Draw"
+    }
+    else if (gamestatelabel == "GUESS"){
+      return "Guess"
     }
     else if (gamestatelabel == "GAMERECAP"){
       return "Recap"
@@ -349,6 +359,8 @@ class MiniGameTwo extends React.Component {
   }
 
   returnRoundCounter(roundCounter){
+    //replace this with player name
+
     if (roundCounter === 0){
       return ""
     }
@@ -391,7 +403,7 @@ function mapStateToPropsGameTwo(state) {
 
 //bind state to props
 Timer = ReactRedux.connect(mapStateToPropsTimer, { startTimer, stopTimer, resetTimer })(Timer);
-MiniGameTwo = ReactRedux.connect(mapStateToPropsGameTwo, { startDraw, startBegin, startIdle})(MiniGameTwo);
+MiniGameTwo = ReactRedux.connect(mapStateToPropsGameTwo, { startDraw, startBegin, startIdle, startGuess})(MiniGameTwo);
 
 //add reducers to stores
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
@@ -475,42 +487,8 @@ export class MiniGameTwoLayout extends React.Component {
 
       )
     }
-    else if (gamestate == 'VOTERECAP'){
-      playervotedata = $.retVoteData();
-      playervotes = countVotes(playervotedata);
-      //TODO: use object keys loop and store object as a single 3 size array. playervotedata, playername, vote
-      let votebardata = [];
-      for (let i=0;i<playernames.length;i++){
-        votebardata[i] = { playername: playernames[i],
-                                  votenum: playervotes[i],
-                           playervotedata: playervotedata[i]
-
-                         }
-      }
-      const listItems = votebardata.map((player, index) =>
-        <VoteBar name={player.playername} votename={player.playervotedata} votenum={player.votenum} voteready={this.state.playerreadylabels[index]} key={'votebar'+player.playername}/>
-      );
-      return (
-        <div className="col-sm-10">
-        <div className="container">
-          <div className="row justify-content-md-center announce">
-            The votes are in...
-          </div>
-          <div className="row">
-            {listItems}
-          </div>
-        </div>
-        </div>
-      )
-    }
     else if (gamestate == 'END'){
       let winPhrase = "";
-      if (winner == "The Imposter"){
-        winPhrase = playernames[liarnum] + " as The Imposter!";
-      }
-      else {
-        winPhrase = "The Illuminati! " + playernames[liarnum] + " was The Imposter!";
-      }
       return (
         <div className="col-sm-10 rightpanel">
           <div className="container">
@@ -574,30 +552,6 @@ export class MiniGameTwoLayout extends React.Component {
   }
 }
 
-class VoteBar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let mystyle = {color: 'black'};
-    if (this.props.voteready == true){
-      mystyle = {color: 'green'};
-    }
-    return (
-      <div className="votebar">
-        <div id="textdiv">
-          <h1 id="name" style={mystyle}>{this.props.name}</h1>
-          <p id="votedfor">voted for <b>{this.props.votename}</b></p>
-        </div>
-        <div id="numdiv">
-          <h1 id="number"><CountUp start={0} end={this.props.votenum} /></h1>
-        </div>
-      </div>
-    );
-  }
-}
-
 export class CanvasLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -654,8 +608,6 @@ let words = [];
 let playernames = [];
 let playerready = [];
 let playerpoints = [0,0,0,0,0,0,0,0];
-let playervotedata = [];
-let playervotes = [];
 let playersockets = [];
 let playersave = [[],
                   [],
@@ -666,19 +618,19 @@ let playersave = [[],
                   [],
                   [],
                 ];
-let playersaveagain = [];
-let secretPlace;
-let socketLiar;
+let playerturnorder = [];
+let secretWord;
+let socketGuesser;
 let winner;
-let liarnum;
+let guessernum;
 
 function openNav() {
-    console.log("opennav ");
+    console.log("opennav gametwo");
     ISNAVOPEN = true;
     document.getElementById("rules").style.height = "100%";
 }
 function closeNav() {
-    console.log("closenav");
+    console.log("closenav gametwo");
     ISNAVOPEN = false;
     document.getElementById("rules").style.height = "0%";
     clearTimeout(NAVTIMER);
@@ -686,7 +638,6 @@ function closeNav() {
 
 export function handleReconnect(){
   console.log("handle reconnect minigametwo");
-  //liarnum is player canvas of liar
   //verify/update all playersockets
   let clientsobj = $.returnAllPlayers();
 
@@ -695,11 +646,25 @@ export function handleReconnect(){
       let playerobj = clientsobj[key];
       playernames[playerobj.playernum] = playerobj.username;
       playersockets[playerobj.playernum] = playerobj.socketid;
-      if (playerobj.playernum == liarnum){
-        socketLiar = playerobj.socketid;
+      if (playerobj.playernum == guessernum){
+        socketGuesser = playerobj.socketid;
       }
     }
   }
+}
+
+function setupTurnOrder(nump){
+  //swap 2 random spaces a few times
+  for (let i=0;i<5;i++){
+    let spotone = Math.floor(Math.random()*(nump-1));
+    let spottwo = Math.floor(Math.random()*(nump-1));
+    let tmp = playerturnorder[spotone];
+    playerturnorder[spotone] = playerturnorder[spottwo];
+    playerturnorder[spottwo] = tmp;
+  }
+  //append final player guesser
+  playerturnorder.push(guessernum);
+  console.log(playerturnorder);
 }
 
 function setupGame(){
@@ -708,9 +673,13 @@ function setupGame(){
   let clientsobj = $.returnAllPlayers();
   let numplayers = Object.keys(clientsobj).length;
   //setup variables for minigametwo here
-
-
+  //pick guesser
+  //pick rand number, that num is gueser
+  guessernum = Math.floor(Math.random()*numplayers);
+  //find word from wordlist
+  secretWord = WORDLIST[Math.floor(Math.random()*WORDLIST.length)];
   //FOR LOOP
+  let counter = 0;
   for (let key in clientsobj){
     if (clientsobj.hasOwnProperty(key)){
       let playerobj = clientsobj[key];
@@ -718,7 +687,18 @@ function setupGame(){
       playernames[playerobj.playernum] = playerobj.username;
       playersockets[playerobj.playernum] = playerobj.socketid;
 
+      if (counter != guessernum){
+        playerturnorder.push(playerobj.playernum);
+      }
+      else {
+        //reuse variable and store actual playerobj num
+        guessernum = playerobj.playernum;
+      }
+
+      counter++;
     }
   }
   //end for loop players
+  //populate player turns here
+  setupTurnOrder(numplayers);
 }
