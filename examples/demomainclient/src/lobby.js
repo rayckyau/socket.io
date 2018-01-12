@@ -665,7 +665,7 @@ $(function() {
       */
       if (storeMainGame.getState().gamestate == "minigametwo"){
         //always draw to canvas 1 in minigametwo
-        targetCanvasId = "canvas-p1";
+        targetCanvasId = "#canvas-p0";
       }
 
       // Is the user drawing?

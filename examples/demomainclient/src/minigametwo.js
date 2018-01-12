@@ -11,8 +11,8 @@ import {
 } from 'react-router-dom'
 import CountUp, { startAnimation } from 'react-countup';
 
-const TIMELIMIT_DRAW = 5;
-const TIMELIMIT_BEGIN = 20;
+const TIMELIMIT_DRAW = 8;
+const TIMELIMIT_BEGIN = 10;
 const TIMELIMIT_END = 10;
 
 let ISNAVOPEN = false;
@@ -114,15 +114,40 @@ class Timer extends React.Component {
 
   checkStop(timeleft){
     let mystate = storeGame.getState();
-
+    /*
+    playernames[playerobj.playernum] = playerobj.username;
+    playersockets[playerobj.playernum] = playerobj.socketid;
+    */
     if (timeleft <= 0){
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
       if (mystate.gamestate ==  "DRAW"){
         //cut off previous player with msg state
-
+        if (mystate.loopcounter != 0){
+          let socketPreviousPlayer = playersockets[playerturnorder[mystate.loopcounter-1]];
+          $.callstatechangeprivate("msg", "Time's up!", socketPreviousPlayer , "Passing on the baton!");
+        }
         //find next player from turn order
         //give player draw and secret word
+        let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
+        $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
+        //warn player unless guesser
+        if (mystate.loopcounter != playerturnorder.length-1){
+          //warn next player
+          let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
+          $.callstatechangeprivate("msg", "Your turn is coming up!", nextPlayer , "Get ready to draw!");
+          storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
+          storeGame.dispatch(startDraw());
+        }
+
+        if (mystate.loopcounter == playerturnorder.length-1){
+          //warn next player
+          let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
+          $.callstatechangeprivate("msg", "Your turn is coming up!", nextPlayer , "Get ready to guess!");
+          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
+          storeGame.dispatch(startGuess());
+        }
+
       }
       else if (mystate.gamestate ==  "GAMERECAP"){
         if ($.retlastVote() == "Back To Lobby"){
@@ -136,21 +161,30 @@ class Timer extends React.Component {
       }
       else if (mystate.gamestate ==  "IDLE"){
         setupGame();
+        $.callstatechangeall('msg', "Wait your turn", "Get Ready!");
         storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
         storeGame.dispatch(startBegin());
         //find starting player and give them secret word
+        let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
+        $.callstatechangeprivate("msg", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
+        $.callstatechangeprivate("msg", "You are the guesser!", socketGuesser , "Guess the drawing when it is your turn!");
       }
       else if (mystate.gamestate ==  "BEGIN"){
         storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
         storeGame.dispatch(startDraw());
         //find starting player and give draw state
+        let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
+        $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
+        //warn next player
+        let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
+        $.callstatechangeprivate("msg", "Secret Word: " + secretWord, nextPlayer , "Get ready to draw!");
       }
       else if (mystate.gamestate ==  "END"){
         $.clearAllCanvas();
         storeTimer.dispatch(resetTimer(99));
         storeGame.dispatch(startGameRecap());
         $.callstatechangeall('msg', 'Game Recap', 'Check out the main screen for a recap of the game. Press OK to keep playing!');
-        $.callstatechangeprivate("vote", "Keep playing?", socketGuesser , "Keep playing,Back To Lobby")
+        $.callstatechangeprivate("vote", "Keep playing?", socketGuesser , "Keep playing,Back To Lobby");
       }
       else{
         //error state
