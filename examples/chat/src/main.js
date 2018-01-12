@@ -390,12 +390,11 @@ import * as env from './env';
 
     $.mountCanvasOverlay = function(overlayUrl){
       let drawcanvas = $('#paper');
-      //drawcanvas.append($('<img>', {id:'canvasoverlay', src:overlayUrl}));
       let ctx = drawcanvas[0].getContext('2d');
       let img = new Image();
       img.src = overlayUrl;
       img.onload=function(){
-        ctx.drawImage(img,0,0);
+        ctx.drawImage(img,0,0, 268, 340);
       }
 
     };
