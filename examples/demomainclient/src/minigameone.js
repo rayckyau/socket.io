@@ -421,7 +421,7 @@ class Timer extends React.Component {
           //save drawings
           let canvases = $.getAllCanvas();
           for (let i=0;i<canvases.length;i++){
-            playersave[i][mystate.loopcounter] = canvases[i].toDataURL();;
+            playersave[i][mystate.loopcounter] = canvases[i].toDataURL();
           }
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());

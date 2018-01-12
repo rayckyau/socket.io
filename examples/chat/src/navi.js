@@ -122,6 +122,10 @@ function mountCanvas(){
   $.mountCanvas();
 }
 
+function mountCanvasOverlay(overlayurl){
+  $.mountCanvasOverlay(overlayurl);
+}
+
 function clearMouseEvent(){
   $.clearMouseEvent();
 }
@@ -441,6 +445,11 @@ export function changePlayerState(mystate, msg, payload = ""){
     storePlayer.dispatch(changeModeDraw(msg));
     //update context canvas in main
     mountCanvas();
+    //if payload exists then overlay picture onto canvas
+    if (payload != ""){
+      //TODO: prob check for valid canvas url
+      mountCanvasOverlay(payload);
+    }
   }
   else if (mystate == 'vote'){
     //reset voteOptions

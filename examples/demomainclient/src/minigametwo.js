@@ -121,7 +121,10 @@ class Timer extends React.Component {
     if (timeleft <= 0){
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
+
       if (mystate.gamestate ==  "DRAW"){
+        let canvases = $.getAllCanvas();
+        playersave.push(canvases[0].toDataURL());
         //cut off previous player with msg state
         if (mystate.loopcounter != 0){
           let socketPreviousPlayer = playersockets[playerturnorder[mystate.loopcounter-1]];
@@ -130,7 +133,8 @@ class Timer extends React.Component {
         //find next player from turn order
         //give player draw and secret word
         let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
-        $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
+        $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , playersave[mystate.loopcounter-1]);
+        console.log('canvas url: '+playersave[mystate.loopcounter-1]);
         //warn player unless guesser
         if (mystate.loopcounter != playerturnorder.length-1){
           //warn next player
@@ -500,8 +504,8 @@ export class MiniGameTwoLayout extends React.Component {
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
           <div id="cf">
-            <img className="bottom" src={playersave[index][1]} width={"214"} height={"268"}/>
-            <img className="top" src={playersave[index][2]} width={"214"} height={"268"}/>
+            <img className="bottom" src={playersave[index]} width={"214"} height={"268"}/>
+            <img className="top" src={playersave[index]} width={"214"} height={"268"}/>
           </div>
           <div id="playerlabel" style={mystyle}>{playernames[index]}</div>
         </div>
@@ -643,15 +647,7 @@ let playernames = [];
 let playerready = [];
 let playerpoints = [0,0,0,0,0,0,0,0];
 let playersockets = [];
-let playersave = [[],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                ];
+let playersave = [];
 let playerturnorder = [];
 let secretWord;
 let socketGuesser;
