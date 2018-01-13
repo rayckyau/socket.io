@@ -934,7 +934,6 @@ $(function() {
     votes[playerUserToNum[data.data]]++;
     let num = playerUserToNum[data.id];
     voteData[num] = data.data;
-
   }
 
   function addParticipantsMessage (data) {

@@ -85,7 +85,31 @@ class Vote extends React.Component {
         </div>
     )
   }
+}
 
+class Input extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {yourInput: ''};
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+  }
+
+  handleChange(event) {
+    this.setState({yourInput: event.target.value});
+    storePlayer.dispatch(setInput(event.target.value));
+    submitVote(event.target.value);
+  }
+
+  render() {
+    return (
+        <div>
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </div>
+    )
+  }
 }
 
 class TopNav extends React.Component {
@@ -249,6 +273,12 @@ class PlayerPage extends React.Component {
         <DrawCanvas/>
       )
     }
+    else if (props.mode == 'input'){
+      console.log('change to input mode');
+      return (
+        <Input/>
+      )
+    }
     else{
       return (
         <div id="mainmsg">{props.mainmsg}</div>
@@ -295,6 +325,14 @@ function changeModeVote(msg) {
     message: msg
   };
 }
+function changeModeInput(msg) {
+  return {
+    type: "INPUT",
+    mode: 'input',
+    vote: '',
+    message: msg
+  };
+}
 //if msg is null then do not change state
 function changeModeMsg(msg, mainmsg="") {
   return {
@@ -308,6 +346,13 @@ function setVote(vote) {
   return {
     type: "VOTE",
     mode: 'vote',
+    vote: vote
+  };
+}
+function setInput(vote) {
+  return {
+    type: "INPUT",
+    mode: 'input',
     vote: vote
   };
 }
@@ -344,6 +389,20 @@ function playerpagereducer(state = initialPlayerState, action) {
         mainclientstate: state.mainclientstate
       };
     case "VOTE":
+      if (action.message == null){
+        action.message = state.message;
+      }
+      return {
+        ...state,
+        //set new state
+        mode: action.mode,
+        admin: state.admin,
+        vote: action.vote,
+        message: action.message,
+        mainmsg: state.mainmsg,
+        mainclientstate: state.mainclientstate
+      };
+    case "INPUT":
       if (action.message == null){
         action.message = state.message;
       }
@@ -422,7 +481,7 @@ function mapStateToPropsBotNav(state) {
 //END MINIGAME REDUX
 
 //bind state to props
-PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeDraw, setVote, changeToAdmin, changeMainclientState })(PlayerPage);
+PlayerPage = ReactRedux.connect(mapStateToPropsPlayerPage, { changeModeMsg, changeModeVote, changeModeInput, changeModeDraw, setVote, changeToAdmin, changeMainclientState })(PlayerPage);
 BotNav = ReactRedux.connect(mapStateToPropsBotNav)(BotNav);
 //add reducers to store
 //const rootReducer = combineReducers({timerreducer, minigameonereducer});
@@ -460,6 +519,9 @@ export function changePlayerState(mystate, msg, payload = ""){
       voteOptions[i] = options[i];
     }
     storePlayer.dispatch(changeModeVote(msg));
+  }
+  else if (mystate == 'input'){
+    storePlayer.dispatch(changeModeInput(msg));
   }
   else if (mystate == 'msg'){
     storePlayer.dispatch(changeModeMsg(msg, payload));

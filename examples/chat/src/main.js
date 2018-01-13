@@ -413,7 +413,6 @@ import * as env from './env';
     };
 
     $.saveSession = function(payload){
-      console.log("save session");
       drawsocket.emit('save session', payload);
     };
 

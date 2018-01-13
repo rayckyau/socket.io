@@ -11,8 +11,9 @@ import {
 } from 'react-router-dom'
 import CountUp, { startAnimation } from 'react-countup';
 
-const TIMELIMIT_DRAW = 8;
-const TIMELIMIT_BEGIN = 10;
+const TIMELIMIT_DRAW = 7;
+const TIMELIMIT_BEGIN = 4;
+const TIMELIMIT_GUESS = 15;
 const TIMELIMIT_END = 10;
 
 let ISNAVOPEN = false;
@@ -118,6 +119,13 @@ class Timer extends React.Component {
     playernames[playerobj.playernum] = playerobj.username;
     playersockets[playerobj.playernum] = playerobj.socketid;
     */
+    if (mystate.gamestate == "GUESS"){
+      console.log('check guesser ready: '+$.isReadyPlayerNum(guessernum));
+      if ($.isReadyPlayerNum(guessernum)){
+        $.callstatechangeall('msg', "Your entry is in", "Check the main screen to see if you were right!");
+        timeleft = 0;
+      }
+    }
     if (timeleft <= 0){
       $.resetReadyPlayers();
       storeTimer.dispatch(stopTimer());
@@ -130,26 +138,29 @@ class Timer extends React.Component {
           let socketPreviousPlayer = playersockets[playerturnorder[mystate.loopcounter-1]];
           $.callstatechangeprivate("msg", "Time's up!", socketPreviousPlayer , "Passing on the baton!");
         }
-        //find next player from turn order
-        //give player draw and secret word
-        let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
-        $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , playersave[mystate.loopcounter-1]);
-        console.log('canvas url: '+playersave[mystate.loopcounter-1]);
-        //warn player unless guesser
-        if (mystate.loopcounter != playerturnorder.length-1){
+
+        console.log(playerturnorder.length+' turnorder and loopcounter '+mystate.loopcounter);
+
+        //guesser is next
+        if (mystate.loopcounter == playerturnorder.length-1){
+          //reset votes
+          $.resetVotes();
+          $.resetLastVoteData();
+          console.log('send guess change to input mode');
+          $.callstatechangeprivate("input", "What is the picture?", socketGuesser, "payload");
+          storeTimer.dispatch(startTimer(TIMELIMIT_GUESS));
+          storeGame.dispatch(startGuess());
+        }
+        else {
+          //find next player from turn order
+          //give player draw and secret word
+          let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
+          $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , playersave[mystate.loopcounter-1]);
           //warn next player
           let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
           $.callstatechangeprivate("msg", "Your turn is coming up!", nextPlayer , "Get ready to draw!");
           storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
           storeGame.dispatch(startDraw());
-        }
-
-        if (mystate.loopcounter == playerturnorder.length-1){
-          //warn next player
-          let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
-          $.callstatechangeprivate("msg", "Your turn is coming up!", nextPlayer , "Get ready to guess!");
-          storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
-          storeGame.dispatch(startGuess());
         }
 
       }
@@ -181,7 +192,14 @@ class Timer extends React.Component {
         $.callstatechangeprivate("draw", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
         //warn next player
         let nextPlayer = playersockets[playerturnorder[mystate.loopcounter+1]];
-        $.callstatechangeprivate("msg", "Secret Word: " + secretWord, nextPlayer , "Get ready to draw!");
+        $.callstatechangeprivate("msg", "Your turn is next!", nextPlayer , "Get ready!");
+      }
+      else if (mystate.gamestate ==  "GUESS"){
+        let inputByPlayer = $.retVoteData()[guessernum];
+        console.log('inputByPlayer '+inputByPlayer);
+        storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
+        storeGame.dispatch(startEnd());
+        $.callstatechangeall('msg', 'you win/lose', 'you win/lose!');
       }
       else if (mystate.gamestate ==  "END"){
         $.clearAllCanvas();
@@ -317,7 +335,7 @@ function minigametworeducer(state = initialGameState, action) {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter+1,
+        loopcounter: state.loopcounter,
         winner: state.winner,
         words: state.words
       };
@@ -421,7 +439,7 @@ class MiniGameTwo extends React.Component {
     return (
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
-        <div id="roundcounter">{this.returnRoundCounter(this.props.loopcounter)} </div>
+        <div id="roundcounter">{this.props.loopcounter} </div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
@@ -494,20 +512,12 @@ export class MiniGameTwoLayout extends React.Component {
 
   displayPage(gamestate){
 
-    const canvasitems = playernames.map((playername, index) => {
-      let mystyle = {position: 'absolute'};
-      if (this.state.playerreadylabels[index] == true){
-        mystyle = {position: 'absolute', color: 'green'};
-      }else{
-        mystyle = {position: 'absolute', color: 'black'};
-      }
+    const canvasitems = playersave.map((playername, index) => {
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
           <div id="cf">
-            <img className="bottom" src={playersave[index]} width={"214"} height={"268"}/>
-            <img className="top" src={playersave[index]} width={"214"} height={"268"}/>
+            <img src={playersave[index]} width={"214"} height={"268"}/>
           </div>
-          <div id="playerlabel" style={mystyle}>{playernames[index]}</div>
         </div>
       );
     });
@@ -632,7 +642,9 @@ export class CanvasLayout extends React.Component {
       <div className="col-sm-10 rightpanel">
         <div className="container">
         <div className="row justify-content-md-center">
-          {canvasitems}
+        <div className="col-sm-3 text-center canvasSection" key={"canvas-p0"}>
+            <canvas id={"canvas-p0"} width={"214"} height={"268"}></canvas>
+        </div>
           </div>
         </div>
       </div>
@@ -723,6 +735,7 @@ function setupGame(){
       else {
         //reuse variable and store actual playerobj num
         guessernum = playerobj.playernum;
+        socketGuesser = playerobj.socketid;
       }
 
       counter++;
