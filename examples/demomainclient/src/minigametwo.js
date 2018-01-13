@@ -120,9 +120,13 @@ class Timer extends React.Component {
     playersockets[playerobj.playernum] = playerobj.socketid;
     */
     if (mystate.gamestate == "GUESS"){
-      console.log('check guesser ready: '+$.isReadyPlayerNum(guessernum));
       if ($.isReadyPlayerNum(guessernum)){
         $.callstatechangeall('msg', "Your entry is in", "Check the main screen to see if you were right!");
+        timeleft = 0;
+      }
+    }else{
+      if ($.isReadyPlayers()){
+        $.callstatechangeall('msg', null, "Everyone is ready!");
         timeleft = 0;
       }
     }
@@ -170,8 +174,13 @@ class Timer extends React.Component {
         }
         else{
           setupGame();
+          $.callstatechangeall('msg', "Wait your turn", "Get Ready!");
           storeTimer.dispatch(startTimer(TIMELIMIT_BEGIN));
           storeGame.dispatch(startBegin());
+          //find starting player and give them secret word
+          let socketPlayer = playersockets[playerturnorder[mystate.loopcounter]];
+          $.callstatechangeprivate("msg", "Secret Word: " + secretWord, socketPlayer , "Get ready to draw!");
+          $.callstatechangeprivate("msg", "You are the guesser!", socketGuesser , "Guess the drawing when it is your turn!");
         }
       }
       else if (mystate.gamestate ==  "IDLE"){
@@ -257,8 +266,7 @@ function mapStateToPropsTimer(state) {
 const initialGameState = {
   gamestate: "IDLE",
   loopcounter: 0,
-  winner: "",
-  words: []
+  winner: ""
 };
 
 //action creators
@@ -273,8 +281,7 @@ function startBegin() {
   return {
     type: "BEGIN",
     gamestate: "BEGIN",
-    winner: "",
-    words: words
+    winner: ""
   };
 }
 function startDraw() {
@@ -318,8 +325,7 @@ function minigametworeducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter,
-        winner: action.winner,
-        words: state.words
+        winner: action.winner
       };
     case "DRAW":
       return {
@@ -327,8 +333,7 @@ function minigametworeducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter+1,
-        winner: state.winner,
-        words: state.words
+        winner: state.winner
       };
     case "GUESS":
       return {
@@ -336,17 +341,15 @@ function minigametworeducer(state = initialGameState, action) {
         //set new state
         gamestate: action.gamestate,
         loopcounter: state.loopcounter,
-        winner: state.winner,
-        words: state.words
+        winner: state.winner
       };
     case "GAMERECAP":
       return {
         ...state,
         //set new state
         gamestate: action.gamestate,
-        loopcounter: state.loopcounter,
-        winner: state.winner,
-        words: state.words
+        loopcounter: 0,
+        winner: state.winner
       }
     case "END":
         //animate winner or loser
@@ -354,8 +357,7 @@ function minigametworeducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: action.winner,
-        words: state.words
+        winner: action.winner
       }
     case "BEGIN":
         //rules stuff
@@ -363,8 +365,7 @@ function minigametworeducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: state.winner,
-        words: action.words
+        winner: state.winner
       }
     case "IDLE":
         //wait
@@ -372,16 +373,14 @@ function minigametworeducer(state = initialGameState, action) {
         ...state,
         gamestate: action.gamestate,
         loopcounter: 0,
-        winner: action.winner,
-        words: state.words
+        winner: action.winner
     }
     case "EXIT":
       return {
         state: undefined,
         gamestate: 'EXIT',
         loopcounter: 0,
-        winner: '',
-        words: []
+        winner: ''
     }
     default:
       return state;
@@ -435,14 +434,10 @@ class MiniGameTwo extends React.Component {
   render() {
     const gamestatelabel = this.props.gamestate;
     const loop = this.props.loopcounter;
-    const words = this.props.words;
     return (
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
         <div id="roundcounter">{this.props.loopcounter} </div>
-        <div className="col">
-          <WordList words={this.props.words} />
-        </div>
       </div>
     );
   }
@@ -451,8 +446,7 @@ class MiniGameTwo extends React.Component {
 function mapStateToPropsGameTwo(state) {
   return { gamestate: state.gamestate,
            loopcounter: state.loopcounter,
-           winner: state.winner,
-           words: state.words
+           winner: state.winner
          };
 }
 //END MINIGAME REDUX
@@ -462,21 +456,8 @@ Timer = ReactRedux.connect(mapStateToPropsTimer, { startTimer, stopTimer, resetT
 MiniGameTwo = ReactRedux.connect(mapStateToPropsGameTwo, { startDraw, startBegin, startIdle, startGuess})(MiniGameTwo);
 
 //add reducers to stores
-//const rootReducer = combineReducers({timerreducer, minigameonereducer});
 export const storeTimer = Redux.createStore(timerreducer);
 export const storeGame = Redux.createStore(minigametworeducer);
-
-//WORDLIST REACT
-function WordList(props) {
-  let wordsInWordList = props.words;
-  const listItems = wordsInWordList.map((word, index) =>
-    <div key={"word"+index} className="wordminigameone" disabled>{word}</div>
-  );
-  return (
-      <div className="WordList">{listItems}</div>
-  );
-}
-//END WORDLIST REACT
 
 
 //MINIGAME LAYOUT
@@ -516,7 +497,7 @@ export class MiniGameTwoLayout extends React.Component {
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
           <div id="cf">
-            <img src={playersave[index]} width={"214"} height={"268"}/>
+            <img className="still" src={playersave[index]} width={"214"} height={"268"}/>
           </div>
         </div>
       );
@@ -583,7 +564,7 @@ export class MiniGameTwoLayout extends React.Component {
 
   render() {
     return (
-      <div className="container-fluid minigameone">
+      <div className="container-fluid minigametwo">
          <div className="row justify-content-md-center">
           <div className="col-sm-2">
              <ReactRedux.Provider store={storeGame}>
@@ -654,7 +635,6 @@ export class CanvasLayout extends React.Component {
 }
 
 
-let words = [];
 let playernames = [];
 let playerready = [];
 let playerpoints = [0,0,0,0,0,0,0,0];
@@ -712,6 +692,11 @@ function setupTurnOrder(nump){
 function setupGame(){
   $.resetReadyPlayers();
   console.log("setup the minigametwo");
+  //clear player save
+  playersave = [];
+  playernames = [];
+  playersockets = [];
+  playerturnorder = [];
   let clientsobj = $.returnAllPlayers();
   let numplayers = Object.keys(clientsobj).length;
   //setup variables for minigametwo here
