@@ -585,8 +585,8 @@ $(function() {
     ctxdrawcanvas.stroke();
   }
 
-  function drawDot(fromx, fromy, playerid){
-    const drawcanvas = $('#'+clientdict[playerid].canvasid);
+  function drawDot(fromx, fromy, playerid, canvasid){
+    const drawcanvas = $(canvasid);
     const ctxdrawcanvas = drawcanvas[0].getContext('2d');
     ctxdrawcanvas.fillStyle = COLORS[clientdict[playerid].playernum];
     ctxdrawcanvas.beginPath();
@@ -720,7 +720,13 @@ $(function() {
     });
 
     socket.on('drawdot', function(data) {
-      drawDot(data.x, data.y, data.id);
+      //default own canvasid
+      let targetCanvasId = '#'+clientdict[data.id].canvasid;
+      if (storeMainGame.getState().gamestate == "minigametwo"){
+        //always draw to canvas 1 in minigametwo
+        targetCanvasId = "#canvas-p0";
+      }
+      drawDot(data.x, data.y, data.id, targetCanvasId);
       clientsDrawpoints[data.id] = [];
       // Saving the current client state
       clients[data.id] = data;

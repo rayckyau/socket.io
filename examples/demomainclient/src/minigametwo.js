@@ -208,7 +208,13 @@ class Timer extends React.Component {
         console.log('inputByPlayer '+inputByPlayer);
         storeTimer.dispatch(startTimer(TIMELIMIT_DRAW));
         storeGame.dispatch(startEnd());
-        $.callstatechangeall('msg', 'you win/lose', 'you win/lose!');
+        //check answer
+        if (inputByPlayer == secretWord){
+          $.callstatechangeall('msg', 'You did it!', 'Your manager got it!');
+        }
+        else {
+          $.callstatechangeall('msg', 'Nice try!', 'Your manager did not get it!');
+        }
       }
       else if (mystate.gamestate ==  "END"){
         $.clearAllCanvas();
