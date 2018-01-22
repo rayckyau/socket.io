@@ -214,6 +214,22 @@ ul {
   transition: 0.5s;
 }
 
+[id^=canvas] {
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  height: 250px;
+  width: 200px;
+
+  @media screen and (min-height:1080px){
+    height: 340px;
+    width: 268px;
+  }
+}
+
+[id^=canvas]:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
 #mainframe {
   border: 2px solid #000;
 }
@@ -343,6 +359,22 @@ ul {
     flex-direction: column;
   }
 
+  [id^=canvas] {
+    background-color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    height: 268px;
+    width: 214px;
+
+    @media screen and (min-height:1080px){
+      height: 340px;
+      width: 268px;
+    }
+  }
+
+  [id^=canvas]:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  }
+
   #gamestatelabel {
     text-align: center;
     color: black;
@@ -458,6 +490,22 @@ ul {
   .canvasSection {
     justify-content: center;
     flex-direction: column;
+  }
+
+  [id^=canvas] {
+    background-color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    height: 250px;
+    width: 200px;
+
+    @media screen and (min-height:1080px){
+      height: 340px;
+      width: 268px;
+    }
+  }
+
+  [id^=canvas]:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
   }
 
   #gamestatelabel {
@@ -681,14 +729,6 @@ ul {
   padding: 5px;
 }
 
-[id^=canvas] {
-  background-color: white;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-
-[id^=canvas]:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-}
 
 [class*="col-"] {
   padding: 8px;
