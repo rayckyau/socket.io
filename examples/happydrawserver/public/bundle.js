@@ -109533,7 +109533,38 @@ var BotNav = function (_React$Component5) {
     value: function render() {
       var _this7 = this;
 
-      if (this.state.clientmode == "draw") {
+      if (this.props.admin == true && this.props.mainclientstate == "lobby") {
+        return _react2.default.createElement(
+          'nav',
+          { className: 'navbar navbar-light sticky-bottom bg-faded ' },
+          _react2.default.createElement(
+            'button',
+            { className: 'mybtn mybtn--green', type: 'button', onClick: function onClick() {
+                return _this7.clickButton();
+              } },
+            "Everyone's In!"
+          ),
+          _react2.default.createElement(
+            'button',
+            { className: 'mybtn mybtn--blue', type: 'button', onClick: function onClick() {
+                return _this7.clickTypeButton();
+              } },
+            this.state.drawtype
+          )
+        );
+      } else if (this.props.admin == true && this.props.mainclientstate == "gameselect") {
+        return _react2.default.createElement(
+          'nav',
+          { className: 'navbar navbar-light sticky-bottom bg-faded ' },
+          _react2.default.createElement(
+            'button',
+            { className: 'mybtn mybtn--green', type: 'button', onClick: function onClick() {
+                return _this7.clickButton();
+              } },
+            "Select Game"
+          )
+        );
+      } else if (this.state.clientmode == "draw") {
         return _react2.default.createElement(
           'nav',
           { className: 'navbar navbar-light sticky-bottom bg-faded ' },

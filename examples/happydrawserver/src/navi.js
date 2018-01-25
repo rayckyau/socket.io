@@ -233,7 +233,22 @@ class BotNav extends React.Component {
   }
 
   render(){
-    if (this.state.clientmode == "draw"){
+    if ((this.props.admin == true) && (this.props.mainclientstate == "lobby")){
+      return (
+          <nav className="navbar navbar-light sticky-bottom bg-faded ">
+            <button className="mybtn mybtn--green" type="button" onClick={() => this.clickButton()}>{"Everyone's In!"}</button>
+            <button className="mybtn mybtn--blue" type="button" onClick={() => this.clickTypeButton()}>{this.state.drawtype}</button>
+          </nav>
+      );
+    }
+    else if ((this.props.admin == true) && (this.props.mainclientstate == "gameselect")){
+      return (
+          <nav className="navbar navbar-light sticky-bottom bg-faded ">
+            <button className="mybtn mybtn--green" type="button" onClick={() => this.clickButton()}>{"Select Game"}</button>
+          </nav>
+      );
+    }
+    else if (this.state.clientmode == "draw"){
       return (
           <nav className="navbar navbar-light sticky-bottom bg-faded ">
             <button className="mybtn mybtn--green" type="button" onClick={() => this.clickButton()}>{this.state.buttonLabel}</button>
