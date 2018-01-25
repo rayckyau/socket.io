@@ -425,10 +425,11 @@ class Timer extends React.Component {
           }
           storeTimer.dispatch(startTimer(TIMELIMIT_DISCUSS));
           storeGame.dispatch(startDiscuss());
-          $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing! Get ready for round 2!");
+          $.callstatechangeall('msg', null, "Look at the main screen and try to find a suspicious drawing!");
       }
       else if (mystate.gamestate ==  "DISCUSS"){
-          if (mystate.loopcounter == 2){
+          //for competitive make loop counter 2
+          if (mystate.loopcounter == 1){
             storeTimer.dispatch(startTimer(TIMELIMIT_VOTE));
             $.resetVotes();
             $.resetLastVoteData();
@@ -811,7 +812,6 @@ class MiniGameOne extends React.Component {
     return (
       <div>
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
-        <div id="roundcounter">{this.returnRoundCounter(this.props.loopcounter)} </div>
         <div className="col">
           <WordList words={this.props.words} />
         </div>
@@ -891,11 +891,11 @@ export class MiniGameOneLayout extends React.Component {
       }else{
         mystyle = {position: 'absolute', color: 'black'};
       }
+      //playersave[index][2] to access second save
       return(
         <div className="col-sm-3 text-center" key={'canvasitem'+index}>
           <div id="cf">
-            <img className="bottom" src={playersave[index][1]} width={"214"} height={"268"}/>
-            <img className="top" src={playersave[index][2]} width={"214"} height={"268"}/>
+            <img className="still" src={playersave[index][1]} width={"214"} height={"268"}/>
           </div>
           <div id="playerlabel" style={mystyle}>{playernames[index]}</div>
         </div>
