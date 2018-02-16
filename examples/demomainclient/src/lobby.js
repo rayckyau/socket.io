@@ -257,11 +257,12 @@ class Rules extends React.Component {
         autoplay: true
       };
       return (
-        <Slider {...settings}>
-         <div><img src="ruleslides/illuminatiimposterslides1.png" height="100%" width="100%"></img></div>
-         <div><img src="ruleslides/illuminatiimposterslides2.png" height="100%" width="100%"></img></div>
-         <div><img src="ruleslides/illuminatiimposterslides3.png" height="100%" width="100%"></img></div>
-       </Slider>
+        <div><img src="ruleslides/illuminatiimposteranim.gif"></img></div>
+      );
+    }
+    else if (this.props.gamestate == "minigametwo"){
+      return (
+        <div><img src="ruleslides/assemblylineanim.gif"></img></div>
       );
     }
     else {
