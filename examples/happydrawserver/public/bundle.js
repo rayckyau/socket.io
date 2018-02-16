@@ -31412,7 +31412,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/rayubu/Documents/socket.io/examples/chat"
+      "/home/rayubu/Documents/socket.io/examples/happydrawserver"
     ]
   ],
   "_development": true,
@@ -31438,7 +31438,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/rayubu/Documents/socket.io/examples/chat",
+  "_where": "/home/rayubu/Documents/socket.io/examples/happydrawserver",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -103260,7 +103260,7 @@ module.exports={
   "_args": [
     [
       "tough-cookie@2.3.2",
-      "/home/rayubu/Documents/socket.io/examples/chat"
+      "/home/rayubu/Documents/socket.io/examples/happydrawserver"
     ]
   ],
   "_from": "tough-cookie@2.3.2",
@@ -103285,7 +103285,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.3.2.tgz",
   "_spec": "2.3.2",
-  "_where": "/home/rayubu/Documents/socket.io/examples/chat",
+  "_where": "/home/rayubu/Documents/socket.io/examples/happydrawserver",
   "author": {
     "name": "Jeremy Stashewsky",
     "email": "jstashewsky@salesforce.com"
