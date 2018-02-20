@@ -48,7 +48,7 @@
     "react": "^16.2.0",
     "react-countup": "^3.0.2",
     "react-dom": "^16.2.0",
-    "react-howler": "^3.7.0",
+    "react-howler": "^3.7.1",
     "react-progressbar.js": "^0.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",

@@ -10,6 +10,7 @@ import {
   withRouter
 } from 'react-router-dom'
 import CountUp, { startAnimation } from 'react-countup';
+import {Announcer} from './soundengine';
 
 const TIMELIMIT_DRAW = 90;
 const TIMELIMIT_VOTE = 60;
@@ -754,6 +755,7 @@ function minigameonereducer(state = initialGameState, action) {
   }
 }
 
+
 class MiniGameOne extends React.Component {
   constructor(props){
     super(props);
@@ -811,6 +813,7 @@ class MiniGameOne extends React.Component {
     const words = this.props.words;
     return (
       <div>
+        <Announcer />
         <div id="gamestatelabel">{this.returnGameState(gamestatelabel)}</div>
         <div className="col">
           <WordList words={this.props.words} />

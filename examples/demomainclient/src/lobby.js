@@ -249,20 +249,13 @@ class Rules extends React.Component {
 
   onGameStart(){
     if (this.props.gamestate == "minigameone"){
-      var settings = {
-        dots: true,
-        autoplaySpeed: 12000,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true
-      };
       return (
-        <div><img src="ruleslides/illuminatiimposteranim.gif"></img></div>
+        <div><img className="rulesgif" src="ruleslides/illuminatiimposteranim.gif"></img></div>
       );
     }
     else if (this.props.gamestate == "minigametwo"){
       return (
-        <div><img src="ruleslides/assemblylineanim.gif"></img></div>
+        <div><img className="rulesgif" src="ruleslides/assemblylineanim.gif"></img></div>
       );
     }
     else {
